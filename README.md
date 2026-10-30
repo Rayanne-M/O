@@ -3,8 +3,12 @@
 Un RPG jouable dans le navigateur, centré sur la construction de personnage :
 classe, bénédictions, malédictions et passifs se combinent pour déclencher des **synergies**.
 
-Pour l'instant, le projet contient l'**atelier de personnage** : un outil de développement et d'équilibrage
-où tout est accessible librement, pour tester des combinaisons et comparer leurs dégâts.
+Le projet contient deux pages :
+
+- l'**atelier de personnage** (`index.html`) : un outil de développement et d'équilibrage
+  où tout est accessible librement, pour tester des combinaisons et comparer leurs dégâts ;
+- la **tranche jouable de l'enfance** (`village.html`) : le village natal en vue de dessus, trois jours
+  et trois nuits, la fenêtre de la chambre et la nuit au puits. Voir [plus bas](#la-tranche-jouable-de-lenfance).
 
 ## Lancer le projet
 
@@ -12,7 +16,7 @@ Il faut [Node.js](https://nodejs.org) (version 20 ou plus).
 
 ```bash
 npm install      # installe les dépendances (une seule fois)
-npm run dev      # lance le jeu sur http://localhost:5173
+npm run dev      # l'atelier sur http://localhost:5173, le village sur http://localhost:5173/village.html
 npm test         # lance les tests
 npm run build    # vérifie les types et prépare une version à publier dans dist/
 ```
@@ -110,3 +114,41 @@ Les conditions possibles : `class`, `tags` (nombre minimum par tag), `ids` (él�
 
 Lance `npm test` après chaque ajout : les tests de `src/data/data.test.ts` vérifient que le contenu est cohérent
 (identifiants uniques, tags nommés, synergies et passifs qui pointent vers des éléments existants).
+
+## La tranche jouable de l'enfance
+
+Le village natal, dans l'esprit des RPG sur DS : écran de 384 × 216 pixels agrandi sans flou, tuiles de 16 px,
+héros enfant qui marche dans les 8 directions. Affichage avec [Phaser 3](https://phaser.io), textes et menus en HTML
+par-dessus pour qu'ils restent nets.
+
+Commandes : flèches, ZQSD ou WASD pour marcher (deux touches pour les diagonales), Espace, Entrée ou E pour parler
+et examiner. Sur mobile, un joystick et un bouton A apparaissent.
+
+Pour tester un moment précis : `village.html?jour=2` commence au jour 2, `village.html?nuit=3` à la nuit 3.
+
+```
+src/village/
+  art/planche.js   Le code de dessin repris tel quel de la planche de direction artistique (sprites, décor,
+                   puits, cinématique, portrait de l'esprit). Ses types sont dans planche.d.ts.
+  art/sprites.ts   Transforme ces dessins en images pour Phaser (héros, personnages, maisons).
+  art/decor.ts     Les éléments ajoutés pour la tranche : lavoir, fontaine, rivière, bougie…
+  script.ts        Tous les textes : les moments de chaque journée, les nuits, le puits et les fins.
+  dialogue.ts      Joue les étapes de script.ts et applique leurs effets.
+  state.ts         Ce que l'enfance laisse sur le héros : jauges, compteurs cachés, peurs, traits.
+  maps.ts          Le village et la chambre : décor, obstacles, lieux des scènes.
+  world.ts         La scène de jeu : déplacements, enchaînement des journées, cinématique, puits.
+  ui.ts            Boîte de dialogue, choix, sous-titres, écrans titre et de fin.
+```
+
+**Changer un texte** : tout est dans `src/village/script.ts`. Une scène est une liste d'étapes
+(`{ say: '…', who: 'elio' }` pour une réplique, `{ ask: '…', options: [...] }` pour un choix),
+et les effets s'écrivent comme dans le scénario : `{ guerrier: 1 }`, `{ rancoeur: -1 }`,
+`{ 'peurs.araignees': 'peur' }`, `{ trait: 'Conteur' }`, `{ a_ciseaux: true }`.
+
+Ce qui reste provisoire :
+
+- le héros enfant en 8 directions est dérivé des vues adultes de la planche (tête gardée, corps raccourci),
+  en attendant de vraies vues enfant ;
+- le combat contre l'Esprit est résolu sans mini-jeu : avec les ciseaux, on gagne si sa force est de 6 ou moins,
+  avec un bâton, de 3 ou moins ;
+- la pousse des cheveux n'est pas encore visible sur le héros.
