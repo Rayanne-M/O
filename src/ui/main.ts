@@ -2,10 +2,33 @@
 // puis affiche le résultat. Aucune règle de jeu n'est écrite ici.
 import './style.css';
 import { STAT_LABELS, gameData, tagLabels } from '../data';
-import { maxBlessings, MAX_CURSES, evaluateBuild } from '../engine/build';
-import { EQUIPMENT_SLOTS, STAT_KEYS, type Build, type EquipmentSlot, type Modifier, type Source } from '../engine/types';
+import { maxBlessings, MAX_CURSES, evaluateBuild, type BuildResult } from '../engine/build';
+import { DEFAULT_COMBAT, simulateCombat, type DamageKind } from '../engine/combat';
+import {
+  EQUIPMENT_SLOTS,
+  STAT_KEYS,
+  type Build,
+  type Element,
+  type EquipmentSlot,
+  type Modifier,
+  type Source,
+  type Synergy,
+} from '../engine/types';
 
 const SLOT_LABELS: Record<EquipmentSlot, string> = { weapon: 'Arme', armor: 'Armure', trinket: 'Bijou' };
+const ELEMENT_LABELS: Record<Element, string> = {
+  physical: 'physique',
+  arcane: 'arcane',
+  fire: 'feu',
+  shadow: 'ombre',
+  holy: 'sacré',
+};
+const DAMAGE_LABELS: Record<DamageKind, string> = {
+  hit: 'Coups',
+  crit: 'Critiques',
+  burn: 'Brûlures',
+  explosion: 'Explosions',
+};
 
 const build: Build = {
   raceId: gameData.races[0].id,
@@ -75,7 +98,7 @@ function slotSelect(slot: EquipmentSlot): string {
     .map((e) => {
       const forbidden = e.allowedClasses && !e.allowedClasses.includes(build.classId);
       return `<option value="${e.id}" ${e.id === current ? 'selected' : ''} ${forbidden ? 'disabled' : ''}>
-        ${e.name} — ${e.modifiers.map(formatModifier).join(', ')} ${tagChips(e.tags, true)}
+        ${e.name} — ${e.modifiers.map(formatModifier).join(', ')} ${tagChips(e.tags, true)}${(e.passives ?? []).map((id) => ` ✦ ${passiveName(id)}`).join('')}
       </option>`;
     })
     .join('');
@@ -89,7 +112,12 @@ function optionBody(s: Source): string {
     <strong>${s.name}</strong>
     <span class="mods">${s.modifiers.map(formatModifier).join(', ')}</span>
     <span class="tags">${tagChips(s.tags)}</span>
+    ${(s.passives ?? []).map((id) => `<span class="passive-chip">✦ ${passiveName(id)}</span>`).join('')}
   </span>`;
+}
+
+function passiveName(id: string): string {
+  return gameData.passives.find((p) => p.id === id)?.name ?? id;
 }
 
 function tagChips(tags: string[], plain = false): string {
@@ -129,20 +157,51 @@ function renderResult(): void {
       .map(([tag, n]) => `<span class="tag">${tagLabels[tag] ?? tag} ×${n}</span>`)
       .join('')}</div>
     <h2>Synergies actives (${result.activeSynergies.length})</h2>
-    ${result.activeSynergies.length ? result.activeSynergies.map(({ synergy }) => synergyCard(synergy.name, synergy.description, synergy.modifiers, [], true)).join('') : '<p class="hint">Aucune pour l’instant.</p>'}
+    ${result.activeSynergies.length ? result.activeSynergies.map(({ synergy }) => synergyCard(synergy, [], true)).join('') : '<p class="hint">Aucune pour l’instant.</p>'}
     <h2>Presque ! (${near.length})</h2>
-    ${near.length ? near.map(({ synergy, missing }) => synergyCard(synergy.name, synergy.description, synergy.modifiers, missing, false)).join('') : '<p class="hint">Aucune synergie à un élément près.</p>'}
+    ${near.length ? near.map(({ synergy, missing }) => synergyCard(synergy, missing, false)).join('') : '<p class="hint">Aucune synergie à un élément près.</p>'}
     <details>
       <summary>Toutes les synergies</summary>
-      ${inactive.filter((s) => s.gap > 1).map(({ synergy, missing }) => synergyCard(synergy.name, synergy.description, synergy.modifiers, missing, false)).join('')}
+      ${inactive.filter((s) => s.gap > 1).map(({ synergy, missing }) => synergyCard(synergy, missing, false)).join('')}
     </details>
+    <h2>Passifs (${result.passives.length})</h2>
+    ${result.passives.length ? result.passives.map(({ passive, sourceName }) => `<div class="passive"><strong>✦ ${passive.name}</strong> <span class="mods">via ${sourceName}</span><p>${passive.description}</p></div>`).join('') : '<p class="hint">Aucun passif. Les objets, malédictions et synergies peuvent en donner.</p>'}
+    ${combatSection(result)}
   `;
 }
 
-function synergyCard(name: string, description: string, mods: Modifier[], missing: string[], active: boolean): string {
+function combatSection(result: BuildResult): string {
+  const combat = simulateCombat(result);
+  if (!combat) return '';
+  const kinds = (Object.keys(DAMAGE_LABELS) as DamageKind[]).filter((k) => combat.byKind[k] > 0);
+  const turns = Array.from({ length: DEFAULT_COMBAT.turns }, (_, i) => i + 1);
+  return `
+    <h2>Combat d’entraînement</h2>
+    <p class="hint">${DEFAULT_COMBAT.turns} tours contre un mannequin (défense ${DEFAULT_COMBAT.targetDefense}). Attaques de ${ELEMENT_LABELS[combat.element]}.</p>
+    <p class="damage-total">${combat.total} <small>dégâts</small></p>
+    <div class="damage-bars">
+      ${kinds
+        .map((k) => {
+          const share = Math.round((combat.byKind[k] / combat.total) * 100);
+          return `<div class="bar-row"><span>${DAMAGE_LABELS[k]}</span>
+            <span class="bar"><span class="fill ${k}" style="width:${share}%"></span></span>
+            <span class="num">${combat.byKind[k]}</span></div>`;
+        })
+        .join('')}
+    </div>
+    <details>
+      <summary>Déroulé tour par tour</summary>
+      <ol class="combat-log">
+        ${turns.map((t) => `<li>${combat.events.filter((e) => e.turn === t).map((e) => e.text).join(' · ')}</li>`).join('')}
+      </ol>
+    </details>`;
+}
+
+function synergyCard(synergy: Synergy, missing: string[], active: boolean): string {
+  const effects = [...synergy.modifiers.map(formatModifier), ...(synergy.passives ?? []).map((id) => `✦ ${passiveName(id)}`)];
   return `<div class="synergy ${active ? 'active' : ''}">
-    <strong>${name}</strong> <span class="mods">${mods.map(formatModifier).join(', ')}</span>
-    <p>${description}</p>
+    <strong>${synergy.name}</strong> <span class="mods">${effects.join(', ')}</span>
+    <p>${synergy.description}</p>
     ${missing.length ? `<p class="missing">Il manque : ${missing.join(' · ')}</p>` : ''}
   </div>`;
 }

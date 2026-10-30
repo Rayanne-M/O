@@ -7,8 +7,8 @@ const data: GameData = {
   baseStats: { hp: 50, mana: 0, strength: 5, agility: 5, intelligence: 5, defense: 0, crit: 0, speed: 10 },
   races: [{ id: 'r', name: 'Race', description: '', tags: ['fire'], modifiers: [{ stat: 'hp', type: 'flat', value: 10 }] }],
   classes: [
-    { id: 'c', name: 'Classe', description: '', tags: [], modifiers: [] },
-    { id: 'c2', name: 'Autre classe', description: '', tags: [], modifiers: [] },
+    { id: 'c', name: 'Classe', description: '', tags: [], modifiers: [], attack: { stat: 'strength', element: 'physical' } },
+    { id: 'c2', name: 'Autre classe', description: '', tags: [], modifiers: [], attack: { stat: 'strength', element: 'physical' } },
   ],
   equipment: [
     {
@@ -25,7 +25,7 @@ const data: GameData = {
     { id: 'b1', name: 'B1', description: '', tags: [], modifiers: [] },
     { id: 'b2', name: 'B2', description: '', tags: [], modifiers: [] },
   ],
-  curses: [{ id: 'k1', name: 'K1', description: '', tags: ['fire'], modifiers: [] }],
+  curses: [{ id: 'k1', name: 'K1', description: '', tags: ['fire'], modifiers: [], passives: ['p1'] }],
   synergies: [
     {
       id: 'burn',
@@ -33,7 +33,21 @@ const data: GameData = {
       description: '',
       requires: { class: ['c'], tags: { fire: 3 } },
       modifiers: [{ stat: 'strength', type: 'percent', value: 100 }],
+      passives: ['p2'],
     },
+    {
+      id: 'chain',
+      name: 'Chaîne',
+      description: '',
+      requires: { passives: ['p1', 'p2'] },
+      modifiers: [],
+      passives: ['p3'],
+    },
+  ],
+  passives: [
+    { id: 'p1', name: 'P1', description: '', effects: [] },
+    { id: 'p2', name: 'P2', description: '', effects: [] },
+    { id: 'p3', name: 'P3', description: '', effects: [] },
   ],
   tagLabels: { fire: 'Feu' },
 };
@@ -62,7 +76,7 @@ describe('evaluateBuild', () => {
 
   it('active une synergie quand toutes ses conditions sont remplies et applique son bonus', () => {
     const result = evaluateBuild(build({ equipment: { weapon: 'sword' }, curseIds: ['k1'] }), data);
-    expect(result.activeSynergies.map((s) => s.synergy.id)).toEqual(['burn']);
+    expect(result.activeSynergies.map((s) => s.synergy.id)).toContain('burn');
     // (5 + 5) × 2 = 20
     expect(result.stats.strength.total).toBe(20);
   });
@@ -73,6 +87,22 @@ describe('evaluateBuild', () => {
     expect(burn.active).toBe(false);
     expect(burn.missing).toEqual(['Feu : 2/3']);
     expect(burn.gap).toBe(1);
+  });
+
+  it('rassemble les passifs des éléments et des synergies', () => {
+    const result = evaluateBuild(build({ equipment: { weapon: 'sword' }, curseIds: ['k1'] }), data);
+    expect(result.passives.map((g) => [g.passive.id, g.sourceName])).toEqual([
+      ['p1', 'K1'],
+      ['p2', 'Brûlure'],
+      ['p3', 'Chaîne'],
+    ]);
+  });
+
+  it('active une synergie qui demande un passif accordé par une autre synergie', () => {
+    const withBurn = evaluateBuild(build({ equipment: { weapon: 'sword' }, curseIds: ['k1'] }), data);
+    expect(withBurn.activeSynergies.map((s) => s.synergy.id)).toEqual(['burn', 'chain']);
+    const without = evaluateBuild(build({ curseIds: ['k1'] }), data);
+    expect(without.synergies.find((s) => s.synergy.id === 'chain')!.missing).toEqual(['Passif : P2']);
   });
 
   it('refuse un objet interdit à la classe', () => {

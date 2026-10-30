@@ -37,7 +37,9 @@ Les trois parties sont séparées volontairement :
   Chaque point garde la trace de sa provenance, pour l'afficher au survol.
 - `synergy.ts` : vérifie si une synergie est active, et sinon ce qui manque.
 - `build.ts` : assemble le tout à partir des choix du joueur, et vérifie les règles
-  (objet réservé à une classe, nombre de bénédictions...).
+  (objet réservé à une classe, nombre de bénédictions...). Rassemble aussi les passifs.
+- `combat.ts` : un combat d'entraînement de 10 tours contre un mannequin, sans hasard,
+  pour mesurer ce que les passifs apportent vraiment.
 
 ### Les règles actuelles
 
@@ -46,6 +48,21 @@ Les trois parties sont séparées volontairement :
   Les malédictions sont donc un choix : un défaut contre une bénédiction de plus et parfois une synergie.
 - Chaque élément porte des **tags** (Feu, Ombre, Sacré, Lourd...). Une synergie s'active quand
   le build réunit assez d'éléments d'un tag, ou une combinaison précise (ex. Nain + Espadon).
+
+### Les passifs
+
+Un passif change la façon de combattre, pas seulement les stats : Flamme rend les attaques de feu,
+Brûlure pose des charges qui font des dégâts sur la durée, Combustion les fait exploser à 3 charges...
+Les passifs viennent des objets, des malédictions et des synergies (champ `passives`),
+et une synergie peut **demander des passifs** (`requires: { passives: [...] }`). C'est ce qui crée
+des styles de combat. Par exemple pour le mage de feu :
+
+- **Brûlure** : Brûlure + Feu intérieur (malédiction Âme consumée) → *Bûcher* : 2 charges par coup.
+- **Explosion** : Brûlure + Combustion (Cœur d'ignition) → *Artificier* : chaque explosion rallume des brûlures.
+- **Plasma** : Flamme + 4 Arcane → *Tisseur de plasma* : le feu ignore la défense.
+
+Les effets possibles sont listés dans `PassiveEffect` (`src/engine/types.ts`). Pour un nouveau type d'effet,
+il faut l'ajouter là et lui donner une règle dans `combat.ts`.
 
 ## Ajouter du contenu
 

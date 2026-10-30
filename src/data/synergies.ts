@@ -8,6 +8,40 @@ export const synergies: Synergy[] = [
     description: 'Un mage qui s’entoure de feu voit ses sorts s’embraser.',
     requires: { class: ['mage'], tags: { fire: 2 } },
     modifiers: [pct('intelligence', 25), flat('crit', 5)],
+    passives: ['ignite'],
+  },
+  // Les trois styles du mage de feu
+  {
+    id: 'pyre',
+    name: 'Bûcher',
+    description: 'Style Brûlure : un feu qui ne s’éteint plus.',
+    requires: { passives: ['ignite', 'inner_fire'] },
+    modifiers: [],
+    passives: ['blaze'],
+  },
+  {
+    id: 'pyrotechnician',
+    name: 'Artificier',
+    description: 'Style Explosion : chaque explosion rallume la suivante.',
+    requires: { passives: ['ignite', 'combustion'] },
+    modifiers: [],
+    passives: ['chain_reaction'],
+  },
+  {
+    id: 'plasma_weaver',
+    name: 'Tisseur de plasma',
+    description: 'Style Plasma : un feu si chargé d’arcane qu’il traverse tout.',
+    requires: { passives: ['flame'], tags: { arcane: 4 } },
+    modifiers: [],
+    passives: ['plasma'],
+  },
+  {
+    id: 'eclipse',
+    name: 'Éclipse',
+    description: 'L’ombre et la lumière réunies dans un seul corps.',
+    requires: { tags: { shadow: 3, holy: 3 } },
+    modifiers: [flat('crit', 10)],
+    passives: ['eclipse_power'],
   },
   {
     id: 'arcanist',
@@ -22,6 +56,7 @@ export const synergies: Synergy[] = [
     description: 'Un roublard qui embrasse l’ombre frappe là où ça fait mal.',
     requires: { class: ['rogue'], tags: { shadow: 3 } },
     modifiers: [flat('crit', 15), pct('agility', 10)],
+    passives: ['assassinate'],
   },
   {
     id: 'bulwark',
@@ -50,6 +85,7 @@ export const synergies: Synergy[] = [
     description: 'Un guerrier porté par le sacré.',
     requires: { class: ['warrior'], tags: { holy: 2 } },
     modifiers: [pct('hp', 20), flat('defense', 4)],
+    passives: ['smite'],
   },
   {
     id: 'mountain_breaker',

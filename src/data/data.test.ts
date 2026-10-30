@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { evaluateBuild } from '../engine/build';
+import { simulateCombat } from '../engine/combat';
 import { STAT_KEYS, type Build } from '../engine/types';
 import { gameData } from './index';
 
@@ -82,5 +83,61 @@ describe('builds d’exemple', () => {
       curseIds: ['shadow_mark'],
     });
     expect(ids).toContain('shadow_blade');
+  });
+});
+
+describe('passifs et styles de combat', () => {
+  const fireMage = (trinket: string, curseIds: string[] = [], raceId = 'human') =>
+    evaluateBuild(
+      { raceId, classId: 'mage', equipment: { weapon: 'ember_staff', armor: 'arcane_robe', trinket }, blessingIds: [], curseIds },
+      gameData,
+    );
+  const passiveIds = (r: ReturnType<typeof evaluateBuild>) => r.passives.map((g) => g.passive.id);
+
+  it('a des passifs aux identifiants uniques et tous référencés correctement', () => {
+    const ids = gameData.passives.map((p) => p.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    const refs = [
+      ...sources.flatMap((s) => s.passives ?? []),
+      ...synergies.flatMap((s) => [...(s.passives ?? []), ...(s.requires.passives ?? [])]),
+    ];
+    expect(refs.filter((id) => !ids.includes(id))).toEqual([]);
+  });
+
+  it('Style Brûlure : Âme consumée débloque Bûcher', () => {
+    const r = fireMage('ember_ring', ['consumed_soul']);
+    expect(passiveIds(r)).toEqual(expect.arrayContaining(['flame', 'ignite', 'inner_fire', 'blaze']));
+  });
+
+  it('Style Explosion : Cœur d’ignition débloque Artificier', () => {
+    const r = fireMage('ignition_core');
+    expect(passiveIds(r)).toEqual(expect.arrayContaining(['ignite', 'combustion', 'chain_reaction']));
+  });
+
+  it('Style Plasma : un elfe mage avec bâton et robe atteint 4 Arcane', () => {
+    const r = fireMage('ember_ring', [], 'elf');
+    expect(passiveIds(r)).toContain('plasma');
+  });
+
+  it('Éclipse : 3 Ombre et 3 Sacré', () => {
+    const r = evaluateBuild(
+      {
+        raceId: 'human',
+        classId: 'rogue',
+        equipment: { weapon: 'twin_daggers', trinket: 'holy_pendant' },
+        blessingIds: ['sun_blessing', 'war_god_blessing'],
+        curseIds: ['shadow_mark'],
+      },
+      gameData,
+    );
+    expect(r.errors).toEqual([]);
+    expect(r.activeSynergies.map((s) => s.synergy.id)).toContain('eclipse');
+  });
+
+  it('chaque style de feu fait plus de dégâts que le mage de feu de base', () => {
+    const base = simulateCombat(fireMage('oak_charm'))!.total;
+    for (const r of [fireMage('ember_ring', ['consumed_soul']), fireMage('ignition_core'), fireMage('ember_ring', [], 'elf')]) {
+      expect(simulateCombat(r)!.total).toBeGreaterThan(base);
+    }
   });
 });

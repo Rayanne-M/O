@@ -26,6 +26,14 @@ export const curses: Curse[] = [
     modifiers: [pct('mana', -50), flat('intelligence', -3)],
   },
   {
+    id: 'consumed_soul',
+    name: 'Âme consumée',
+    description: 'Le feu te ronge de l’intérieur, et brûle plus fort que jamais.',
+    tags: ['fire'],
+    modifiers: [pct('hp', -15), pct('mana', -10)],
+    passives: ['inner_fire'],
+  },
+  {
     id: 'fragility',
     name: 'Os de verre',
     description: 'Ton corps encaisse mal les coups, mais il est plus léger.',

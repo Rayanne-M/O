@@ -41,10 +41,49 @@ export interface Source {
   description: string;
   tags: Tag[];
   modifiers: Modifier[];
+  /** Passifs accordés par cet élément (identifiants de src/data/passives.ts). */
+  passives?: string[];
+}
+
+/** Élément d'une attaque. */
+export type Element = 'physical' | 'arcane' | 'fire' | 'shadow' | 'holy';
+
+/**
+ * Un effet de passif. Le combat d'entraînement (combat.ts) sait appliquer chacun d'eux.
+ * - convert : les attaques changent d'élément.
+ * - damageBonus : +X % de dégâts (seulement pour un élément si précisé).
+ * - pierce : ignore X % de la défense de la cible.
+ * - critDamage : +X % de dégâts sur les coups critiques.
+ * - applyBurn : chaque coup pose des charges de brûlure.
+ * - burnBonus : +X % de dégâts de brûlure.
+ * - detonate : à N charges de brûlure, elles explosent d'un coup (X % des dégâts qu'il leur restait).
+ * - afterDetonate : après une explosion, pose de nouvelles charges de brûlure.
+ */
+export type PassiveEffect =
+  | { type: 'convert'; element: Element }
+  | { type: 'damageBonus'; percent: number; element?: Element }
+  | { type: 'pierce'; percent: number; element?: Element }
+  | { type: 'critDamage'; percent: number }
+  | { type: 'applyBurn'; stacks: number; element?: Element }
+  | { type: 'burnBonus'; percent: number }
+  | { type: 'detonate'; threshold: number; percent: number }
+  | { type: 'afterDetonate'; burnStacks: number };
+
+/** Un passif : un effet de jeu qui change la façon de combattre, et pas seulement les stats. */
+export interface Passive {
+  id: string;
+  name: string;
+  description: string;
+  effects: PassiveEffect[];
 }
 
 export type Race = Source;
-export type CharacterClass = Source;
+
+export interface CharacterClass extends Source {
+  /** L'attaque de base : la stat qui fait les dégâts et son élément. */
+  attack: { stat: StatKey; element: Element };
+}
+
 export type Blessing = Source;
 export type Curse = Source;
 
@@ -62,12 +101,14 @@ export interface Equipment extends Source {
  * - race / class : le personnage doit avoir l'une des races / classes listées.
  * - tags : nombre minimum d'éléments du build portant chaque tag (ex. { fire: 2 }).
  * - ids : éléments précis qui doivent être dans le build (objet, bénédiction, malédiction...).
+ * - passives : passifs que le build doit déjà posséder (ils peuvent venir d'autres synergies).
  */
 export interface SynergyCondition {
   race?: string[];
   class?: string[];
   tags?: Record<Tag, number>;
   ids?: string[];
+  passives?: string[];
 }
 
 export interface Synergy {
@@ -76,6 +117,7 @@ export interface Synergy {
   description: string;
   requires: SynergyCondition;
   modifiers: Modifier[];
+  passives?: string[];
 }
 
 /** Ce que le joueur choisit. Ce sont uniquement des identifiants. */
@@ -96,6 +138,7 @@ export interface GameData {
   blessings: Blessing[];
   curses: Curse[];
   synergies: Synergy[];
+  passives: Passive[];
   /** Nom affiché de chaque tag. */
   tagLabels: Record<Tag, string>;
 }

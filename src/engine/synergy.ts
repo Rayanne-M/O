@@ -8,6 +8,8 @@ export interface SynergyContext {
   ids: Set<string>;
   /** Pour chaque tag, le nombre d'éléments du build qui le portent. */
   tagCounts: Map<Tag, number>;
+  /** Passifs déjà possédés. */
+  passives: Set<string>;
 }
 
 export interface SynergyStatus {
@@ -26,7 +28,7 @@ export interface Labels {
 }
 
 export function evaluateSynergy(synergy: Synergy, ctx: SynergyContext, { nameOf, tagOf }: Labels): SynergyStatus {
-  const { race, class: classes, tags, ids } = synergy.requires;
+  const { race, class: classes, tags, ids, passives } = synergy.requires;
   const missing: string[] = [];
   let gap = 0;
 
@@ -48,6 +50,12 @@ export function evaluateSynergy(synergy: Synergy, ctx: SynergyContext, { nameOf,
   for (const id of ids ?? []) {
     if (!ctx.ids.has(id)) {
       missing.push(`Requiert : ${nameOf(id)}`);
+      gap += 1;
+    }
+  }
+  for (const id of passives ?? []) {
+    if (!ctx.passives.has(id)) {
+      missing.push(`Passif : ${nameOf(id)}`);
       gap += 1;
     }
   }

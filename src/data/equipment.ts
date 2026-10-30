@@ -10,6 +10,7 @@ export const equipment: Equipment[] = [
     description: 'Un bâton encore tiède, chargé de magie de feu.',
     tags: ['fire', 'arcane'],
     modifiers: [flat('intelligence', 4), flat('mana', 10)],
+    passives: ['flame'],
     allowedClasses: ['mage'],
   },
   {
@@ -19,6 +20,7 @@ export const equipment: Equipment[] = [
     description: 'Une lame immense qui demande de la force.',
     tags: ['heavy', 'martial'],
     modifiers: [flat('strength', 6), flat('speed', -2)],
+    passives: ['heavy_blows'],
     allowedClasses: ['warrior'],
   },
   {
@@ -27,7 +29,8 @@ export const equipment: Equipment[] = [
     name: 'Dagues jumelles',
     description: 'Deux lames fines, parfaites pour les coups critiques.',
     tags: ['light', 'shadow'],
-    modifiers: [flat('agility', 3), flat('crit', 8)],
+    modifiers: [flat('agility', 4), flat('crit', 8)],
+    passives: ['sharp_blades'],
   },
   {
     id: 'elven_bow',
@@ -70,6 +73,15 @@ export const equipment: Equipment[] = [
     description: 'Une petite flamme danse dans la pierre.',
     tags: ['fire'],
     modifiers: [flat('intelligence', 2), flat('crit', 2)],
+  },
+  {
+    id: 'ignition_core',
+    slot: 'trinket',
+    name: 'Cœur d’ignition',
+    description: 'Une braise instable, prête à éclater.',
+    tags: ['fire'],
+    modifiers: [flat('intelligence', 1)],
+    passives: ['combustion'],
   },
   {
     id: 'blood_amulet',

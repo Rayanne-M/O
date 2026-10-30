@@ -4,7 +4,9 @@ import {
   EQUIPMENT_SLOTS,
   type Build,
   type Equipment,
+  type CharacterClass,
   type GameData,
+  type Passive,
   type Source,
   type SourceKind,
   type Tag,
@@ -26,8 +28,17 @@ export interface BuildResult {
   tagCounts: Map<Tag, number>;
   synergies: SynergyStatus[];
   activeSynergies: SynergyStatus[];
+  /** Passifs obtenus, avec l'élément du build qui les accorde. */
+  passives: PassiveGrant[];
+  /** Attaque de base de la classe (absente si la classe est inconnue). */
+  attack: CharacterClass['attack'] | null;
   /** Problèmes qui rendent le build invalide (objet interdit, trop de bénédictions...). */
   errors: string[];
+}
+
+export interface PassiveGrant {
+  passive: Passive;
+  sourceName: string;
 }
 
 interface ResolvedSource {
@@ -48,7 +59,7 @@ export function evaluateBuild(build: Build, data: GameData): BuildResult {
   };
 
   add(data.races, build.raceId, 'race', 'Race');
-  add(data.classes, build.classId, 'class', 'Classe');
+  const characterClass = add(data.classes, build.classId, 'class', 'Classe');
 
   for (const slot of EQUIPMENT_SLOTS) {
     const id = build.equipment[slot];
@@ -86,10 +97,34 @@ export function evaluateBuild(build: Build, data: GameData): BuildResult {
     classId: build.classId,
     ids: new Set(sources.map((s) => s.source.id)),
     tagCounts,
+    passives: new Set(sources.flatMap((s) => s.source.passives ?? [])),
   };
   const labels = { nameOf: nameLookup(data), tagOf: (tag: Tag) => data.tagLabels[tag] ?? tag };
-  const synergies = data.synergies.map((s) => evaluateSynergy(s, ctx, labels));
+
+  // Une synergie peut accorder un passif qui en active une autre.
+  // On réévalue donc jusqu'à ce que plus rien ne change.
+  let synergies = data.synergies.map((s) => evaluateSynergy(s, ctx, labels));
+  for (;;) {
+    const before = ctx.passives.size;
+    for (const s of synergies) if (s.active) for (const id of s.synergy.passives ?? []) ctx.passives.add(id);
+    if (ctx.passives.size === before) break;
+    synergies = data.synergies.map((s) => evaluateSynergy(s, ctx, labels));
+  }
   const activeSynergies = synergies.filter((s) => s.active);
+
+  const grants = [
+    ...sources.map(({ source }) => ({ name: source.name, ids: source.passives ?? [] })),
+    ...activeSynergies.map(({ synergy }) => ({ name: synergy.name, ids: synergy.passives ?? [] })),
+  ];
+  const passives: PassiveGrant[] = [];
+  for (const { name, ids } of grants) {
+    for (const id of ids) {
+      const passive = data.passives.find((p) => p.id === id);
+      if (!passive) errors.push(`Passif inconnu : ${id}`);
+      // Un même passif obtenu deux fois ne compte qu'une fois.
+      else if (!passives.some((g) => g.passive.id === id)) passives.push({ passive, sourceName: name });
+    }
+  }
 
   const contributions: Contribution[] = [
     ...sources.flatMap(({ source, kind }) => toContributions(source, kind)),
@@ -101,6 +136,8 @@ export function evaluateBuild(build: Build, data: GameData): BuildResult {
     tagCounts,
     synergies,
     activeSynergies,
+    passives,
+    attack: characterClass?.attack ?? null,
     errors,
   };
 }
@@ -110,7 +147,14 @@ function toContributions(source: Pick<Source, 'id' | 'name' | 'modifiers'>, kind
 }
 
 function nameLookup(data: GameData): (id: string) => string {
-  const all: Source[] = [...data.races, ...data.classes, ...data.equipment, ...data.blessings, ...data.curses];
+  const all: { id: string; name: string }[] = [
+    ...data.races,
+    ...data.classes,
+    ...data.equipment,
+    ...data.blessings,
+    ...data.curses,
+    ...data.passives,
+  ];
   const names = new Map(all.map((s) => [s.id, s.name]));
   return (id) => names.get(id) ?? id;
 }

@@ -8,6 +8,7 @@ export const classes: CharacterClass[] = [
     description: 'Maîtrise les arcanes. Beaucoup de mana, peu de vie.',
     tags: ['mage', 'arcane'],
     modifiers: [flat('mana', 30), flat('intelligence', 6), flat('hp', -10)],
+    attack: { stat: 'intelligence', element: 'arcane' },
   },
   {
     id: 'warrior',
@@ -15,12 +16,14 @@ export const classes: CharacterClass[] = [
     description: 'Combattant au corps à corps, solide et puissant.',
     tags: ['warrior', 'martial'],
     modifiers: [flat('hp', 30), flat('strength', 5), flat('defense', 3)],
+    attack: { stat: 'strength', element: 'physical' },
   },
   {
     id: 'rogue',
     name: 'Roublard',
     description: 'Rapide et précis, frappe dans l’ombre.',
     tags: ['rogue', 'shadow'],
-    modifiers: [flat('agility', 6), flat('crit', 10), flat('speed', 3)],
+    modifiers: [flat('agility', 9), flat('crit', 10), flat('speed', 3)],
+    attack: { stat: 'agility', element: 'physical' },
   },
 ];
