@@ -5,24 +5,19 @@ import type { Build, GameData } from './types';
 // Petit jeu de données inventé pour tester le moteur sans dépendre du vrai contenu.
 const data: GameData = {
   baseStats: { hp: 50, mana: 0, strength: 5, agility: 5, intelligence: 5, defense: 0, crit: 0, speed: 10 },
-  races: [{ id: 'r', name: 'Race', description: '', tags: ['fire'], modifiers: [{ stat: 'hp', type: 'flat', value: 10 }] }],
   classes: [
-    { id: 'c', name: 'Classe', description: '', tags: [], modifiers: [], attack: { stat: 'strength', element: 'physical' } },
+    {
+      id: 'c',
+      name: 'Classe',
+      description: '',
+      tags: ['fire'],
+      modifiers: [{ stat: 'hp', type: 'flat', value: 10 }],
+      attack: { stat: 'strength', element: 'physical' },
+    },
     { id: 'c2', name: 'Autre classe', description: '', tags: [], modifiers: [], attack: { stat: 'strength', element: 'physical' } },
   ],
-  equipment: [
-    {
-      id: 'sword',
-      slot: 'weapon',
-      name: 'Épée',
-      description: '',
-      tags: ['fire', 'fire'],
-      modifiers: [{ stat: 'strength', type: 'flat', value: 5 }],
-      allowedClasses: ['c'],
-    },
-  ],
   blessings: [
-    { id: 'b1', name: 'B1', description: '', tags: [], modifiers: [] },
+    { id: 'b1', name: 'B1', description: '', tags: ['fire'], modifiers: [{ stat: 'strength', type: 'flat', value: 5 }] },
     { id: 'b2', name: 'B2', description: '', tags: [], modifiers: [] },
   ],
   curses: [{ id: 'k1', name: 'K1', description: '', tags: ['fire'], modifiers: [], passives: ['p1'] }],
@@ -48,41 +43,41 @@ const data: GameData = {
     { id: 'p1', name: 'P1', description: '', effects: [] },
     { id: 'p2', name: 'P2', description: '', effects: [] },
     { id: 'p3', name: 'P3', description: '', effects: [] },
+    { id: 'spark', name: 'Étincelle', description: '', effects: [], tags: ['fire'] },
   ],
   tagLabels: { fire: 'Feu' },
 };
 
 const build = (overrides: Partial<Build> = {}): Build => ({
-  raceId: 'r',
   classId: 'c',
-  equipment: {},
   blessingIds: [],
   curseIds: [],
+  traitIds: [],
   ...overrides,
 });
 
 describe('evaluateBuild', () => {
   it('additionne les modificateurs de toutes les sources', () => {
-    const result = evaluateBuild(build({ equipment: { weapon: 'sword' } }), data);
+    const result = evaluateBuild(build({ blessingIds: ['b1'] }), data);
     expect(result.stats.hp.total).toBe(60);
     expect(result.stats.strength.total).toBe(10);
     expect(result.errors).toEqual([]);
   });
 
-  it('compte chaque tag une seule fois par élément', () => {
-    const result = evaluateBuild(build({ equipment: { weapon: 'sword' } }), data);
+  it('compte les tags de chaque élément', () => {
+    const result = evaluateBuild(build({ blessingIds: ['b1'] }), data);
     expect(result.tagCounts.get('fire')).toBe(2);
   });
 
   it('active une synergie quand toutes ses conditions sont remplies et applique son bonus', () => {
-    const result = evaluateBuild(build({ equipment: { weapon: 'sword' }, curseIds: ['k1'] }), data);
+    const result = evaluateBuild(build({ blessingIds: ['b1'], curseIds: ['k1'] }), data);
     expect(result.activeSynergies.map((s) => s.synergy.id)).toContain('burn');
     // (5 + 5) × 2 = 20
     expect(result.stats.strength.total).toBe(20);
   });
 
   it('indique ce qui manque pour une synergie inactive', () => {
-    const result = evaluateBuild(build({ equipment: { weapon: 'sword' } }), data);
+    const result = evaluateBuild(build({ blessingIds: ['b1'] }), data);
     const burn = result.synergies.find((s) => s.synergy.id === 'burn')!;
     expect(burn.active).toBe(false);
     expect(burn.missing).toEqual(['Feu : 2/3']);
@@ -90,7 +85,7 @@ describe('evaluateBuild', () => {
   });
 
   it('rassemble les passifs des éléments et des synergies', () => {
-    const result = evaluateBuild(build({ equipment: { weapon: 'sword' }, curseIds: ['k1'] }), data);
+    const result = evaluateBuild(build({ blessingIds: ['b1'], curseIds: ['k1'] }), data);
     expect(result.passives.map((g) => [g.passive.id, g.sourceName])).toEqual([
       ['p1', 'K1'],
       ['p2', 'Brûlure'],
@@ -99,25 +94,27 @@ describe('evaluateBuild', () => {
   });
 
   it('active une synergie qui demande un passif accordé par une autre synergie', () => {
-    const withBurn = evaluateBuild(build({ equipment: { weapon: 'sword' }, curseIds: ['k1'] }), data);
+    const withBurn = evaluateBuild(build({ blessingIds: ['b1'], curseIds: ['k1'] }), data);
     expect(withBurn.activeSynergies.map((s) => s.synergy.id)).toEqual(['burn', 'chain']);
     const without = evaluateBuild(build({ curseIds: ['k1'] }), data);
     expect(without.synergies.find((s) => s.synergy.id === 'chain')!.missing).toEqual(['Passif : P2']);
   });
 
-  it('refuse un objet interdit à la classe', () => {
-    const result = evaluateBuild(build({ classId: 'c2', equipment: { weapon: 'sword' } }), data);
-    expect(result.errors).toContain('Épée ne peut pas être porté par cette classe.');
+  it('un trait donne son passif et compte ses tags', () => {
+    const result = evaluateBuild(build({ blessingIds: ['b1'], traitIds: ['spark'] }), data);
+    expect(result.passives.map((g) => [g.passive.id, g.sourceName])).toContainEqual(['spark', 'Trait']);
+    expect(result.tagCounts.get('fire')).toBe(3);
+    expect(result.activeSynergies.map((s) => s.synergy.id)).toContain('burn');
   });
 
-  it('refuse un objet dans le mauvais emplacement', () => {
-    const result = evaluateBuild(build({ equipment: { armor: 'sword' } }), data);
-    expect(result.errors).toContain('Épée ne va pas dans cet emplacement.');
+  it('un trait peut remplir une condition de passif', () => {
+    const result = evaluateBuild(build({ classId: 'c2', traitIds: ['p1', 'p2'] }), data);
+    expect(result.activeSynergies.map((s) => s.synergy.id)).toEqual(['chain']);
   });
 
   it('signale les identifiants inconnus', () => {
-    const result = evaluateBuild(build({ raceId: 'nope' }), data);
-    expect(result.errors).toContain('Race inconnu(e) : nope');
+    expect(evaluateBuild(build({ classId: 'nope' }), data).errors).toContain('Classe inconnu(e) : nope');
+    expect(evaluateBuild(build({ traitIds: ['nope'] }), data).errors).toContain('Trait inconnu : nope');
   });
 
   it('limite les bénédictions : 1 gratuite, +1 par malédiction', () => {

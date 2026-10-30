@@ -1,5 +1,5 @@
 // Types de base du moteur de build.
-// Tout le contenu du jeu (races, classes, équipements, bénédictions, malédictions)
+// Tout le contenu du jeu (classes, bénédictions, malédictions, passifs, synergies)
 // est décrit avec ces types, dans le dossier src/data.
 
 /** Les statistiques d'un personnage. */
@@ -29,10 +29,10 @@ export interface Modifier {
   value: number;
 }
 
-/** Une étiquette (tag) décrit un thème : "fire", "shadow", "heavy"... Les synergies comptent les tags. */
+/** Une étiquette (tag) décrit un thème : "fire", "shadow", "holy"... Les synergies comptent les tags. */
 export type Tag = string;
 
-export type SourceKind = 'race' | 'class' | 'equipment' | 'blessing' | 'curse' | 'synergy';
+export type SourceKind = 'class' | 'blessing' | 'curse' | 'trait' | 'synergy';
 
 /** Tout ce qui peut faire partie d'un build et apporter des modificateurs et des tags. */
 export interface Source {
@@ -69,15 +69,18 @@ export type PassiveEffect =
   | { type: 'detonate'; threshold: number; percent: number }
   | { type: 'afterDetonate'; burnStacks: number };
 
-/** Un passif : un effet de jeu qui change la façon de combattre, et pas seulement les stats. */
+/**
+ * Un passif : un effet de jeu qui change la façon de combattre, et pas seulement les stats.
+ * Dans l'atelier, chaque passif peut aussi être choisi directement comme « trait ».
+ */
 export interface Passive {
   id: string;
   name: string;
   description: string;
   effects: PassiveEffect[];
+  /** Tags comptés pour les synergies quand le passif est choisi comme trait. */
+  tags?: Tag[];
 }
-
-export type Race = Source;
 
 export interface CharacterClass extends Source {
   /** L'attaque de base : la stat qui fait les dégâts et son élément. */
@@ -87,24 +90,14 @@ export interface CharacterClass extends Source {
 export type Blessing = Source;
 export type Curse = Source;
 
-export const EQUIPMENT_SLOTS = ['weapon', 'armor', 'trinket'] as const;
-export type EquipmentSlot = (typeof EQUIPMENT_SLOTS)[number];
-
-export interface Equipment extends Source {
-  slot: EquipmentSlot;
-  /** Si présent, seules ces classes peuvent porter l'objet. */
-  allowedClasses?: string[];
-}
-
 /**
  * Conditions d'une synergie. Toutes les conditions présentes doivent être remplies.
- * - race / class : le personnage doit avoir l'une des races / classes listées.
+ * - class : le personnage doit avoir l'une des classes listées.
  * - tags : nombre minimum d'éléments du build portant chaque tag (ex. { fire: 2 }).
- * - ids : éléments précis qui doivent être dans le build (objet, bénédiction, malédiction...).
+ * - ids : éléments précis qui doivent être dans le build (bénédiction, malédiction...).
  * - passives : passifs que le build doit déjà posséder (ils peuvent venir d'autres synergies).
  */
 export interface SynergyCondition {
-  race?: string[];
   class?: string[];
   tags?: Record<Tag, number>;
   ids?: string[];
@@ -122,19 +115,17 @@ export interface Synergy {
 
 /** Ce que le joueur choisit. Ce sont uniquement des identifiants. */
 export interface Build {
-  raceId: string;
   classId: string;
-  equipment: Partial<Record<EquipmentSlot, string>>;
   blessingIds: string[];
   curseIds: string[];
+  /** Passifs choisis directement, pour tester des idées avant de les attribuer à quelque chose. */
+  traitIds: string[];
 }
 
 /** Tout le contenu du jeu, regroupé. */
 export interface GameData {
   baseStats: Stats;
-  races: Race[];
   classes: CharacterClass[];
-  equipment: Equipment[];
   blessings: Blessing[];
   curses: Curse[];
   synergies: Synergy[];

@@ -5,7 +5,7 @@ import type { Modifier, Stats } from './types';
 const base: Stats = { hp: 100, mana: 10, strength: 10, agility: 0, intelligence: 0, defense: 10, crit: 50, speed: 0 };
 
 const from = (...modifiers: Modifier[]): Contribution[] =>
-  modifiers.map((modifier, i) => ({ sourceId: `s${i}`, sourceName: `Source ${i}`, kind: 'equipment', modifier }));
+  modifiers.map((modifier, i) => ({ sourceId: `s${i}`, sourceName: `Source ${i}`, kind: 'blessing', modifier }));
 
 describe('computeStats', () => {
   it('garde les stats de base sans modificateur', () => {

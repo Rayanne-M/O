@@ -1,9 +1,7 @@
 import { computeStats, type Contribution, type StatBreakdown } from './stats';
 import { evaluateSynergy, type SynergyContext, type SynergyStatus } from './synergy';
 import {
-  EQUIPMENT_SLOTS,
   type Build,
-  type Equipment,
   type CharacterClass,
   type GameData,
   type Passive,
@@ -32,7 +30,7 @@ export interface BuildResult {
   passives: PassiveGrant[];
   /** Attaque de base de la classe (absente si la classe est inconnue). */
   attack: CharacterClass['attack'] | null;
-  /** Problèmes qui rendent le build invalide (objet interdit, trop de bénédictions...). */
+  /** Problèmes qui rendent le build invalide (trop de bénédictions, identifiant inconnu...). */
   errors: string[];
 }
 
@@ -58,22 +56,20 @@ export function evaluateBuild(build: Build, data: GameData): BuildResult {
     return found;
   };
 
-  add(data.races, build.raceId, 'race', 'Race');
   const characterClass = add(data.classes, build.classId, 'class', 'Classe');
-
-  for (const slot of EQUIPMENT_SLOTS) {
-    const id = build.equipment[slot];
-    if (!id) continue;
-    const item = add<Equipment>(data.equipment, id, 'equipment', 'Équipement');
-    if (!item) continue;
-    if (item.slot !== slot) errors.push(`${item.name} ne va pas dans cet emplacement.`);
-    if (item.allowedClasses && !item.allowedClasses.includes(build.classId)) {
-      errors.push(`${item.name} ne peut pas être porté par cette classe.`);
-    }
-  }
-
   for (const id of unique(build.blessingIds)) add(data.blessings, id, 'blessing', 'Bénédiction');
   for (const id of unique(build.curseIds)) add(data.curses, id, 'curse', 'Malédiction');
+
+  // Un trait est un passif choisi directement : il apporte ce passif et ses tags.
+  for (const id of unique(build.traitIds)) {
+    const passive = data.passives.find((p) => p.id === id);
+    if (!passive) {
+      errors.push(`Trait inconnu : ${id}`);
+      continue;
+    }
+    const { name, description, tags = [] } = passive;
+    sources.push({ source: { id, name, description, tags, modifiers: [], passives: [id] }, kind: 'trait' });
+  }
 
   const curseCount = unique(build.curseIds).length;
   const blessingCount = unique(build.blessingIds).length;
@@ -93,7 +89,6 @@ export function evaluateBuild(build: Build, data: GameData): BuildResult {
   }
 
   const ctx: SynergyContext = {
-    raceId: build.raceId,
     classId: build.classId,
     ids: new Set(sources.map((s) => s.source.id)),
     tagCounts,
@@ -113,7 +108,7 @@ export function evaluateBuild(build: Build, data: GameData): BuildResult {
   const activeSynergies = synergies.filter((s) => s.active);
 
   const grants = [
-    ...sources.map(({ source }) => ({ name: source.name, ids: source.passives ?? [] })),
+    ...sources.map(({ source, kind }) => ({ name: kind === 'trait' ? 'Trait' : source.name, ids: source.passives ?? [] })),
     ...activeSynergies.map(({ synergy }) => ({ name: synergy.name, ids: synergy.passives ?? [] })),
   ];
   const passives: PassiveGrant[] = [];
@@ -148,9 +143,7 @@ function toContributions(source: Pick<Source, 'id' | 'name' | 'modifiers'>, kind
 
 function nameLookup(data: GameData): (id: string) => string {
   const all: { id: string; name: string }[] = [
-    ...data.races,
     ...data.classes,
-    ...data.equipment,
     ...data.blessings,
     ...data.curses,
     ...data.passives,

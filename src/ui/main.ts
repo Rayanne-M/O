@@ -1,21 +1,12 @@
-// Interface : elle lit les choix du joueur, demande au moteur de calculer le build,
+// Interface : elle lit les choix, demande au moteur de calculer le build,
 // puis affiche le résultat. Aucune règle de jeu n'est écrite ici.
+// L'atelier sert au développement et à l'équilibrage : tout est accessible librement.
 import './style.css';
-import { STAT_LABELS, gameData, tagLabels } from '../data';
+import { STAT_DESCRIPTIONS, STAT_LABELS, gameData, tagLabels } from '../data';
 import { maxBlessings, MAX_CURSES, evaluateBuild, type BuildResult } from '../engine/build';
 import { DEFAULT_COMBAT, simulateCombat, type DamageKind } from '../engine/combat';
-import {
-  EQUIPMENT_SLOTS,
-  STAT_KEYS,
-  type Build,
-  type Element,
-  type EquipmentSlot,
-  type Modifier,
-  type Source,
-  type Synergy,
-} from '../engine/types';
+import { STAT_KEYS, type Build, type Element, type Modifier, type Source, type Synergy } from '../engine/types';
 
-const SLOT_LABELS: Record<EquipmentSlot, string> = { weapon: 'Arme', armor: 'Armure', trinket: 'Bijou' };
 const ELEMENT_LABELS: Record<Element, string> = {
   physical: 'physique',
   arcane: 'arcane',
@@ -30,17 +21,21 @@ const DAMAGE_LABELS: Record<DamageKind, string> = {
   explosion: 'Explosions',
 };
 
-const build: Build = {
-  raceId: gameData.races[0].id,
+const emptyBuild = (): Build => ({
   classId: gameData.classes[0].id,
-  equipment: {},
   blessingIds: [],
   curseIds: [],
-};
+  traitIds: [],
+});
+
+let build = emptyBuild();
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
 app.innerHTML = `
-  <header><h1>Atelier de personnage</h1><p>Combine race, classe, équipement, bénédictions et malédictions pour déclencher des synergies.</p></header>
+  <header>
+    <h1>Atelier de personnage</h1>
+    <p>Outil de développement et d’équilibrage : combine classe, bénédictions, malédictions et traits, puis compare les résultats.</p>
+  </header>
   <main>
     <section class="panel" id="choices"></section>
     <section class="panel" id="result"></section>
@@ -50,30 +45,52 @@ const choicesEl = app.querySelector<HTMLElement>('#choices')!;
 const resultEl = app.querySelector<HTMLElement>('#result')!;
 
 function render(): void {
-  renderChoices();
-  renderResult();
+  const result = evaluateBuild(build, gameData);
+  renderChoices(result);
+  renderResult(result);
 }
 
-function renderChoices(): void {
+function renderChoices(result: BuildResult): void {
   const curses = build.curseIds.length;
+  // Passifs déjà obtenus autrement que par un trait (classe, malédiction, synergie...).
+  const grantedElsewhere = new Map(
+    result.passives.filter((g) => g.sourceName !== 'Trait').map((g) => [g.passive.id, g.sourceName]),
+  );
   choicesEl.innerHTML = `
-    <h2>Race</h2>${radioGroup('race', gameData.races, build.raceId)}
-    <h2>Classe</h2>${radioGroup('class', gameData.classes, build.classId)}
-    <h2>Équipement</h2>
-    ${EQUIPMENT_SLOTS.map((slot) => slotSelect(slot)).join('')}
+    <div class="panel-head">
+      <h2>Classe</h2>
+      <button type="button" id="reset">Réinitialiser</button>
+    </div>
+    ${radioGroup('class', gameData.classes, build.classId)}
     <h2>Bénédictions <small>${build.blessingIds.length}/${maxBlessings(curses)}</small></h2>
     <p class="hint">1 bénédiction gratuite, +1 pour chaque malédiction acceptée.</p>
     ${checkboxGroup('blessing', gameData.blessings, build.blessingIds)}
     <h2>Malédictions <small>${curses}/${MAX_CURSES}</small></h2>
     ${checkboxGroup('curse', gameData.curses, build.curseIds)}
+    <h2>Traits <small>${build.traitIds.length}/${gameData.passives.length}</small></h2>
+    <p class="hint">Tous les passifs du jeu, à cocher librement pour tester une idée avant de l’attribuer à une classe, une compétence, une bénédiction ou une malédiction.</p>
+    <div class="options">${gameData.passives
+      .map((p) => {
+        const via = grantedElsewhere.get(p.id);
+        return `<label class="option" for="trait-${p.id}">
+          <input type="checkbox" id="trait-${p.id}" name="trait" value="${p.id}" ${build.traitIds.includes(p.id) ? 'checked' : ''} />
+          <span class="option-body">
+            <strong>✦ ${p.name}</strong>
+            <span class="tags">${tagChips(p.tags ?? [])}</span>
+            ${via ? `<span class="granted">déjà obtenu via ${via}</span>` : ''}
+            <span class="desc">${p.description}</span>
+          </span>
+        </label>`;
+      })
+      .join('')}</div>
   `;
 }
 
 function radioGroup(name: string, list: Source[], selected: string): string {
   return `<div class="options">${list
     .map(
-      (s) => `<label class="option" title="${s.description}">
-        <input type="radio" name="${name}" value="${s.id}" ${s.id === selected ? 'checked' : ''} />
+      (s) => `<label class="option" for="${name}-${s.id}" title="${s.description}">
+        <input type="radio" id="${name}-${s.id}" name="${name}" value="${s.id}" ${s.id === selected ? 'checked' : ''} />
         ${optionBody(s)}
       </label>`,
     )
@@ -83,28 +100,12 @@ function radioGroup(name: string, list: Source[], selected: string): string {
 function checkboxGroup(name: string, list: Source[], selected: string[]): string {
   return `<div class="options">${list
     .map(
-      (s) => `<label class="option" title="${s.description}">
-        <input type="checkbox" name="${name}" value="${s.id}" ${selected.includes(s.id) ? 'checked' : ''} />
+      (s) => `<label class="option" for="${name}-${s.id}" title="${s.description}">
+        <input type="checkbox" id="${name}-${s.id}" name="${name}" value="${s.id}" ${selected.includes(s.id) ? 'checked' : ''} />
         ${optionBody(s)}
       </label>`,
     )
     .join('')}</div>`;
-}
-
-function slotSelect(slot: EquipmentSlot): string {
-  const items = gameData.equipment.filter((e) => e.slot === slot);
-  const current = build.equipment[slot] ?? '';
-  const options = items
-    .map((e) => {
-      const forbidden = e.allowedClasses && !e.allowedClasses.includes(build.classId);
-      return `<option value="${e.id}" ${e.id === current ? 'selected' : ''} ${forbidden ? 'disabled' : ''}>
-        ${e.name} — ${e.modifiers.map(formatModifier).join(', ')} ${tagChips(e.tags, true)}${(e.passives ?? []).map((id) => ` ✦ ${passiveName(id)}`).join('')}
-      </option>`;
-    })
-    .join('');
-  return `<label class="slot">${SLOT_LABELS[slot]}
-    <select data-slot="${slot}"><option value="">— aucun —</option>${options}</select>
-  </label>`;
 }
 
 function optionBody(s: Source): string {
@@ -120,8 +121,7 @@ function passiveName(id: string): string {
   return gameData.passives.find((p) => p.id === id)?.name ?? id;
 }
 
-function tagChips(tags: string[], plain = false): string {
-  if (plain) return tags.length ? `[${tags.map((t) => tagLabels[t] ?? t).join(', ')}]` : '';
+function tagChips(tags: string[]): string {
   return tags.map((t) => `<span class="tag">${tagLabels[t] ?? t}</span>`).join('');
 }
 
@@ -130,8 +130,7 @@ function formatModifier(m: Modifier): string {
   return m.type === 'flat' ? `${sign}${m.value} ${STAT_LABELS[m.stat]}` : `${sign}${m.value} % ${STAT_LABELS[m.stat]}`;
 }
 
-function renderResult(): void {
-  const result = evaluateBuild(build, gameData);
+function renderResult(result: BuildResult): void {
   const inactive = result.synergies.filter((s) => !s.active).sort((a, b) => a.gap - b.gap);
   // « Presque » : il suffit d'ajouter ou de changer un seul élément.
   const near = inactive.filter((s) => s.gap === 1);
@@ -143,14 +142,14 @@ function renderResult(): void {
       ${STAT_KEYS.map((key) => {
         const d = result.stats[key];
         const details = [`Base : ${d.base}`, ...d.contributions.map((c) => `${c.sourceName} : ${formatModifier(c.modifier)}`)];
-        return `<tr title="${details.join('\n')}">
-          <th>${STAT_LABELS[key]}</th>
-          <td class="total">${d.total}</td>
-          <td class="calc">${formatCalc(d.base, d.flat, d.percent)}</td>
+        return `<tr>
+          <th><span class="stat-name" tabindex="0" data-tip="${STAT_DESCRIPTIONS[key]}">${STAT_LABELS[key]}</span></th>
+          <td class="total" title="${details.join('\n')}">${d.total}</td>
+          <td class="calc" title="${details.join('\n')}">${formatCalc(d.base, d.flat, d.percent)}</td>
         </tr>`;
       }).join('')}
     </table>
-    <p class="hint">Survole une stat pour voir d’où vient chaque point.</p>
+    <p class="hint">Survole le nom d’une stat pour savoir à quoi elle sert, et sa valeur pour voir d’où vient chaque point.</p>
     <h2>Tags du build</h2>
     <div class="tags">${[...result.tagCounts]
       .sort((a, b) => b[1] - a[1])
@@ -165,7 +164,7 @@ function renderResult(): void {
       ${inactive.filter((s) => s.gap > 1).map(({ synergy, missing }) => synergyCard(synergy, missing, false)).join('')}
     </details>
     <h2>Passifs (${result.passives.length})</h2>
-    ${result.passives.length ? result.passives.map(({ passive, sourceName }) => `<div class="passive"><strong>✦ ${passive.name}</strong> <span class="mods">via ${sourceName}</span><p>${passive.description}</p></div>`).join('') : '<p class="hint">Aucun passif. Les objets, malédictions et synergies peuvent en donner.</p>'}
+    ${result.passives.length ? result.passives.map(({ passive, sourceName }) => `<div class="passive"><strong>✦ ${passive.name}</strong> <span class="mods">via ${sourceName}</span><p>${passive.description}</p></div>`).join('') : '<p class="hint">Aucun passif. Coche un trait, ou active une synergie qui en donne.</p>'}
     ${combatSection(result)}
   `;
 }
@@ -215,26 +214,22 @@ function formatCalc(base: number, flat: number, percent: number): string {
 
 // Un seul écouteur pour tous les champs : on met à jour le build puis on réaffiche.
 choicesEl.addEventListener('change', (event) => {
-  const input = event.target as HTMLInputElement | HTMLSelectElement;
-  if (input instanceof HTMLSelectElement) {
-    const slot = input.dataset.slot as EquipmentSlot;
-    if (input.value) build.equipment[slot] = input.value;
-    else delete build.equipment[slot];
-  } else if (input.name === 'race') {
-    build.raceId = input.value;
-  } else if (input.name === 'class') {
+  const input = event.target as HTMLInputElement;
+  if (input.name === 'class') {
     build.classId = input.value;
-    // Retire les objets que la nouvelle classe ne peut pas porter.
-    for (const slot of EQUIPMENT_SLOTS) {
-      const item = gameData.equipment.find((e) => e.id === build.equipment[slot]);
-      if (item?.allowedClasses && !item.allowedClasses.includes(build.classId)) delete build.equipment[slot];
-    }
-  } else if (input.name === 'blessing' || input.name === 'curse') {
-    const list = input.name === 'blessing' ? build.blessingIds : build.curseIds;
-    const checked = (input as HTMLInputElement).checked;
-    if (checked) list.push(input.value);
+  } else {
+    const lists: Record<string, string[]> = { blessing: build.blessingIds, curse: build.curseIds, trait: build.traitIds };
+    const list = lists[input.name];
+    if (!list) return;
+    if (input.checked) list.push(input.value);
     else list.splice(list.indexOf(input.value), 1);
   }
+  render();
+});
+
+choicesEl.addEventListener('click', (event) => {
+  if ((event.target as HTMLElement).id !== 'reset') return;
+  build = emptyBuild();
   render();
 });
 

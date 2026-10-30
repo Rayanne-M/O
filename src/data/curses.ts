@@ -37,7 +37,7 @@ export const curses: Curse[] = [
     id: 'fragility',
     name: 'Os de verre',
     description: 'Ton corps encaisse mal les coups, mais il est plus léger.',
-    tags: ['light'],
+    tags: [],
     modifiers: [pct('defense', -40), flat('speed', 2)],
   },
 ];

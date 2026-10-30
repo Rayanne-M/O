@@ -1,7 +1,10 @@
 # RPG de build
 
 Un RPG jouable dans le navigateur, centré sur la construction de personnage :
-race, classe, équipement, bénédictions et malédictions se combinent pour déclencher des **synergies**.
+classe, bénédictions, malédictions et passifs se combinent pour déclencher des **synergies**.
+
+Pour l'instant, le projet contient l'**atelier de personnage** : un outil de développement et d'équilibrage
+où tout est accessible librement, pour tester des combinaisons et comparer leurs dégâts.
 
 ## Lancer le projet
 
@@ -19,7 +22,7 @@ npm run build    # vérifie les types et prépare une version à publier dans di
 ```
 src/
   engine/   Le moteur : les règles du jeu, sans aucun affichage.
-  data/     Le contenu : races, classes, objets, bénédictions, malédictions, synergies.
+  data/     Le contenu : classes, bénédictions, malédictions, passifs, synergies.
   ui/       L'interface : affiche les choix et le résultat calculé par le moteur.
 ```
 
@@ -37,46 +40,54 @@ Les trois parties sont séparées volontairement :
   Chaque point garde la trace de sa provenance, pour l'afficher au survol.
 - `synergy.ts` : vérifie si une synergie est active, et sinon ce qui manque.
 - `build.ts` : assemble le tout à partir des choix du joueur, et vérifie les règles
-  (objet réservé à une classe, nombre de bénédictions...). Rassemble aussi les passifs.
+  (nombre de bénédictions, identifiants inconnus...). Rassemble aussi les passifs.
 - `combat.ts` : un combat d'entraînement de 10 tours contre un mannequin, sans hasard,
   pour mesurer ce que les passifs apportent vraiment.
 
 ### Les règles actuelles
 
-- Un personnage a 1 race, 1 classe, et jusqu'à 3 objets (arme, armure, bijou).
+- Un personnage a 1 classe (Mage, Guerrier ou Roublard).
 - **1 bénédiction gratuite**, plus 1 pour chaque malédiction acceptée (3 malédictions max).
   Les malédictions sont donc un choix : un défaut contre une bénédiction de plus et parfois une synergie.
-- Chaque élément porte des **tags** (Feu, Ombre, Sacré, Lourd...). Une synergie s'active quand
-  le build réunit assez d'éléments d'un tag, ou une combinaison précise (ex. Nain + Espadon).
+- Chaque élément porte des **tags** (Feu, Ombre, Sacré...). Une synergie s'active quand le build
+  réunit assez d'éléments d'un tag, un élément précis ou des passifs précis.
+- Races et objets ont été retirés pour l'instant ; les objets reviendront plus tard.
 
-### Les passifs
+### Les passifs et les traits
 
 Un passif change la façon de combattre, pas seulement les stats : Flamme rend les attaques de feu,
 Brûlure pose des charges qui font des dégâts sur la durée, Combustion les fait exploser à 3 charges...
-Les passifs viennent des objets, des malédictions et des synergies (champ `passives`),
+Les passifs viennent des classes, bénédictions, malédictions et synergies (champ `passives`),
 et une synergie peut **demander des passifs** (`requires: { passives: [...] }`). C'est ce qui crée
-des styles de combat. Par exemple pour le mage de feu :
+des styles de combat.
+
+Dans l'atelier, **tous les passifs sont aussi des traits** à cocher librement. C'est l'endroit où
+noter une idée de passif (dans `src/data/passives.ts`) et la tester avant de décider qui l'accorde
+dans le jeu : une classe, une compétence, une bénédiction ou une malédiction. Un passif peut avoir
+des `tags`, qui comptent pour les synergies quand il est coché comme trait.
+
+Les styles du mage de feu, par exemple (Flamme + Bénédiction solaire activent *Pyromancien*, qui donne Brûlure) :
 
 - **Brûlure** : Brûlure + Feu intérieur (malédiction Âme consumée) → *Bûcher* : 2 charges par coup.
-- **Explosion** : Brûlure + Combustion (Cœur d'ignition) → *Artificier* : chaque explosion rallume des brûlures.
-- **Plasma** : Flamme + 4 Arcane → *Tisseur de plasma* : le feu ignore la défense.
+- **Explosion** : Brûlure + Combustion → *Artificier* : chaque explosion rallume des brûlures.
+- **Plasma** : Flamme + Surcharge arcanique → *Tisseur de plasma* : le feu ignore la défense.
+
+Et **Éclipse** demande 3 Ombre et 3 Sacré.
 
 Les effets possibles sont listés dans `PassiveEffect` (`src/engine/types.ts`). Pour un nouveau type d'effet,
 il faut l'ajouter là et lui donner une règle dans `combat.ts`.
 
 ## Ajouter du contenu
 
-**Un objet** : ajoute une entrée dans `src/data/equipment.ts`.
+**Un passif** : ajoute une entrée dans `src/data/passives.ts`. Il apparaît aussitôt dans les traits de l'atelier.
 
 ```ts
 {
-  id: 'frost_staff',              // identifiant unique, sans espace
-  slot: 'weapon',                 // 'weapon', 'armor' ou 'trinket'
-  name: 'Bâton de givre',
-  description: 'Glacial au toucher.',
-  tags: ['ice', 'arcane'],
-  modifiers: [flat('intelligence', 4), pct('mana', 10)],  // +4 intelligence, +10 % mana
-  allowedClasses: ['mage'],       // optionnel
+  id: 'frostbite',                // identifiant unique, sans espace
+  name: 'Gelure',
+  description: 'Les attaques infligent +10 % de dégâts.',
+  tags: ['ice'],                  // optionnel
+  effects: [{ type: 'damageBonus', percent: 10 }],
 },
 ```
 
@@ -90,11 +101,12 @@ Un nouveau tag (ici `ice`) doit aussi recevoir un nom dans `src/data/tags.ts`. L
   name: 'Cryomancien',
   description: 'Le froid obéit au mage.',
   requires: { class: ['mage'], tags: { ice: 2 } },   // conditions, toutes obligatoires
-  modifiers: [pct('intelligence', 20)],
+  modifiers: [pct('intelligence', 20)],             // bonus de stats
+  passives: ['frostbite'],                          // passifs accordés (optionnel)
 },
 ```
 
-Les conditions possibles : `race`, `class`, `tags` (nombre minimum par tag) et `ids` (éléments précis).
+Les conditions possibles : `class`, `tags` (nombre minimum par tag), `ids` (éléments précis) et `passives`.
 
 Lance `npm test` après chaque ajout : les tests de `src/data/data.test.ts` vérifient que le contenu est cohérent
-(identifiants uniques, tags nommés, synergies qui pointent vers des éléments existants).
+(identifiants uniques, tags nommés, synergies et passifs qui pointent vers des éléments existants).
