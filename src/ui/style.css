@@ -1,0 +1,177 @@
+:root {
+  --bg: #15131a;
+  --panel: #1f1c26;
+  --border: #34303f;
+  --text: #ece8f3;
+  --muted: #9a93a8;
+  --accent: #d9a441;
+  --good: #6fcf8f;
+  --bad: #e2726b;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  padding: 16px;
+}
+
+header h1 {
+  margin: 0;
+  color: var(--accent);
+}
+
+header p,
+.hint {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  max-width: 1200px;
+}
+
+@media (max-width: 800px) {
+  main {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+}
+
+h2 {
+  font-size: 1.05rem;
+  margin: 20px 0 8px;
+}
+
+h2:first-child {
+  margin-top: 0;
+}
+
+h2 small {
+  color: var(--muted);
+  font-weight: normal;
+}
+
+.options {
+  display: grid;
+  gap: 6px;
+}
+
+.option {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.option:has(input:checked) {
+  border-color: var(--accent);
+}
+
+.option-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  align-items: center;
+}
+
+.mods {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.tags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.tag {
+  font-size: 0.75rem;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: #34303f;
+}
+
+.slot {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+select {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px;
+  max-width: 100%;
+}
+
+.stats {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.stats th,
+.stats td {
+  text-align: left;
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.stats .total {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.stats .calc {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.synergy {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px;
+  margin-bottom: 6px;
+}
+
+.synergy.active {
+  border-color: var(--good);
+}
+
+.synergy p {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+}
+
+.missing {
+  color: var(--accent);
+}
+
+.errors {
+  border: 1px solid var(--bad);
+  color: var(--bad);
+  border-radius: 6px;
+  padding: 4px 8px;
+  margin-bottom: 12px;
+}
+
+details summary {
+  cursor: pointer;
+  margin: 16px 0 8px;
+}

@@ -1,0 +1,75 @@
+import type { Synergy } from '../engine/types';
+import { flat, pct } from './helpers';
+
+export const synergies: Synergy[] = [
+  {
+    id: 'pyromancer',
+    name: 'Pyromancien',
+    description: 'Un mage qui s’entoure de feu voit ses sorts s’embraser.',
+    requires: { class: ['mage'], tags: { fire: 2 } },
+    modifiers: [pct('intelligence', 25), flat('crit', 5)],
+  },
+  {
+    id: 'arcanist',
+    name: 'Arcaniste',
+    description: 'Les arcanes s’accumulent en toi.',
+    requires: { tags: { arcane: 3 } },
+    modifiers: [pct('mana', 30), flat('intelligence', 3)],
+  },
+  {
+    id: 'shadow_blade',
+    name: 'Lame de l’ombre',
+    description: 'Un roublard qui embrasse l’ombre frappe là où ça fait mal.',
+    requires: { class: ['rogue'], tags: { shadow: 3 } },
+    modifiers: [flat('crit', 15), pct('agility', 10)],
+  },
+  {
+    id: 'bulwark',
+    name: 'Rempart',
+    description: 'Couvert d’acier de la tête aux pieds.',
+    requires: { tags: { heavy: 2 } },
+    modifiers: [pct('defense', 50)],
+  },
+  {
+    id: 'blood_frenzy',
+    name: 'Frénésie sanguinaire',
+    description: 'Le sang appelle le sang.',
+    requires: { tags: { blood: 2 } },
+    modifiers: [pct('strength', 25), flat('crit', 5)],
+  },
+  {
+    id: 'child_of_the_forest',
+    name: 'Enfant de la forêt',
+    description: 'Un elfe en harmonie avec la nature.',
+    requires: { race: ['elf'], tags: { nature: 3 } },
+    modifiers: [pct('agility', 20), flat('speed', 3)],
+  },
+  {
+    id: 'paladin',
+    name: 'Paladin',
+    description: 'Un guerrier porté par le sacré.',
+    requires: { class: ['warrior'], tags: { holy: 2 } },
+    modifiers: [pct('hp', 20), flat('defense', 4)],
+  },
+  {
+    id: 'mountain_breaker',
+    name: 'Brise-montagne',
+    description: 'Un nain avec un espadon, la montagne n’a qu’à bien se tenir.',
+    requires: { race: ['dwarf'], ids: ['greatsword'] },
+    modifiers: [flat('strength', 4), flat('defense', 2)],
+  },
+  {
+    id: 'silent_warrior',
+    name: 'Guerrier ascète',
+    description: 'En renonçant à la magie, le guerrier se concentre sur son corps.',
+    requires: { class: ['warrior'], ids: ['silence'] },
+    modifiers: [pct('strength', 20), pct('hp', 15)],
+  },
+  {
+    id: 'glass_cannon',
+    name: 'Canon de verre',
+    description: 'Tant pis pour la défense, tout est dans la vitesse.',
+    requires: { tags: { light: 3 } },
+    modifiers: [pct('speed', 25), flat('crit', 5)],
+  },
+];
