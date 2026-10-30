@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bestiaire</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&display=swap" />
+  </head>
+  <body>
+    <main class="wrap">
+      <header>
+        <p class="eyebrow">Bestiaire · section adolescent</p>
+        <h1>Giorgio</h1>
+        <p class="lead" id="title"></p>
+      </header>
+      <section>
+        <h2>Portrait de dialogue</h2>
+        <div class="row">
+          <figure><canvas id="p-neutre" width="64" height="64"></canvas><figcaption>Neutre</figcaption></figure>
+          <figure><canvas id="p-affame" width="64" height="64"></canvas><figcaption>Affamé</figcaption></figure>
+          <figure><canvas id="p-parle" width="64" height="64"></canvas><figcaption>Il parle</figcaption></figure>
+        </div>
+      </section>
+      <section>
+        <h2>Sur la carte</h2>
+        <p>24 × 34 comme le héros adulte. Repos, puis marche en 4 images, dans les 8 directions.</p>
+        <div class="row" id="dirs"></div>
+      </section>
+      <section>
+        <h2>Le voyage en arc-en-ciel</h2>
+        <canvas id="travel" class="wide" width="160" height="90"></canvas>
+      </section>
+      <section>
+        <h2>Le chaudron</h2>
+        <p>Il montre ce que celui qui regarde désire le plus. Giorgio y voit des pâtes, et ne peut jamais les manger.</p>
+        <div class="row">
+          <figure><canvas id="c-pates" width="40" height="44"></canvas><figcaption>Pour Giorgio</figcaption></figure>
+          <figure><canvas id="c-reflet" width="40" height="44"></canvas><figcaption>Le reflet se forme</figcaption></figure>
+          <figure><canvas id="c-or" width="40" height="44"></canvas><figcaption>Pour un cupide</figcaption></figure>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="/src/bestiaire/main.ts"></script>
+  </body>
+</html>

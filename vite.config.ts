@@ -5,7 +5,7 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   base: './',
   build: {
-    rollupOptions: { input: { atelier: 'index.html', village: 'village.html' } },
+    rollupOptions: { input: { atelier: 'index.html', village: 'village.html', bestiaire: 'bestiaire.html' } },
     // Phaser pèse à lui seul environ 1,2 Mo
     chunkSizeWarningLimit: 1500,
   },

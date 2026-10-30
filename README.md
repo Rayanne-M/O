@@ -8,7 +8,8 @@ Le projet contient deux pages :
 - l'**atelier de personnage** (`index.html`) : un outil de développement et d'équilibrage
   où tout est accessible librement, pour tester des combinaisons et comparer leurs dégâts ;
 - la **tranche jouable de l'enfance** (`village.html`) : le village natal en vue de dessus, trois jours
-  et trois nuits, la fenêtre de la chambre et la nuit au puits. Voir [plus bas](#la-tranche-jouable-de-lenfance).
+  et trois nuits, la fenêtre de la chambre et la nuit au puits. Voir [plus bas](#la-tranche-jouable-de-lenfance) ;
+- le **bestiaire** (`bestiaire.html`) : les entités dessinées et animées. Voir [plus bas](#le-bestiaire).
 
 ## Lancer le projet
 
@@ -152,3 +153,19 @@ Ce qui reste provisoire :
 - le combat contre l'Esprit est résolu sans mini-jeu : avec les ciseaux, on gagne si sa force est de 6 ou moins,
   avec un bâton, de 3 ou moins ;
 - la pousse des cheveux n'est pas encore visible sur le héros.
+
+## Le bestiaire
+
+`bestiaire.html` montre les entités déjà dessinées, animées, avec le même code de dessin que le jeu.
+Le dessin de chaque entité vit dans `src/bestiaire/`.
+
+**Giorgio** (`src/bestiaire/giorgio.ts`), section adolescent : le gardien du pied de l'arc-en-ciel.
+Il garde un chaudron qui montre à chacun ce qu'il désire le plus ; lui y voit des pâtes,
+et comme on ne mange pas un reflet, il a toujours faim.
+
+- `giorgioFrames(dir)` : repos + 4 images de marche, 24 × 34, dans les 8 directions. Le corps et la marche
+  sont ceux du héros adulte de la planche ; seules la tête et les couleurs changent.
+- `drawPortrait(ctx, 'neutre' | 'affame', ouverture)` : le portrait de dialogue 64 × 64.
+- `drawRainbowTravel(ctx, ms)` : il invoque un arc-en-ciel, glisse dessus et retombe de l'autre côté.
+- `drawCauldron(ctx, x, y, ms, 'pates' | 'or' | 'reflet')` : le chaudron, selon le désir de celui qui regarde.
+
