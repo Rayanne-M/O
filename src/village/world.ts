@@ -50,6 +50,8 @@ export class World extends Phaser.Scene {
   private candleLit = true;
   private well: { tex: Phaser.Textures.CanvasTexture; img: Phaser.GameObjects.Image; spill: number } | null = null;
   private cutscene = false;
+  /** Le héros vient de buter contre la porte de la chambre : on ne la retente qu'après s'en être éloigné. */
+  private doorBumped = false;
   private keys!: Record<string, Phaser.Input.Keyboard.Key>;
   /** Direction donnée par le joystick tactile. */
   stick = { x: 0, y: 0 };
@@ -586,6 +588,15 @@ export class World extends Phaser.Scene {
     this.hero.setDepth(this.hero.y);
     this.shadow.setPosition(Math.round(this.hero.x), Math.round(this.hero.y) - 1).setDepth(this.hero.y - 0.5);
 
+    // Comme dans Pokémon : marcher vers le bas sur le paillasson fait sortir de la chambre.
+    if (this.place === 'bedroom') {
+      const door = BEDROOM.spots.door, onMat = this.hero.x >= door.x && this.hero.x < door.x + door.w && this.hero.y >= door.y + 4;
+      if (!onMat) this.doorBumped = false;
+      else if (free && dy > 0 && !this.doorBumped) {
+        this.doorBumped = true;
+        void this.cut(async () => { await this.onSpot('door'); });
+      }
+    }
     if (!free || this.place !== 'village') return;
     const s = this.scene_;
     if (s && s.at !== 'maison' && !s.talkOnly && inRect(this.hero.x, this.hero.y, PLACES[s.at as keyof typeof PLACES].zone)) void this.runScene();

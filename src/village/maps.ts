@@ -160,10 +160,15 @@ function drawBedroom(ctx: CanvasRenderingContext2D, night: boolean) {
   px(ctx, R.rugD, 161, 121, 62, 30);
   px(ctx, R.rug, 163, 123, 58, 26);
   for (let k = 166; k < 220; k += 6) px(ctx, R.rugL, k, 135, 3, 2);
-  // porte (ouverture dans le mur du bas)
-  px(ctx, '#0b0a10', 176, y + h, 32, 4);
-  px(ctx, R.trimD, 174, y + h - 2, 2, 6);
-  px(ctx, R.trimD, 208, y + h - 2, 2, 6);
+  // porte (ouverture dans le mur du bas, avec le palier et un paillasson pour qu'on la voie)
+  px(ctx, o, 172, y + h - 2, 40, 16);
+  px(ctx, R.floorL, 176, y + h, 32, 12);
+  px(ctx, R.line, 176, y + h + 5, 32, 1);
+  px(ctx, R.trim, 174, y + h - 2, 2, 14);
+  px(ctx, R.trim, 208, y + h - 2, 2, 14);
+  px(ctx, R.rugD, 180, y + h - 10, 24, 9);
+  px(ctx, R.rugL, 181, y + h - 9, 22, 7);
+  for (let k = 183; k < 202; k += 3) px(ctx, R.rugD, k, y + h - 7, 1, 3);
 }
 
 /** Le lit et le coffre sont des objets à part, pour passer devant ou derrière le héros. */
