@@ -6,7 +6,7 @@
 import * as A from '../../art/shared.js';
 import type { Game } from '../../engine/game';
 import { Handlers } from '../../engine/handlers';
-import type { Dir, Drawable, MapObject } from '../../engine/maps';
+import { openArea, type Dir, type Drawable, type MapObject } from '../../engine/maps';
 import type { Actor } from '../../engine/actors';
 import { applyEffects, count, has, hasItem, state } from '../../engine/state';
 import { ui } from '../../engine/ui';
@@ -705,16 +705,11 @@ async function throwBall(g: Game, to: Actor) {
 }
 
 /** Ouvre (ou referme) l'eau d'une zone de la carte, pour s'y baigner. */
-const savedGrids = new Map<string, boolean[][]>();
+const closeWater = new Map<string, () => void>();
 function openWater(g: Game, map: string, zone: string, open: boolean) {
-  const m = g.maps[map], z = m.zones[zone];
-  if (!open) {
-    if (savedGrids.has(map)) m.grid = savedGrids.get(map)!;
-    return;
-  }
-  savedGrids.set(map, m.grid.map((r) => [...r]));
-  for (let y = Math.floor(z.y / T); y < Math.ceil((z.y + z.h) / T); y++)
-    for (let x = Math.floor(z.x / T); x < Math.ceil((z.x + z.w) / T); x++) if (m.grid[y]) m.grid[y][x] = false;
+  closeWater.get(map)?.();
+  closeWater.delete(map);
+  if (open) closeWater.set(map, openArea(g.maps[map], g.maps[map].zones[zone]));
 }
 
 async function day2River(g: Game) {

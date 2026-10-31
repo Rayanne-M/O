@@ -2,7 +2,7 @@
 // déplace le héros, gère les portes, et offre aux chapitres une petite boîte à outils (dire, choisir,
 // marcher, montrer un gros plan…). Le contenu de l'histoire vit dans src/game/chapters/.
 import Phaser from 'phaser';
-import { active, blocked, entersExit, inRect, nearestFree, type Dir, type Drawable, type GameMap, type MapObject, type Rect } from './maps';
+import { active, blocked, blockedBy, entersExit, inRect, nearestFree, reachOf, sortLine, sortThings, type PlacedObject, type Dir, type Drawable, type GameMap, type Rect } from './maps';
 import { drawActor, dirOf, makeActor, vec, type Actor, type Look } from './actors';
 import { applyEffects, has, state, type Effects } from './state';
 import { ui, wait } from './ui';
@@ -252,7 +252,7 @@ export class Game extends Phaser.Scene {
   }
 
   /** Les objets d'une carte présents en ce moment (when, variantes, objets cachés non montrés). */
-  objectsHere(map = this.map): (MapObject & { px: Rect })[] {
+  objectsHere(map = this.map): PlacedObject[] {
     const shown = this.chapter.mapOptions?.(this, map.id).state ?? {};
     return map.objects.filter((o) => active(o.when, this.now(), has) && (!o.hidden || (shown[o.id] as { shown?: boolean })?.shown));
   }
@@ -292,7 +292,7 @@ export class Game extends Phaser.Scene {
     const npc = near.sort((a, b) => Math.hypot(a.x - p.x, a.y - 4 - p.y) - Math.hypot(b.x - p.x, b.y - 4 - p.y))[0];
     const targets: Target[] = [];
     if (npc && Math.hypot(npc.x - p.x, npc.y - 4 - p.y) < 14) targets.push({ kind: 'actor', id: npc.id, map: here });
-    for (const o of this.objectsHere()) if (inRect(p.x, p.y, grow(o.px, 2))) targets.push({ kind: 'object', id: o.id, map: here });
+    for (const o of this.objectsHere()) if (inRect(p.x, p.y, reachOf(this.map, o))) targets.push({ kind: 'object', id: o.id, map: here });
     for (const [z, r] of Object.entries(this.map.zones)) if (inRect(p.x, p.y, r) || inRect(this.hero.x, this.hero.y, r)) targets.push({ kind: 'zone', id: z, map: here });
     for (const e of this.exitsHere()) if (inRect(p.x, p.y, grow(e.px, 4))) targets.push({ kind: 'exit', id: e.id, map: here });
     await this.cut(async () => {
@@ -350,9 +350,22 @@ export class Game extends Phaser.Scene {
     }
     const step = (h.speed * (h.wading ? 0.6 : 1) * delta) / 1000 / Math.hypot(dx, dy);
     const nx = h.x + dx * step, ny = h.y + dy * step;
-    const hit = (x: number, y: number) => blocked(this.map, x, y) || this.actorAt(x, y);
+    const solids = this.objectsHere();
+    const hit = (x: number, y: number) => blocked(this.map, x, y) || blockedBy(solids, x, y) || this.actorAt(x, y);
+    const ox = h.x, oy = h.y;
     if (!hit(nx, h.y)) h.x = nx;
     if (!hit(h.x, ny)) h.y = ny;
+    // contre un coin : si quelques pixels à côté le passage est libre, on glisse vers lui au lieu de rester coincé
+    if (h.x === ox && h.y === oy && (!dx || !dy)) slide: for (let k = 1; k <= CORNER_PX; k++)
+      for (const side of [-1, 1]) {
+        const sx = dx ? 0 : side, sy = dy ? 0 : side;
+        if (hit(h.x + sx * k + dx * step, h.y + sy * k + dy * step)) continue;
+        const m = Math.min(step, k);
+        if (hit(h.x + sx * m, h.y + sy * m)) continue;
+        h.x += sx * m;
+        h.y += sy * m;
+        break slide;
+      }
     h.dir = dirOf(dx, dy);
     h.moving = true;
     const exit = this.exitsHere().find((e) => entersExit(h.x, h.y, dx, dy, e.px));
@@ -429,7 +442,11 @@ export class Game extends Phaser.Scene {
       ctx.rect(0, 0, m.w, m.h);
       ctx.clip();
     }
-    const actors: Drawable[] = [...this.cast.values()].filter((a) => a.map === m.id && a.visible).map((a) => ({ y: a.y, draw: (c) => drawActor(c, a, t) }));
+    // un personnage est caché par un objet seulement s'il est derrière lui (voir sortLine)
+    const things = sortThings(m, this.objectsHere());
+    const actors: Drawable[] = [...this.cast.values()]
+      .filter((a) => a.map === m.id && a.visible)
+      .map((a) => ({ y: sortLine(a.x, a.y, things), draw: (c) => drawActor(c, a, t) }));
     actors.push(...(this.chapter.decor?.(this, m.id, t) ?? []));
     const o = this.chapter.mapOptions?.(this, m.id) ?? {};
     const flags = Object.fromEntries([...state.flags].map((f) => [f, true]));
@@ -438,6 +455,9 @@ export class Game extends Phaser.Scene {
     ctx.restore();
   }
 }
+
+/** Jusqu'où on cherche un passage à côté quand on bute contre un coin. */
+const CORNER_PX = 6;
 
 const grow = (r: Rect, k: number): Rect => ({ x: r.x - k, y: r.y - k, w: r.w + 2 * k, h: r.h + 2 * k });
 const centerOf = (r: Rect) => ({ x: r.x + r.w / 2, y: r.y + r.h / 2, dir: 'S' as Dir });

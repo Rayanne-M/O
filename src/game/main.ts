@@ -17,7 +17,8 @@ new Phaser.Game({
   scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
   scene: game,
 });
-if (import.meta.env.DEV) void import('./engine/state').then((m) => Object.assign(window, { game, gameState: () => m.state }));
+if (import.meta.env.DEV)
+  void Promise.all([import('./engine/state'), import('./engine/maps')]).then(([m, maps]) => Object.assign(window, { game, gameState: () => m.state, maps }));
 
 // Contrôles tactiles : un joystick à gauche, le bouton A à droite.
 const stick = document.getElementById('stick')!;

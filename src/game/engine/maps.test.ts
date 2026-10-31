@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { active, blocked, entersExit, flagsOk, loadMap, nearestFree, type MapFile } from './maps';
+import { active, auditMap, blocked, entersExit, flagsOk, loadMap, nearestFree, sortLine, type MapFile } from './maps';
 
 // Toutes les cartes du jeu, telles que le jeu les charge : chaque nouvelle carte est vérifiée sans rien ajouter ici.
 const files = Object.fromEntries(
@@ -10,6 +10,11 @@ const index = files['index.json'] as { start: { map: string; at: string }; maps:
 const maps = Object.fromEntries(
   Object.entries(index.maps).map(([id, e]) => [id, loadMap(JSON.parse(JSON.stringify(files[e.file])) as MapFile, () => {})]),
 );
+
+// Défauts connus des cartes, signalés au fil des cartes : à retirer d'ici quand ils sont corrigés.
+const KNOWN: Record<string, string[]> = {
+  barbier: ['portrait'], // caché derrière le client assis : pas la place de passer entre lui et le fauteuil
+};
 
 describe('les cartes', () => {
   it('chaque fichier du dossier est dans l\'index', () => {
@@ -34,6 +39,9 @@ describe('les cartes', () => {
         expect(ok, e.id).toBe(true);
       }
     });
+    it('depuis les arrivées, on atteint chaque sortie et chaque objet à examiner', () => {
+      expect(auditMap(m)).toEqual({ exits: [], objects: KNOWN[id] ?? [] });
+    });
     it('on ne naît jamais dans un mur (au pire, une case à côté)', () => {
       for (const [s, p] of Object.entries(m.spawns)) {
         const q = nearestFree(m, p.x, p.y);
@@ -51,6 +59,17 @@ describe('les portes', () => {
     expect(entersExit(106, 65, 0, 1, door)).toBe(false); // dos à la porte
     expect(entersExit(94, 65, 0, -1, door)).toBe(false); // à côté
     expect(entersExit(106, 64, 1, 0, door)).toBe(false); // la longe
+  });
+});
+
+describe('le tri devant / derrière', () => {
+  const bed = { x: 0, w: 35, top: 30, bottom: 77 };
+  it('à côté du lit, on passe devant', () => expect(sortLine(41, 60, [bed])).toBeGreaterThan(77));
+  it('au-dessus du lit, on passe derrière', () => expect(sortLine(20, 25, [bed])).toBeLessThan(77));
+  it('en dessous, devant', () => expect(sortLine(20, 90, [bed])).toBeGreaterThan(77));
+  it('jamais devant une armoire qu\'on a devant soi', () => {
+    const chest = { x: 36, w: 20, top: 66, bottom: 74 };
+    expect(sortLine(41, 60, [bed, chest])).toBeLessThan(74);
   });
 });
 
