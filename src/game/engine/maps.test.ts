@@ -3,7 +3,7 @@ import { active, auditMap, blocked, entersExit, flagsOk, loadMap, nearestFree, s
 
 // Toutes les cartes du jeu, telles que le jeu les charge : chaque nouvelle carte est vérifiée sans rien ajouter ici.
 const files = Object.fromEntries(
-  Object.entries(import.meta.glob('../data/maps/*.json', { eager: true, import: 'default' })).map(([k, v]) => [k.split('/').pop()!, v]),
+  Object.entries(import.meta.glob('../../../rpg/data/maps/*.json', { eager: true, import: 'default' })).map(([k, v]) => [k.split('/').pop()!, v]),
 );
 const index = files['index.json'] as { start: { map: string; at: string }; maps: Record<string, { file: string }> };
 // une copie, comme le jeu

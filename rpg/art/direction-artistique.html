@@ -1,0 +1,1513 @@
+<title>Direction artistique du RPG</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout : une colonne de lecture, des "planches" de sprites en grille qui se replient sur mobile */
+:root {
+  --bg: #eef1ec; --panel: #ffffff; --ink: #1f2430; --muted: #5d6573; --line: #d5dad2;
+  --accent: #b4691f; --accent-soft: #f6e7d3; --stage: #dfe5dc;
+  --f-display: "Pixelify Sans", "Courier New", monospace;
+  --f-body: "Atkinson Hyperlegible", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #15171d; --panel: #1e2129; --ink: #e9e6df; --muted: #9ba2ae; --line: #2f3440;
+  --accent: #e2a04f; --accent-soft: #3a2c1c; --stage: #252933; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #15171d; --panel: #1e2129; --ink: #e9e6df; --muted: #9ba2ae; --line: #2f3440;
+  --accent: #e2a04f; --accent-soft: #3a2c1c; --stage: #252933; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 32px 64px; }
+.wrap { max-width: 960px; margin: 0 auto; display: grid; gap: 40px; }
+h1, h2, h3 { font-family: var(--f-display); font-weight: 700; text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(2rem, 5vw, 3rem); }
+h2 { font-size: 1.6rem; }
+h3 { font-size: 1.1rem; }
+p { margin: 0; max-width: 65ch; }
+.lead { color: var(--muted); font-size: 1.05rem; }
+.eyebrow { font-family: var(--f-display); text-transform: uppercase; letter-spacing: .08em; font-size: .8rem; color: var(--accent); }
+section { display: grid; gap: 16px; }
+canvas { image-rendering: pixelated; image-rendering: crisp-edges; display: block; }
+.stage { background: var(--stage); border-radius: 6px; padding: 16px; display: grid; gap: 12px; }
+.scene { width: 100%; max-width: 960px; aspect-ratio: 16 / 9; height: auto; border-radius: 4px; }
+.caption { font-size: .85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+button.pal { font: inherit; font-family: var(--f-display); font-size: .95rem; padding: 8px 14px; border-radius: 4px; border: 2px solid var(--line);
+  background: var(--panel); color: var(--ink); cursor: pointer; }
+button.pal[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+button.pal:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.sprites { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
+.sprite { background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 12px; display: grid; gap: 8px; justify-items: center; text-align: center; }
+.sprite canvas { width: 120px; height: 168px; object-fit: contain; }
+.sprite b { font-family: var(--f-display); font-weight: 500; font-size: .95rem; }
+.sprite span { font-size: .8rem; color: var(--muted); line-height: 1.3; }
+.swatches { display: flex; flex-wrap: wrap; gap: 3px; }
+.swatches i { width: 22px; height: 22px; border-radius: 2px; display: block; box-shadow: inset 0 0 0 1px rgba(0,0,0,.15); }
+.palrow { display: grid; gap: 6px; }
+.palrow p { font-size: .9rem; color: var(--muted); }
+.choices { display: grid; gap: 14px; }
+.choice { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 18px; display: grid; gap: 10px; }
+.choice h3 { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.choice h3 small { font-family: var(--f-body); font-weight: 400; font-size: .85rem; color: var(--muted); }
+.opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.opt { border: 1px dashed var(--line); border-radius: 4px; padding: 10px 12px; font-size: .92rem; min-width: 0; }
+.opt.reco { border: 2px solid var(--accent); background: var(--accent-soft); }
+.opt strong { display: block; font-family: var(--f-display); font-weight: 500; font-size: 1rem; }
+.opt .tag { font-family: var(--f-display); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.sizes { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.sizes figure { margin: 0; display: grid; gap: 6px; }
+.sizes canvas { width: 100%; height: auto; border-radius: 3px; }
+code { font-size: .88em; background: var(--stage); padding: 1px 5px; border-radius: 3px; }
+ol.flow { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; max-width: 70ch; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+.lab { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 720px) { .lab { grid-template-columns: 1fr; } }
+.lab-stage canvas { width: 100%; height: auto; }
+.lab-controls { display: grid; gap: 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 16px; }
+.ctl { display: grid; gap: 6px; font-size: .95rem; border: 0; margin: 0; padding: 0; min-width: 0; }
+.ctl > label, .ctl > span, .ctl legend { font-family: var(--f-display); font-weight: 500; display: flex; justify-content: space-between; gap: 8px; padding: 0; }
+.ctl output { font-family: var(--f-body); color: var(--accent); font-variant-numeric: tabular-nums; }
+.ctl input[type=range] { width: 100%; accent-color: var(--accent); }
+.ctl select { font: inherit; padding: 6px 8px; border-radius: 4px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+fieldset.ctl label { display: flex; justify-content: flex-start; gap: 8px; align-items: center; font-family: var(--f-body); font-weight: 400; }
+button.small { justify-self: start; font: inherit; font-size: .85rem; padding: 4px 10px; border-radius: 4px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.ctl label.check { display: flex; justify-content: flex-start; gap: 8px; align-items: center; font-family: var(--f-body); font-weight: 400; }
+.spirit-row { display: grid; grid-template-columns: minmax(0, 200px) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 640px) { .spirit-row { grid-template-columns: 1fr; } }
+.spirit-row .sprite canvas { width: 160px; height: 160px; }
+.cine canvas { width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 4px; }
+.cine .caption { min-height: 2.6em; }
+.horror { min-width: 0; }
+.horror canvas { box-sizing: border-box; width: 100%; height: auto; aspect-ratio: 4 / 3; border-radius: 4px; background: #000; }
+[hidden] { display: none !important; }
+.veil { box-sizing: border-box; width: 100%; aspect-ratio: 4 / 3; max-width: 100%; display: grid; place-content: center; gap: 12px; text-align: center; background: #07060a; color: #c9c2d6; border-radius: 4px; padding: 16px; }
+.veil .small { justify-self: center; }
+.talk { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: center; background: #07060a; color: #e6e0ee; border: 3px solid #3a3450; border-radius: 6px; padding: 14px; }
+.talk canvas { width: 160px; height: 160px; border: 2px solid #3a3450; background: #000; }
+@media (max-width: 480px) { .talk { grid-template-columns: 1fr; } }
+.talk-name { font-family: var(--f-display); color: #b8a8d8; letter-spacing: .08em; }
+.talk-body p { font-family: var(--f-display); font-size: 1.25rem; min-height: 3em; margin-top: 6px; }
+.field-wrap { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: center; }
+@media (max-width: 560px) { .field-wrap { grid-template-columns: 1fr; justify-items: center; } }
+#field { width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 4px; outline-offset: 3px; }
+#field:focus-visible { outline: 3px solid var(--accent); }
+.pad { display: grid; grid-template-areas: ". u ." "l . r" ". d ."; gap: 4px; }
+.pad button { width: 44px; height: 44px; font-size: 1rem; border-radius: 6px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; touch-action: none; }
+</style>
+
+<div class="wrap">
+  <header style="display:grid;gap:12px">
+    <span class="eyebrow">RPG · atelier graphisme · version 2</span>
+    <h1>Direction artistique</h1>
+    <p class="lead">Vue de dessus dans l'esprit des RPG sur DS comme Pokémon Platine, avec un héros plus grand et plus détaillé. On suit le personnage depuis l'enfance, et ses choix laissent des traces sur son corps. Tout est dessiné pour le jeu : rien n'est repris d'un jeu existant.</p>
+  </header>
+
+  <section>
+    <div class="stage">
+      <canvas id="scene" class="scene" width="384" height="216" aria-label="Scène d'exemple en 384 par 216 pixels : un village de naissance"></canvas>
+      <p class="caption">Le village natal à la vraie résolution du jeu : 384 × 216 pixels, tuiles de 16 px. Le héros adulte mesure 24 × 34 px, l'enfant 24 × 27 px. Agrandi ×5, cela donne exactement 1920 × 1080.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Le héros, de l'enfance aux conséquences</h2>
+    <p>Le personnage est plus grand qu'avant (24 × 34 au lieu de 16 × 24) : visage, écharpe, sacoche et bottes se lisent. Chaque variante ci-dessous part du même dessin : une cicatrice, une malédiction ou une bénédiction s'ajoutent par-dessus ou changent ses couleurs.</p>
+    <div class="sprites">
+      <div class="sprite"><canvas id="sp-child" width="28" height="38"></canvas><b>Enfant</b><span>Tête plus grosse, corps plus court</span></div>
+      <div class="sprite"><canvas id="sp-idle" width="28" height="38"></canvas><b>Adulte</b><span>Repos, 2 images</span></div>
+      <div class="sprite"><canvas id="sp-walk" width="28" height="38"></canvas><b>Marche</b><span>4 images, vue de face</span></div>
+      <div class="sprite"><canvas id="sp-scar" width="28" height="38"></canvas><b>Cicatrice</b><span>Un combat perdu laisse une marque</span></div>
+      <div class="sprite"><canvas id="sp-curse" width="28" height="38"></canvas><b>Maudit</b><span>Yeux luisants, veines, teint pâle</span></div>
+      <div class="sprite"><canvas id="sp-bless" width="28" height="38"></canvas><b>Béni</b><span>Cheveux blanchis, vêtements clairs</span></div>
+    </div>
+  </section>
+
+
+
+  <section>
+    <h2>Le héros dans les 8 directions</h2>
+    <p>De dos, de profil et de trois quarts, pour se déplacer aussi en diagonale. Toutes les vues partagent la coupe de face : même casque de cheveux, mêmes épis sur le dessus, même frange en pointes. En diagonale, il garde exactement la tête de face. Les jambes ont le même écartement dans toutes les vues. Les directions vers la gauche sont le miroir de celles vers la droite.</p>
+    <div class="stage"><canvas id="dirs" width="232" height="40" style="width:100%;height:auto" aria-label="Le héros qui marche dans les 8 directions"></canvas>
+      <p class="caption">Dans l'ordre : nord, nord-est, est, sud-est, sud, sud-ouest, ouest, nord-ouest. Chaque direction a sa marche en 4 images.</p></div>
+    <div class="field-wrap">
+      <canvas id="field" width="160" height="90" tabindex="0" aria-label="Terrain d'essai : clique puis utilise les flèches, ZQSD ou WASD"></canvas>
+      <div class="pad" aria-label="Croix directionnelle">
+        <button type="button" data-pad="arrowup" style="grid-area:u" aria-label="Haut">▲</button>
+        <button type="button" data-pad="arrowleft" style="grid-area:l" aria-label="Gauche">◀</button>
+        <button type="button" data-pad="arrowright" style="grid-area:r" aria-label="Droite">▶</button>
+        <button type="button" data-pad="arrowdown" style="grid-area:d" aria-label="Bas">▼</button>
+      </div>
+    </div>
+    <p class="caption">Le héros se promène tout seul. Clique sur le terrain puis utilise les flèches, ZQSD ou WASD (deux touches à la fois pour les diagonales), ou la croix sur mobile.</p>
+  </section>
+
+  <section>
+    <h2>Un décor vivant</h2>
+    <p>Pour donner une vraie patte au monde, chaque élément bouge un peu. Le ruisseau coule, avec ses reflets, son écume, ses pierres de gué et ses nénuphars. Les herbes et les roseaux ondulent sous une rafale de vent qui traverse l'écran, et les arbres sont faits de touffes de feuillage qui se balancent doucement.</p>
+    <div class="stage"><canvas id="nature" width="384" height="216" style="width:100%;height:auto;image-rendering:pixelated" aria-label="Clairière animée avec un ruisseau, des arbres, des oiseaux et des papillons"></canvas>
+      <p class="caption">À guetter : les oiseaux qui se posent sur l'arbre de droite puis s'envolent, le poisson qui saute, la libellule au-dessus de l'eau, les papillons, les feuilles qui tombent, le pollen et l'ombre des nuages.</p></div>
+  </section>
+  <section>
+    <h2>Le labo d'apparence</h2>
+    <p>Un seul dessin, et des réglages continus. Le jeu calcule l'apparence à partir de l'état du personnage : rien n'est dessiné à la main pour chaque niveau. Joue avec les curseurs.</p>
+    <div class="lab">
+      <div class="stage lab-stage"><canvas id="lab" width="96" height="60" aria-label="Aperçu du héros, au repos et en marche"></canvas></div>
+      <div class="lab-controls">
+        <label class="ctl" for="age"><span>Âge</span>
+          <select id="age"><option value="adult">Adulte</option><option value="child">Enfant</option></select></label>
+        <div class="ctl"><label for="hair">Depuis le dernier coiffeur <output id="hair-v"></output></label>
+          <input type="range" id="hair" min="0" max="365" value="55">
+          <button type="button" id="barber" class="small">Aller chez le coiffeur</button></div>
+        <div class="ctl"><span>Pacte de l'Esprit capillaire <output id="pact-v"></output></span>
+          <label class="check"><input type="checkbox" id="pact"> Pacte conclu</label>
+          <label class="check"><input type="checkbox" id="combat"> En combat (les cheveux s'animent)</label></div>
+        <label class="ctl" for="faith"><span>Allégeance</span>
+          <select id="faith"><option value="divin">Un dieu de lumière</option><option value="sombre">Un diable ou dieu sombre</option><option value="paien">Un esprit des légendes</option><option value="athee">Athée, refuse tout</option><option value="aucune">Personne pour l'instant</option></select></label>
+        <div class="ctl"><label for="renown">Renommée <output id="renown-v"></output></label><input type="range" id="renown" min="0" max="100" value="60"></div>
+        <div class="ctl"><label for="regard">Ce que les gens pensent <output id="regard-v"></output></label><input type="range" id="regard" min="-100" max="100" value="60">
+          <span class="caption" style="display:flex;justify-content:space-between"><span>craint</span><span>aimé</span></span></div>
+        <div class="ctl"><label for="bless">Bénédiction (marques sur le corps) <output id="bless-v"></output></label><input type="range" id="bless" min="0" max="100" value="0"></div>
+        <div class="ctl"><label for="curse">Malédiction (marques sur le corps) <output id="curse-v"></output></label><input type="range" id="curse" min="0" max="100" value="0"></div>
+        <fieldset class="ctl"><legend>Tenue (selon l'équipement)</legend>
+          <label><input type="radio" name="outfit" id="o-tunique" value="tunique" checked> Tunique de voyage</label>
+          <label><input type="radio" name="outfit" id="o-mage" value="mage"> Robe de mage</label>
+          <label><input type="radio" name="outfit" id="o-guerrier" value="guerrier"> Armure de guerrier</label>
+          <label><input type="radio" name="outfit" id="o-voleur" value="voleur"> Cape de voleur</label>
+        </fieldset>
+      </div>
+    </div>
+    <div class="opts">
+      <div class="opt"><strong>Cheveux</strong>La longueur se calcule à partir des jours sans coiffeur : la frange s'allonge, puis des mèches descendent. Chez l'adulte, la barbe pousse aussi. Une visite chez le coiffeur remet le compteur à zéro.</div>
+      <div class="opt"><strong>L'aura vient des croyances</strong>Elle dépend de trois choses : à qui le héros a prêté allégeance, combien on parle de lui (renommée), et ce que les gens pensent de lui. Un même pacte donne une lumière chaude s'il est aimé, froide et dure s'il est craint. Un athée n'a pas d'aura : la magie grésille et s'éteint autour de lui.</div>
+      <div class="opt"><strong>Bénédictions et malédictions</strong>Elles marquent le corps plutôt que l'aura : couleurs qui glissent vers l'or ou le violet, veines qui apparaissent une à une, yeux luisants. Les deux peuvent coexister.</div>
+      <div class="opt"><strong>Tenues</strong>Chaque pièce d'équipement est une couche qui remplace une partie du corps (torse, jambes, tête). Il suffit de dessiner chaque tenue une fois par direction.</div>
+    </div>
+  </section>
+
+
+  <section>
+    <h2>L'Esprit capillaire de la rancoeur</h2>
+    <p>Pour l'instant, on ne voit jamais l'esprit : seulement ses cheveux, beaucoup trop de cheveux, qui débordent du puits et rampent sur le sol comme des racines.</p>
+    <div class="spirit-row">
+      <div class="sprite"><canvas id="spirit" width="64" height="64" aria-label="Le puits, avec ses cheveux qui débordent"></canvas><b>Le puits</b><span>Seau, manivelle, et une mèche qui tâte le sol</span></div>
+      <div class="stage cine">
+        <canvas id="cine" width="128" height="72" aria-label="Mini cinématique : les cheveux traînent l'ami par le pied jusque dans le puits"></canvas>
+        <p class="caption" id="cine-cap" aria-live="polite"></p>
+        <button type="button" class="small" id="cine-replay">Revoir depuis le début</button>
+      </div>
+    </div>
+    <p class="caption">11 secondes en boucle, d'après ton schéma : les cheveux sortent du champ, attrapent l'ami par le pied, le traînent jusqu'au puits, puis le soulèvent en arc et l'y précipitent. La manivelle tourne pendant qu'il est tiré.</p>
+  </section>
+
+  <section>
+    <h2>Au fond du puits</h2>
+    <p>Le héros se penche et regarde au fond. D'abord tout est noir, puis ses yeux s'habituent : les parois d'abord, puis ce qui l'attend en bas. La tête de son ami, prise dans une touffe de cheveux tentaculaire : les cheveux entrent par l'oreille et ressortent par les orbites vides et le nez. Les deux yeux ont été emportés dans les cheveux. L'esprit lui-même reste invisible.</p>
+    <div class="stage horror">
+      <canvas id="horror" width="160" height="120" aria-label="Vue plongeante au fond du puits, image gore" hidden></canvas>
+      <div id="horror-veil" class="veil"><p>Image gore : sang, cheveux qui traversent le visage d'un enfant.</p><button type="button" class="small" id="horror-show">Regarder au fond du puits</button></div>
+      <button type="button" class="small" id="horror-again" hidden>Revoir l'arrivée de la vision</button>
+    </div>
+    <h3>L'esprit parle à travers lui</h3>
+    <p>Pour les dialogues, l'esprit se sert du visage de l'enfant comme d'une marionnette : des cheveux descendent des orbites jusque dans la bouche et tirent la mâchoire, pendant que les autres mèches ondulent. L'animation boucle et suit le texte qui s'écrit.</p>
+    <div class="talk" id="talk-box" hidden>
+      <canvas id="talk" width="64" height="64" aria-label="Portrait animé de l'enfant possédé"></canvas>
+      <div class="talk-body"><span class="talk-name">???</span><p id="talk-text" aria-live="off"></p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Avant et après</h2>
+    <p>La première proposition à gauche, celle-ci à droite, à la même échelle.</p>
+    <div class="stage" style="justify-items:center"><canvas id="compare" width="64" height="40" style="width:min(100%,384px);height:auto"></canvas></div>
+  </section>
+
+  <section>
+    <h2>Les nouveaux réglages</h2>
+    <div class="opts">
+      <div class="opt reco"><span class="tag">Écran</span><strong>384 × 216</strong>Un peu plus large que la DS pour du 16:9. Net en 1080p (×5) et en 4K (×10).</div>
+      <div class="opt reco"><span class="tag">Décor</span><strong>Tuiles de 16 px</strong>Arbres, maisons et rochers sur plusieurs tuiles (arbre 48 × 64, maison 72 × 64), comme dans les RPG sur DS.</div>
+      <div class="opt reco"><span class="tag">Héros</span><strong>24 × 34 px</strong>Environ 16 % de la hauteur de l'écran : bien visible, avec la place pour les détails d'équipement et de physique.</div>
+      <div class="opt reco"><span class="tag">Animation</span><strong>4 directions</strong>Repos 2 images, marche 4, et plus tard attaque et sorts. Environ 8 images par seconde.</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Outils et intégration au jeu</h2>
+    <div class="opts">
+      <div class="opt reco"><span class="tag">Dessin et animation</span><strong>Aseprite</strong>L'outil de référence pour le pixel art (environ 20 €). Calques, animation, et export d'une planche PNG + fichier JSON que le jeu lit directement. Gratuit : LibreSprite ou Piskel dans le navigateur.</div>
+      <div class="opt reco"><span class="tag">Cartes</span><strong>Tiled</strong>Gratuit. On peint les cartes avec les tuiles, puis on exporte en JSON.</div>
+      <div class="opt reco"><span class="tag">Affichage</span><strong>Phaser 3 + HTML pour les menus</strong>Phaser gère sprites, animations, cartes Tiled et caméra. Les écrans de build restent en HTML/CSS par-dessus.</div>
+    </div>
+  </section>
+</div>
+
+<script>
+const PERSONNAGES = {"heros":{"nom":"Toi","enfant":true,"portrait":"heros","palette":"CHILD_PAL","note":"sprite choisi par le jeu selon la coupe : heros_long, heros_pointes, heros_court"},"mere":{"nom":"Mère","sprite":"mere","portrait":"mere","enfant":false,"cheveux":0.45,"tenue":"mage","palette":"mere"},"elio":{"nom":"Élio","sprite":"elio","portrait":"elio","enfant":true,"cheveux":0.9,"palette":"elio"},"elio_rase":{"nom":"Élio","variante_de":"elio","sprite":"elio_rase","portrait":"elio_rase","enfant":true,"cheveux":0,"palette":"elio"},"elio_capuche":{"nom":"Élio","variante_de":"elio","sprite":"elio_capuche","portrait":"elio_capuche","enfant":true,"cheveux":0,"palette":"elio_capuche"},"margot":{"nom":"Margot","sprite":"margot","portrait":"margot","enfant":true,"cheveux":0.75,"palette":"margot"},"basile":{"nom":"Basile","sprite":"basile","portrait":"basile","enfant":true,"cheveux":0.15,"palette":"basile"},"fauvel":{"nom":"Maître Fauvel","sprite":"fauvel","portrait":"fauvel","enfant":false,"cheveux":0.2,"palette":"fauvel"},"aubin":{"nom":"Aubin","sprite":"aubin","portrait":"aubin","enfant":false,"cheveux":1,"palette":"aubin"},"ysol":{"nom":"Grand-mère Ysol","sprite":"ysol","portrait":"ysol","enfant":false,"cheveux":0.3,"palette":"ysol"},"mere_basile":{"nom":"La mère de Basile","sprite":"mere_basile","enfant":false,"cheveux":0.4,"palette":"mere_basile"},"enfant_a":{"nom":"Un enfant","sprite":"enfant1","enfant":true,"cheveux":0.3,"palette":"enfant_a"},"enfant_b":{"nom":"Une enfant","sprite":"enfant2","enfant":true,"cheveux":0.55,"palette":"enfant_b"},"enfant_c":{"nom":"Un petit","sprite":"enfant3","enfant":true,"cheveux":0.3,"palette":"enfant_c"},"villageois1":{"nom":"Un homme","sprite":"villageois1","enfant":false,"cheveux":0.3,"palette":"villageois"},"villageois2":{"nom":"Une femme","sprite":"villageois2","enfant":false,"cheveux":0.3,"palette":"villageois"},"esprit":{"nom":"???","note":"l'Esprit du puits parle par le visage d'Élio : portrait animé talkPortrait (horror.js)"}};
+// Demi-sprites gauches (12 colonnes), miroir automatique, ombrage automatique
+const ADULT_L = [
+"........oo.o",
+"......oohhoh",
+".....ohhhhhh",
+"....ohhhhhhh",
+"...ohhhhhhhh",
+"...ohhhhhhhh",
+"..ohhhhhhhhh",
+"..ohhhhhhhhs",
+"..ohhhhhshss",
+"..ohhhssssss",
+"..ohhsoossss",
+"..ohssEessss",
+"..ohsseessss",
+"...ossssssss",
+"....osssssss",
+".....ooooSss",
+"....oaaaaaaa",
+"...oaaaaaaaa",
+"..oocccccccc",
+".occcccccccc",
+".occoccccccc",
+".occoccccccc",
+".occobbbbbbm",
+".ossoccccccc",
+"..ooocccccc",
+"...occccccc",
+"...occcccco.",
+".....oppppo.",
+".....oppppo.",
+".....oppppo.",
+".....oBBBBo.",
+"....oBBBBBo.",
+"....oBBBBBo.",
+"....oooooo..",
+];
+const CHILD_L = [
+...ADULT_L.slice(0, 15),
+".....ooooSss",
+"....occccccc",
+"...occcccccc",
+"..ococcccccc",
+"..ococcccccc",
+"..osoccccccc",
+"...ooccccccc",
+"....occcccc.",
+".....opppo..",
+".....oBBBo..",
+"....oBBBBo..",
+"....ooooo...",
+];
+const pad = r => (r + "............").slice(0, 12);
+const build = L => L.map(r => { r = pad(r); return r + r.split("").reverse().join(""); });
+const SHADE = { h:"H", s:"S", c:"C", a:"A", p:"P", B:"K", b:"b", u:"U", q:"Q" };
+const LIGHT = { h:"j", c:"l", a:"r", B:"k", u:"v", q:"w" };
+function autoshade(rows) {
+  const g = rows.map(r => r.split(""));
+  const at = (x, y) => (g[y] && g[y][x]) || ".";
+  const edge = k => k === "o" || k === ".";
+  const out = g.map(r => r.slice());
+  for (let y = 0; y < g.length; y++) for (let x = 0; x < g[y].length; x++) {
+    const k = g[y][x];
+    if (edge(k)) continue;
+    if (SHADE[k] && (edge(at(x + 1, y)) || edge(at(x, y + 1)) || (x >= 12 && edge(at(x + 2, y))))) out[y][x] = SHADE[k];
+    else if (LIGHT[k] && (edge(at(x - 1, y - 1)) && edge(at(x, y - 1)) || (edge(at(x - 1, y)) && x < 12))) out[y][x] = LIGHT[k];
+  }
+  return out.map(r => r.join(""));
+}
+const set = (rows, pts, k) => { const g = rows.map(r => r.split("")); pts.forEach(([x, y]) => { if (g[y]) g[y][x] = k; }); return g.map(r => r.join("")); };
+function stepLegs(rows, side, from) {
+  // décale la jambe d'un côté d'un pixel vers le haut
+  const g = rows.map(r => r.split(""));
+  const xs = side === "L" ? [0, 12] : [12, 24];
+  for (let y = from; y < g.length; y++) for (let x = xs[0]; x < xs[1]; x++) g[y][x] = (rows[y + 1] || ".".repeat(24))[x];
+  return g.map(r => r.join(""));
+}
+const bob = rows => [".".repeat(24), ...rows.slice(0, rows.length - 1)];
+// le rebond tasse le haut du corps sans couper les pieds
+function bobUpper(rows, cut) { const up = rows.slice(0, cut), low = rows.slice(cut); return [".".repeat(24), ...up.slice(0, up.length), ...low.slice(1)]; }
+
+// détails asymétriques posés après le miroir
+function details(rows, adult) {
+  let r = rows;
+  r = set(r, [[11,13],[12,13]], "M");
+  r = set(r, [[7,12],[16,12]], "R");
+  r = set(r, [[6,4],[7,3],[8,2],[9,5],[10,4]], "j");
+  r = set(r, [[18,6],[18,7],[17,8]], "H");
+  if (adult) {
+    r = set(r, [[7,18],[8,19],[9,20],[10,21],[13,23],[14,24],[15,25]], "b");
+    r = set(r, [[15,23],[16,23],[17,23],[16,24],[17,24],[16,25],[17,25]], "b");
+    r = set(r, [[16,24]], "m");
+    r = set(r, [[15,18],[16,18],[15,19],[16,19],[16,20]], "A");
+  }
+  return r;
+}
+function mix(a, b, t) { const p = h => [1,3,5].map(i => parseInt(h.slice(i, i + 2), 16)); const x = p(a), y = p(b);
+  return "#" + x.map((v, i) => Math.round(v * (1 - t) + y[i] * t).toString(16).padStart(2, "0")).join(""); }
+function drawSprite(ctx, rows, pal, x0, y0) {
+  const at = (x, y) => (rows[y] && rows[y][x]) || ".";
+  rows.forEach((row, y) => { for (let x = 0; x < row.length; x++) {
+    const k = row[x]; if (k === ".") continue;
+    let col = pal[k] || "#f0f";
+    if (k === "o") {
+      const n = [at(x+1,y), at(x-1,y), at(x,y+1), at(x,y-1)];
+      if (!n.includes(".")) { const inner = n.find(v => v !== "o"); if (inner && pal[inner]) col = mix(pal[inner], pal.o, .6); }
+    }
+    ctx.fillStyle = col; ctx.fillRect(x0 + x, y0 + y, 1, 1);
+  }});
+}
+const ADULT = () => details(autoshade(build(ADULT_L)), true);
+const CHILD = () => details(autoshade(build(CHILD_L)), false);
+function walkFrames(base, cut) { const sL = stepLegs(stepLegs(base, "L", cut), "L", cut), sR = stepLegs(stepLegs(base, "R", cut), "R", cut);
+  return [sL, bobUpper(base, cut), sR, bobUpper(base, cut)]; }
+
+// ---------- Palette (originale, fraîche, inspirée des RPG DS) ----------
+const PAL = {
+  o:"#2a2030", h:"#5a3a2e", H:"#3e2620", j:"#8a5a40", s:"#f6cfae", S:"#d9967e", e:"#2a2030", E:"#ffffff", M:"#b0605a", R:"#f2a6a0",
+  c:"#3d7bb0", C:"#2b5884", l:"#6aa6d4", a:"#d2463c", A:"#982c2e", r:"#f07a5a", b:"#6a4428", m:"#f2c64a",
+  p:"#4a4458", P:"#33303f", B:"#7a4a2c", K:"#53301e", k:"#a86c40",
+};
+const CHILD_PAL = { ...PAL, c:"#e0a03a", C:"#b0702a", l:"#f6c868", h:"#6a4632", H:"#4a2e22", j:"#9a6a48" };
+const VARIANTS = {
+  scar: { pal: PAL, mod: r => set(r, [[14,9],[15,10],[17,12],[18,13]], "X"), extra: { X:"#b23a36" } },
+  curse: { pal: { ...PAL, c:"#4e3a6e", C:"#33264e", l:"#7a5aa0", s:"#d8c0c0", S:"#a08494", a:"#3a2a48", A:"#241a30", h:"#2e2a36", H:"#1c1822", j:"#4a4458" },
+           mod: r => set(set(r, [[8,11],[15,11]], "G"), [[17,13],[17,14],[18,14],[6,14]], "V"), extra: { G:"#b46cff", V:"#6a3a8a" } },
+  bless: { pal: { ...PAL, h:"#e8d8a8", H:"#c2a870", j:"#fff6d8", a:"#f2e6c0", A:"#cbb98c", c:"#f4f0e6", C:"#c9c0aa", l:"#ffffff", m:"#ffd84a" },
+           mod: r => r, extra: {} },
+};
+const T = { g:"#86d69a", gd:"#6cbf84", gl:"#a8e8b4", tg:"#43ad5c", tgd:"#2c8644", tgl:"#74d17c", to:"#1f5a35",
+  f1:"#4f8f3e", f2:"#3a6b33", f3:"#7eb84e", fo:"#22402a", tr:"#7a4e30", trd:"#4e3020",
+  sa:"#f0d79c", sad:"#dcbc7c", sab:"#c8e3a0", rf:"#c4504a", rfd:"#8e3434", rfl:"#e27a62", wa:"#f4ead2", wad:"#d4c4a4", wd:"#8a5a38", wdd:"#5a3a24", win:"#7ab8e0", fw:"#ffffff", fy:"#ffd84a", fp:"#f28cb0" };
+
+function px(ctx, c, x, y, w = 1, h = 1) { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); }
+function grassTile(ctx, x, y) {
+  px(ctx, T.g, x, y, 16, 16);
+  [[2,3],[10,1],[6,9],[13,11],[4,14]].forEach(([a,b]) => px(ctx, T.gl, x + a, y + b));
+  [[3,3],[11,1],[7,9],[14,11],[5,14]].forEach(([a,b]) => px(ctx, T.gd, x + a, y + b));
+}
+const LEAF = ["...oo...","..oLGo..",".oLGGGo.","oLGGGDGo","oGGDGDGo",".oGDDGo.","..oDDo..","...oo..."];
+function tallGrass(ctx, x, y) {
+  px(ctx, T.tgd, x, y, 16, 16);
+  [[0,0],[8,0],[4,6],[12,6],[0,10],[8,10]].forEach(([a,b]) => LEAF.forEach((row, j) => [...row].forEach((k, i) => {
+    if (k === ".") return; const X = x + a + i, Y = y + b + j; if (X >= x + 16 || Y >= y + 16) return;
+    px(ctx, { o:T.to, L:T.tgl, G:T.tg, D:T.tgd }[k], X, Y); })));
+}
+function flower(ctx, x, y, petal) {
+  px(ctx, T.f2, x + 2, y + 5, 1, 3); px(ctx, T.f3, x + 3, y + 6, 2, 1);
+  px(ctx, T.fo, x + 1, y, 3, 5); px(ctx, T.fo, x, y + 1, 5, 3);
+  px(ctx, petal, x + 1, y + 1, 3, 3); px(ctx, petal, x + 2, y); px(ctx, petal, x + 2, y + 4); px(ctx, petal, x, y + 2); px(ctx, petal, x + 4, y + 2);
+  px(ctx, T.fy, x + 2, y + 2);
+}
+let treeCache = null;
+function treeSprite() {
+  if (treeCache) return treeCache;
+  const c = document.createElement("canvas"); c.width = 48; c.height = 64; const g = c.getContext("2d");
+  const cx = 23.5, tiers = [[0, 18, 10], [12, 18, 16], [25, 24, 22]];
+  const hwAt = y => { let best = -1, tier = -1, ly = 0; tiers.forEach(([y0, h, max], i) => { if (y < y0 || y >= y0 + h) return;
+      const l = y - y0, w = Math.min(max, 2 + l * 1.1) - (l > h - 3 ? (l - (h - 3)) * 1.5 : 0); if (w > best) { best = w; tier = i; ly = l; } }); return [best, tier, ly]; };
+  const inside = (x, y) => { const [w] = hwAt(y); return w > 0 && Math.abs(x + .5 - cx) <= w; };
+  // tronc
+  for (let y = 46; y < 63; y++) for (let x = 19; x < 29; x++) {
+    const edge = x === 19 || x === 28 || y === 62; px(g, edge ? T.fo : (x < 23 ? T.tr : T.trd), x, y);
+  }
+  for (let y = 0; y < 49; y++) for (let x = 0; x < 48; x++) {
+    if (!inside(x, y)) continue;
+    const [w, tier, ly] = hwAt(y), rel = (x + .5 - cx) / w;
+    let col = T.f1;
+    if (rel < -.1 && rel > -.8 && ly < tiers[tier][1] - 4) col = T.f3;
+    if (rel > .4) col = T.f2;
+    if (!inside(x, y + 1) || ly >= tiers[tier][1] - 3) col = (x + y) % 2 ? T.f2 : col === T.f3 ? T.f1 : T.f2;
+    if (rel < -.25 && rel > -.6 && ly > 1 && ly < 8 && (x + y) % 3) col = "#9ccc66";
+    if (!inside(x - 1, y) || !inside(x + 1, y) || !inside(x, y - 1) || !inside(x, y + 1)) col = T.fo;
+    px(g, col, x, y);
+  }
+  return (treeCache = c);
+}
+function cottage(ctx, x, y) {
+  const Wd = 72;
+  px(ctx, T.fo, x + 4, y + 30, Wd - 8, 34); px(ctx, T.wa, x + 5, y + 31, Wd - 10, 32);
+  px(ctx, T.wad, x + 5, y + 56, Wd - 10, 7);
+  [5, 35, Wd - 6].forEach(bx => px(ctx, T.wd, x + bx, y + 31, 2, 32));
+  px(ctx, T.wdd, x + 28, y + 40, 16, 24); px(ctx, T.wd, x + 29, y + 41, 14, 23); px(ctx, T.wdd, x + 35, y + 41, 2, 23); px(ctx, T.fy, x + 40, y + 52, 2, 2);
+  px(ctx, "#a8784c", x + 29, y + 41, 14, 2);
+  [[10, 38], [50, 38]].forEach(([wx, wy]) => { px(ctx, T.wdd, x + wx, y + wy, 12, 11); px(ctx, T.win, x + wx + 1, y + wy + 1, 10, 9); px(ctx, "#cfe8f8", x + wx + 1, y + wy + 1, 4, 3); px(ctx, T.wdd, x + wx + 5, y + wy + 1, 2, 9); px(ctx, T.wdd, x + wx + 1, y + wy + 5, 10, 1); px(ctx, T.f2, x + wx - 1, y + wy + 11, 14, 3); px(ctx, T.fp, x + wx + 2, y + wy + 11); px(ctx, T.fp, x + wx + 8, y + wy + 12); });
+  px(ctx, T.fo, x + 48, y - 8, 10, 16); px(ctx, "#9a8a80", x + 49, y - 7, 8, 15); px(ctx, "#bcae9e", x + 49, y - 7, 3, 15); px(ctx, T.fo, x + 47, y - 9, 12, 2);
+  for (let r = 0; r < 32; r++) {
+    const inset = Math.max(0, 14 - Math.floor(r / 2)), w = Wd - inset * 2;
+    const col = r >= 30 ? T.rfd : (r % 5 === 4 ? T.rfd : (r < 5 ? T.rfl : T.rf));
+    px(ctx, T.fo, x + inset - 1, y + r, w + 2, 1); px(ctx, col, x + inset, y + r, w, 1);
+    for (let k = inset + (r % 10 < 5 ? 1 : 4); k < Wd - inset; k += 7) if (r % 5 !== 4) px(ctx, T.rfd, x + k, y + r);
+    if (r % 5 === 1) for (let k = inset + (r % 10 < 5 ? 3 : 6); k < Wd - inset; k += 7) px(ctx, T.rfl, x + k, y + r);
+  }
+  px(ctx, T.fo, x - 1, y + 31, Wd + 2, 1);
+}
+function cottageOld(ctx, x, y) {
+  // mur
+  px(ctx, T.fo, x + 3, y + 22, 42, 24); px(ctx, T.wa, x + 4, y + 23, 40, 22);
+  px(ctx, T.wad, x + 4, y + 40, 40, 5);
+  [4, 22, 43].forEach(bx => px(ctx, T.wd, x + bx, y + 23, 1, 22));
+  // porte et fenêtres
+  px(ctx, T.wdd, x + 18, y + 30, 12, 16); px(ctx, T.wd, x + 19, y + 31, 10, 15); px(ctx, T.wdd, x + 23, y + 31, 1, 15); px(ctx, T.fy, x + 26, y + 38);
+  [[7, 28], [33, 28]].forEach(([wx, wy]) => { px(ctx, T.wdd, x + wx, y + wy, 9, 8); px(ctx, T.win, x + wx + 1, y + wy + 1, 7, 6); px(ctx, "#bfe0f4", x + wx + 1, y + wy + 1, 3, 2); px(ctx, T.wdd, x + wx + 4, y + wy + 1, 1, 6); });
+  // toit
+  for (let r = 0; r < 24; r++) {
+    const inset = Math.max(0, 10 - Math.floor(r / 2)), w = 48 - inset * 2;
+    const col = r === 23 ? T.rfd : (r % 4 === 3 ? T.rfd : (r < 4 ? T.rfl : T.rf));
+    px(ctx, T.fo, x + inset - 1, y + r, w + 2, 1); px(ctx, col, x + inset, y + r, w, 1);
+    for (let k = inset + (r % 8 < 4 ? 0 : 3); k < 48 - inset; k += 6) if (r % 4 !== 3) px(ctx, T.rfd, x + k, y + r);
+  }
+  px(ctx, T.fo, x + 33, y - 6, 7, 10); px(ctx, "#9a8a80", x + 34, y - 5, 5, 9); px(ctx, "#bcae9e", x + 34, y - 5, 2, 9);
+}
+function sandPath(ctx, x, y, w, h) {
+  px(ctx, T.sab, x - 2, y, w + 4, h); px(ctx, T.sa, x, y, w, h);
+  for (let j = 0; j < h; j += 4) for (let i = (j % 8 ? 2 : 6); i < w; i += 8) px(ctx, T.sad, x + i, y + j + 1);
+  for (let j = 0; j < h; j += 3) { px(ctx, T.g, x - 2, y + j, 1, 1); px(ctx, T.g, x + w + 1, y + j + 1, 1, 1); }
+}
+
+function drawScene(ctx, t, sprites) {
+  const W = 384, H = 216;
+  for (let y = 0; y < H; y += 16) for (let x = 0; x < W; x += 16) grassTile(ctx, x, y);
+  sandPath(ctx, 196, 74, 32, 142);
+  sandPath(ctx, 228, 150, 156, 24);
+  for (let y = 152; y < 216; y += 16) for (let x = 72; x < 168; x += 16) tallGrass(ctx, x, y);
+  [[96,70,T.fw],[108,78,T.fp],[120,66,T.fw],[146,76,T.fp],[158,64,T.fw],[100,122,T.fp],[160,118,T.fw],[262,90,T.fp],[274,98,T.fw],[288,86,T.fw],[300,104,T.fp],[250,120,T.fw]].forEach(([x,y,c]) => flower(ctx, x, y, c));
+  const items = [];
+  const tree = treeSprite();
+  const trees = [[-20,-30],[18,-14],[-20,16],[20,40],[-20,62],[20,96],[-20,110],[20,150],[-20,158],[300,-30],[344,-6],[330,70],[276,150],[346,166],[150,170]];
+  trees.forEach(([x, y]) => items.push({ y: y + 62, fn: () => ctx.drawImage(tree, x, y) }));
+  items.push({ y: 74, fn: () => cottage(ctx, 176, 10) });
+  // héros adulte qui marche sur le chemin
+  const hy = 72 + Math.floor((t / 45) % 150), f = Math.floor(t / 130) % 4;
+  items.push({ y: hy + 34, fn: () => { ctx.globalAlpha = .22; px(ctx, "#1a3a2a", 203, hy + 32, 18, 3); ctx.globalAlpha = 1; drawSprite(ctx, sprites.walk[f], PAL, 200, hy); } });
+  // l'enfant qu'on était, près des fleurs
+  const cf = Math.floor(t / 600) % 2;
+  items.push({ y: 108, fn: () => { ctx.globalAlpha = .22; px(ctx, "#1a3a2a", 131, 106, 16, 3); ctx.globalAlpha = 1; drawSprite(ctx, cf ? sprites.childBob : sprites.child, CHILD_PAL, 128, 82); } });
+  items.sort((a, b) => a.y - b.y).forEach(i => i.fn());
+}
+
+// ---------- Générateur d'apparence : un seul dessin, des paramètres continus ----------
+const OUTFITS = {
+  tunique: { name: "Tunique de voyage", pal: {} },
+  mage: { name: "Robe de mage", pal: { c:"#5a4aa8", C:"#3c3078", l:"#8a7ad0", a:"#e2b84a", A:"#a8822e", r:"#ffe08a" },
+    rows: L => { const R = L.slice(); R[24] = "..oooccccccc"; R.splice(25, 9, "...occcccccc", "...occcccccc", "...occcccccc", "..occcccccccc".slice(0, 12), "..occcccccccc".slice(0, 12), "..oaaaaaaaaa", "..oooooooooo", ".....oBBBo..", ".....ooooo.."); return R; }, legCut: 32 },
+  guerrier: { name: "Armure de guerrier", pal: { c:"#8e9aac", C:"#5f6a7c", l:"#c8d0dc", q:"#b4bdca", Q:"#6e7888", w:"#eef1f6", b:"#5a3a26" },
+    rows: L => { const R = L.slice(); R[16] = "...ooaaaaaaa"; R[17] = "..oqqoaaaaaa"; R[18] = ".oqqqqoccccc"; R[19] = ".oqqqqoccccc"; R[20] = "..oooocccccc"; return R; } },
+  voleur: { name: "Cape de voleur", pal: { c:"#4e4a3c", C:"#302e26", l:"#6e6a54", u:"#3c4a3a", U:"#25301f", v:"#5e7254", a:"#2e2a30", A:"#1c1a20", r:"#4a4450" },
+    rows: L => L.map((r, y) => { r = pad(r); if (y <= 8) r = r.replace(/h/g, "u"); if (y >= 9 && y <= 17) r = ".ouu" + r.slice(4); if (y === 13 || y === 14) r = r.slice(0, 7) + "aaaaa"; if (y === 18) r = ".oo" + r.slice(3); return r; }),
+    hood: true, mask: true },
+};
+// Cheveux : frange + deux mèches devant (à l'intérieur des bras) + une masse derrière le corps
+function growHair(L, len, child, floating) {
+  const R = L.map(pad);
+  const put = (y, x, k) => { if (!R[y]) return; const g = R[y].split(""); g[x] = k; R[y] = g.join(""); };
+  if (len >= 1) R[9] = "..ohhhhhssss";
+  if (len >= 3) R[10] = "..ohhhoossss";
+  if (floating || len < 3) return R;
+  const n = Math.min(len - 2, child ? 9 : 13);
+  for (let k = 0; k <= n; k++) {
+    const y = 12 + k, end = k === n;
+    if (y <= 15) { put(y, 2, "o"); put(y, 3, end ? "o" : "h"); put(y, 4, end ? "o" : "h"); }
+    else { put(y, 3, "o"); put(y, 4, end ? "o" : "h"); put(y, 5, end ? "o" : "h"); put(y, 6, "o"); }
+  }
+  return R;
+}
+function backHair(len, H) {
+  if (len < 2) return null;
+  const end = Math.min(H - 3, 10 + Math.round(len * 1.4)), L = [];
+  for (let y = 0; y < H; y++) {
+    if (y < 6 || y > end + 1) { L.push("."); continue; }
+    const x0 = y < 12 ? 2 : y < 18 ? 1 : y < 24 ? 2 : Math.min(5, 3 + Math.floor((y - 24) / 3));
+    if (y === end + 1) { L.push(".".repeat(x0 - 1) + [..."o".repeat(13 - x0)].map((c, i) => i % 2 ? "." : "o").join("")); continue; }
+    L.push(".".repeat(x0 - 1) + "o" + "h".repeat(12 - x0));
+  }
+  return autoshade(build(L));
+}
+// Pacte de l'Esprit capillaire : en combat, les cheveux se soulèvent et ondulent
+function drawLiveHair(ctx, x0, y0, len, t, pal) {
+  if (len < 2) return;
+  const anchors = [[4, 10, Math.PI + .45], [19, 10, -.45], [3, 14, Math.PI + .1], [20, 14, -.1], [7, 3, Math.PI + 1.15], [16, 3, -1.15]];
+  const n = Math.min(anchors.length, 2 + Math.floor(len / 3)), L = 3 + len * 1.15;
+  const strands = [];
+  anchors.slice(0, n).forEach((a, i) => { strands.push([a, L, 0, i, 0]); strands.push([[a[0], a[1] + 1, a[2] + .12], L * .8, 0, i, 1.3]); });
+  if (len >= 12) strands.push([[20, 12, .5], L * 1.4, 1, 7, 0]);       // la mèche qui saisit
+  strands.forEach(([[ax, ay, base], len2, grab, i, ph], si) => {
+    let x = x0 + ax, y = y0 + ay;
+    for (let s = 0; s < len2; s++) {
+      const k = s / len2, curl = grab ? Math.max(0, k - .65) * 7 : 0;
+      const th = base + .6 * Math.sin(t / 300 + s * .38 + i * 1.7 + ph) * k + curl + (grab ? .3 * Math.sin(t / 480) : 0);
+      x += Math.cos(th); y += Math.sin(th);
+      const X = Math.round(x), Y = Math.round(y);
+      ctx.fillStyle = s % 6 === 3 ? pal.j : (ph ? pal.h : pal.H);
+      ctx.fillRect(X, Y, 1, 1);
+      if (s < 3) { ctx.fillStyle = pal.h; ctx.fillRect(X, Y + 1, 1, 1); }
+    }
+  });
+}
+function beard(rows, amount) {
+  if (amount <= 0) return rows;
+  const stub = [[9,14],[14,14],[11,14],[12,14],[6,13],[17,13]];
+  const full = [[10,13],[13,13],[5,13],[6,13],[17,13],[18,13],[6,14],[7,14],[9,14],[10,14],[11,14],[12,14],[13,14],[14,14],[16,14],[17,14],[8,15],[9,15],[10,15],[11,15],[12,15],[13,15],[14,15],[15,15],[10,16],[11,16],[12,16],[13,16]];
+  if (amount < .5) return set(rows, stub, "S");
+  rows = set(rows, full, "h");
+  return set(rows, [[7,13],[16,13],[8,14],[15,14]], "j");
+}
+function makeHero(o) {
+  const outfit = OUTFITS[o.outfit];
+  let L = o.child ? CHILD_L.slice() : ADULT_L.slice();
+  const len = Math.round(o.hair * (o.child ? 9 : 14));
+  if (!o.child && outfit.rows && !outfit.hood) L = outfit.rows(L);
+  const floating = o.pact && o.combat;
+  L = growHair(L, len, o.child, floating);
+  if (outfit.hood) L = outfit.rows(L);
+  let rows = details(autoshade(build(L)), !o.child && o.outfit !== "mage");
+  if (!o.child && !outfit.mask) rows = beard(rows, Math.max(0, (o.hair - .45) / .55));
+  if (outfit.hood) rows = rows.map((r, y) => y <= 8 ? r.replace(/[jH]/g, "U") : r);
+  if (outfit.mask) rows = set(rows, [[11,13],[12,13]], "a");
+  const cut = o.child ? 23 : (outfit.legCut || 27);
+  return { rows, cut, len, back: floating ? null : backHair(len, rows.length) };
+}
+const BLESS_PAL = { h:"#efe2b4", H:"#c9b07a", j:"#fffbe6", s:"#ffe6cc", S:"#e8b896", c:"#f4f0e6", C:"#c9c0aa", l:"#ffffff", a:"#f2e6c0", A:"#cbb98c", m:"#ffd84a", u:"#e8e0c8", U:"#bfb294", v:"#fffaf0", q:"#f0e2a8", Q:"#c4a85a", w:"#fffbe0" };
+const CURSE_PAL = { h:"#2e2a36", H:"#1c1822", j:"#4a4458", s:"#d4bcc4", S:"#9c8090", c:"#4e3a6e", C:"#33264e", l:"#7a5aa0", a:"#3a2a48", A:"#241a30", u:"#2e2240", U:"#1c1428", v:"#4a3a66", q:"#6a5a88", Q:"#3a2e54", w:"#9a8ab8", e:"#5a2a7a" };
+function heroPalette(o) {
+  const base = { ...PAL, ...(o.child ? { c:"#e0a03a", C:"#b0702a", l:"#f6c868" } : {}), ...OUTFITS[o.outfit].pal, X:"#b23a36" };
+  if (o.pact) { base.h = mix(base.h, "#2a2238", .55); base.H = mix(base.H, "#16121e", .55); base.j = mix(base.j, "#6a5a8a", .5); }
+  const out = {}, bw = o.bless * .65, cw = o.curse * .65;
+  for (const k in base) {
+    const mb = BLESS_PAL[k] ? mix(base[k], BLESS_PAL[k], bw) : base[k];
+    const mc = CURSE_PAL[k] ? mix(base[k], CURSE_PAL[k], cw) : base[k];
+    out[k] = bw + cw > 0 ? mix(mb, mc, cw / (bw + cw)) : base[k];
+  }
+  return out;
+}
+const VEINS = [[17,13],[6,13],[18,14],[5,14],[17,10],[6,10],[1,22],[22,21],[2,21],[21,22],[18,9],[5,9]];
+function ring(rows, x0, y0, dist) {
+  const solid = (x, y) => rows[y] && rows[y][x] && rows[y][x] !== ".";
+  const pts = [];
+  for (let y = -dist; y < rows.length + dist; y++) for (let x = -dist; x < 24 + dist; x++) {
+    if (solid(x, y)) continue;
+    let near = false;
+    for (let dy = -dist; dy <= dist && !near; dy++) for (let dx = -dist; dx <= dist; dx++) if (Math.abs(dx) + Math.abs(dy) <= dist && solid(x + dx, y + dy)) { near = true; break; }
+    let nearer = false;
+    if (dist > 1) for (let dy = -(dist - 1); dy <= dist - 1 && !nearer; dy++) for (let dx = -(dist - 1); dx <= dist - 1; dx++) if (Math.abs(dx) + Math.abs(dy) <= dist - 1 && solid(x + dx, y + dy)) { nearer = true; break; }
+    if (near && !nearer) pts.push([x0 + x, y0 + y]);
+  }
+  return pts;
+}
+// Le corps porte les marques (couleurs, veines, yeux). L'aura vient des croyances : voir drawAura.
+function drawHero(ctx, o, frame, x0, y0, t, back, len) {
+  const pal = heroPalette(o), rows = frame;
+  if (back) drawSprite(ctx, back, pal, x0, y0);
+  if (o.pact && o.combat) drawLiveHair(ctx, x0, y0, len, t, pal);
+  const c = o.curse, pulse = .5 + .5 * Math.sin(t / 260);
+  drawSprite(ctx, rows, pal, x0, y0);
+  const nv = Math.floor(Math.max(0, c - .2) / .8 * VEINS.length);
+  ctx.fillStyle = "#6a2a8a"; VEINS.slice(0, nv).forEach(([x, y]) => { if (rows[y] && rows[y][x] !== "." && rows[y][x] !== "o") ctx.fillRect(x0 + x, y0 + y, 1, 1); });
+  if (c > .3) { ctx.globalAlpha = Math.min(1, (c - .3) / .5) * (.6 + .4 * pulse); ctx.fillStyle = "#d090ff"; [[7,11],[16,11]].forEach(([x, y]) => { if (rows[y][x] !== "a") ctx.fillRect(x0 + x, y0 + y, 1, 1); }); }
+  ctx.globalAlpha = 1;
+}
+// ---------- Auras : allégeance × renommée × regard des gens ----------
+const FAITHS = {
+  aucune: { name: "Aucune allégeance" },
+  divin: { name: "Un dieu de lumière", aime: { glow:"#ffd86a", mote:"#fff3b0", ray:"#ffe9a0" }, craint: { glow:"#dfeeff", mote:"#ffffff", ray:"#f4fbff" } },
+  sombre: { name: "Un diable ou dieu sombre", aime: { glow:"#4a1240", smoke:"#8a2a6a", ember:"#ff7a4a" }, craint: { glow:"#0c0610", smoke:"#1a1220", ember:"#ff2a2a" } },
+  paien: { name: "Un esprit des légendes", aime: { glow:"#2a8a5a", wisp:"#a8f4c8", core:"#ffffff", leaf:"#7ac050" }, craint: { glow:"#3a2a1a", wisp:"#e8e0c8", core:"#c04030", leaf:"#8a5a30" } },
+  athee: { name: "Athée, refuse tout" },
+};
+const hash = n => { n = Math.sin(n * 127.1) * 43758.5453; return n - Math.floor(n); };
+function auraColors(o) {
+  const F = FAITHS[o.faith], k = (o.regard + 1) / 2, out = {};
+  for (const key in F.aime) out[key] = mix(F.craint[key], F.aime[key], k);
+  return out;
+}
+function ellipse(ctx, cx, cy, rx, ry, col, alpha) {
+  ctx.globalAlpha = alpha; ctx.fillStyle = col;
+  for (let y = -ry; y <= ry; y++) for (let x = -rx; x <= rx; x++) if ((x * x) / (rx * rx) + (y * y) / (ry * ry) <= 1) ctx.fillRect(cx + x, cy + y, 1, 1);
+  ctx.globalAlpha = 1;
+}
+function drawAura(ctx, o, x0, y0, t, layer, h = 34) {
+  const r = o.renown, f = o.faith; if (f === "aucune" || r <= 0) return;
+  const cx = x0 + 12, fy = y0 + h - 1, n = 4 + Math.round(r * 16), feared = o.regard < 0;
+  if (f === "athee") {
+    if (layer === "back") { const rx = 11 + Math.round(r * 3); ctx.fillStyle = "#b8bec6";
+      for (let a = 0; a < 6.28; a += .2) { if (Math.floor(a * 5 + t / 400) % 3 === 0) continue; ctx.globalAlpha = .55 * r; ctx.fillRect(Math.round(cx + Math.cos(a) * rx), Math.round(fy + Math.sin(a) * 3), 1, 1); }
+      ctx.globalAlpha = 1; return; }
+    if (r < .2) return;
+    // la magie s'éteint à son contact : des étincelles grises qui grésillent
+    const k = Math.floor(t / 180);
+    for (let i = 0; i < 2 + Math.round(r * 5); i++) { const s = k * 7 + i; if (hash(s) > .7) continue;
+      const a = hash(s + 1) * 6.28, d = 12 + hash(s + 2) * 4; ctx.globalAlpha = .7; ctx.fillStyle = "#9aa0a8";
+      ctx.fillRect(Math.round(cx + Math.cos(a) * d), Math.round(y0 + h / 2 + Math.sin(a) * d * .7), 1, 1); ctx.fillStyle = "#d8dce2"; ctx.fillRect(Math.round(cx + Math.cos(a) * (d + 1)), Math.round(y0 + h / 2 + Math.sin(a) * (d + 1) * .7), 1, 1); }
+    ctx.globalAlpha = 1; return;
+  }
+  const C = auraColors(o);
+  if (f === "divin") {
+    if (layer === "back") {
+      ellipse(ctx, cx, fy, 9 + Math.round(r * 5), 3, C.glow, .25 + .3 * r);
+      const top = y0 - 8 - Math.round(r * 8);
+      ctx.globalAlpha = .12 + .18 * r; ctx.fillStyle = C.glow; ctx.fillRect(cx - 9, top + 6, 18, fy - top - 6);
+      [-10, -5, 0, 5, 10].forEach((dx, i) => { const a = (.2 + .3 * r) * (.4 + .6 * Math.sin(t / 300 + i * 1.7) ** 2) * (feared ? 1.3 : 1);
+        ctx.globalAlpha = Math.min(1, a); ctx.fillStyle = C.ray; ctx.fillRect(cx + dx, top + (i % 2) * 4, i === 2 ? 2 : 1, fy - top); });
+    } else for (let i = 0; i < n; i++) {
+      const p = (t / 45 + i * 37) % 44, x = cx - 12 + Math.round(hash(i) * 24), y = fy - p;
+      ctx.globalAlpha = Math.max(0, 1 - p / 44) * (.6 + .4 * r); ctx.fillStyle = C.mote; ctx.fillRect(x, Math.round(y), 1, 1);
+      if (i % 3 === 0) { ctx.fillRect(x - 1, Math.round(y), 3, 1); ctx.fillRect(x, Math.round(y) - 1, 1, 3); }
+    }
+  }
+  if (f === "sombre") {
+    if (layer === "back") ellipse(ctx, cx, fy, 10 + Math.round(r * 6), 3 + Math.round(r), C.glow, .35 + .35 * r);
+    for (let i = 0; i < n; i++) {
+      if ((i % 2 === 0) !== (layer === "back")) continue;
+      const p = (t / 60 + i * 29) % 44, sway = Math.round(Math.sin(t / 420 + i) * 2);
+      const x = cx - 13 + Math.round(hash(i + 9) * 26) + sway, y = Math.round(fy - 1 - p), sz = p < 12 ? 4 : p < 26 ? 3 : 2;
+      ctx.globalAlpha = Math.max(0, 1 - p / 44) * (.55 + .4 * r); ctx.fillStyle = C.smoke; ctx.fillRect(x, y, sz, sz - 1); ctx.fillRect(x + 1, y - 1, sz - 2 || 1, 1);
+    }
+    if (layer === "front") for (let i = 0; i < 2 + Math.round(r * 7); i++) {
+      const p = (t / 30 + i * 41) % 36; ctx.globalAlpha = Math.max(0, 1 - p / 36); ctx.fillStyle = C.ember;
+      ctx.fillRect(cx - 10 + Math.round(hash(i + 3) * 20), Math.round(fy - 4 - p), 1, 1);
+    }
+    // une présence qui veille derrière lui, quand il est très craint
+    if (layer === "back" && feared && r > .65) { const a = (r - .65) / .35 * (.6 + .4 * Math.sin(t / 500)); ctx.globalAlpha = a; ctx.fillStyle = C.ember;
+      ctx.fillRect(cx - 4, y0 - 4, 2, 1); ctx.fillRect(cx + 3, y0 - 4, 2, 1); }
+  }
+  if (f === "paien") {
+    if (layer === "back") ellipse(ctx, cx, fy, 8 + Math.round(r * 5), 2, C.glow, .25 + .25 * r);
+    const m = 1 + Math.round(r * 4);
+    for (let i = 0; i < m; i++) for (let tr = 5; tr >= 0; tr--) {
+      const a = (t - tr * 60) / 700 + i * 6.283 / m, front = Math.sin(a) > 0;
+      if (front !== (layer === "front")) continue;
+      const x = Math.round(cx + Math.cos(a) * 15), y = Math.round(y0 + h * .55 + Math.sin(a) * 5 - Math.sin(t / 500 + i) * 2);
+      ctx.globalAlpha = tr ? .8 / tr : 1; ctx.fillStyle = C.wisp; ctx.fillRect(x, y, tr < 3 ? 2 : 1, tr < 3 ? 2 : 1);
+      if (!tr) { ctx.fillRect(x - 1, y, 4, 2); ctx.fillRect(x, y - 1, 2, 4); ctx.fillStyle = C.core; ctx.fillRect(x, y, 2, 2); }
+    }
+    if (layer === "front" && r > .3) for (let i = 0; i < 1 + Math.round(r * 7); i++) {
+      const p = (t / 70 + i * 23) % 40, x = cx - 12 + Math.round(hash(i + 20) * 24 + Math.sin(t / 300 + i) * 2);
+      ctx.globalAlpha = Math.max(0, 1 - p / 40); ctx.fillStyle = C.leaf; ctx.fillRect(x, Math.round(y0 - 6 + p), 2, 1);
+    }
+  }
+  ctx.globalAlpha = 1;
+}
+const labState = { pact: false, combat: false, child: false, hair: .15, bless: 0, curse: 0, outfit: "tunique", faith: "divin", renown: .6, regard: .6 };
+let labHero = null;
+function rebuildLab() {
+  const h = makeHero(labState), bb = h.back && [".".repeat(24), ...h.back.slice(0, -1)];
+  labHero = { idle: [h.rows, bobUpper(h.rows, h.cut)], walk: walkFrames(h.rows, h.cut), back: h.back, backBob: bb, len: h.len };
+}
+function renderLab(t) {
+  if (!labHero) rebuildLab();
+  const c = ctxOf("lab"); c.clearRect(0, 0, 96, 60);
+  c.fillStyle = "#86d69a"; c.fillRect(0, 0, 96, 60);
+  [[5,7],[29,3],[50,9],[13,44],[82,30],[44,52],[70,6],[90,50]].forEach(([x, y]) => { c.fillStyle = "#a8e8b4"; c.fillRect(x, y, 1, 1); c.fillStyle = "#6cbf84"; c.fillRect(x + 1, y, 1, 1); });
+  const h = labHero.idle[0].length, y0 = 58 - h - 3;
+  const i2 = Math.floor(t / 500) % 2, w4 = Math.floor(t / 130) % 4;
+  const heroes = [[14, labHero.idle[i2], i2 ? labHero.backBob : labHero.back], [58, labHero.walk[w4], w4 % 2 ? labHero.backBob : labHero.back]];
+  heroes.forEach(([x, fr]) => { c.globalAlpha = .22; c.fillStyle = "#1a3a2a"; c.fillRect(x + 3, y0 + h - 2, 18, 3); c.globalAlpha = 1; drawAura(c, labState, x, y0, t, "back", h); });
+  heroes.forEach(([x, fr, bk]) => { drawHero(c, labState, fr, x, y0, t, bk, labHero.len); drawAura(c, labState, x, y0, t, "front", h); });
+}
+function bindLab() {
+  const out = (id, txt) => { document.getElementById(id).textContent = txt; };
+  const upd = () => {
+    const days = +document.getElementById("hair").value;
+    labState.hair = days / 365; labState.bless = +document.getElementById("bless").value / 100; labState.curse = +document.getElementById("curse").value / 100;
+    labState.outfit = document.querySelector('input[name="outfit"]:checked').value; labState.child = document.getElementById("age").value === "child";
+    labState.pact = document.getElementById("pact").checked; labState.combat = document.getElementById("combat").checked;
+    const L = Math.round(labState.hair * (labState.child ? 9 : 14));
+    out("pact-v", !labState.pact ? "" : L === 0 ? "le pacte dort" : L < 5 ? "faible" : L < 10 ? "forte" : "maximale");
+    labState.faith = document.getElementById("faith").value; labState.renown = +document.getElementById("renown").value / 100; labState.regard = +document.getElementById("regard").value / 100;
+    const rg = labState.regard; out("renown-v", Math.round(labState.renown * 100)); out("regard-v", rg < -.6 ? "terrifie" : rg < -.15 ? "inquiète" : rg <= .15 ? "partagé" : rg <= .6 ? "respecté" : "adoré");
+    out("hair-v", days === 0 ? "le jour même" : days < 60 ? days + " jours" : Math.round(days / 30) + " mois");
+    out("bless-v", Math.round(labState.bless * 100)); out("curse-v", Math.round(labState.curse * 100));
+    rebuildLab();
+  };
+  document.querySelectorAll(".lab-controls input, .lab-controls select").forEach(el => el.addEventListener("input", upd));
+  document.getElementById("barber").addEventListener("click", () => { document.getElementById("hair").value = 0; upd(); });
+  upd();
+}
+
+// ---------- Le héros dans les 8 directions ----------
+// Chaque vue est composée de formes simples (ellipses, rectangles), puis contourée et ombrée automatiquement.
+function grid(h = 34) { return Array.from({ length: h }, () => Array(24).fill(".")); }
+function fillR(g, x0, y0, x1, y1, k) { for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if (g[y] && x >= 0 && x < 24) g[y][x] = k; }
+function fillE(g, cx, cy, rx, ry, k, cond = () => true) { for (let y = Math.floor(cy - ry); y <= Math.ceil(cy + ry); y++) for (let x = Math.floor(cx - rx); x <= Math.ceil(cx + rx); x++)
+  if (((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 <= 1 && g[y] && x >= 0 && x < 24 && cond(x, y)) g[y][x] = k; }
+function dot(g, pts, k) { pts.forEach(([x, y]) => { if (g[y] && x >= 0 && x < 24) g[y][x] = k; }); }
+function outline(g) { const o = g.map(r => r.slice());
+  for (let y = 0; y < g.length; y++) for (let x = 0; x < 24; x++) if (g[y][x] === "." && [[1,0],[-1,0],[0,1],[0,-1]].some(([a, b]) => g[y + b] && g[y + b][x + a] && g[y + b][x + a] !== "." && g[y + b][x + a] !== "o")) o[y][x] = "o";
+  return o; }
+const rowsOf = g => autoshade(outline(g).map(r => r.join("")));
+const flipRows = rows => rows.map(r => r.split("").reverse().join(""));
+// jambes : pose 0 = au repos, 1 = jambe avant en avant, -1 = l'autre
+function legsFront(g, pose, x0 = 6, x1 = 14) {
+  [[x0, pose > 0 ? -1 : 0], [x1, pose < 0 ? -1 : 0]].forEach(([lx, lift]) => { fillR(g, lx, 26, lx + 3, 29 + lift, "p"); fillR(g, lx, 30 + lift, lx + 3, 32 + lift, "B"); fillR(g, lx - 1, 31 + lift, lx - 1, 32 + lift, "B"); });
+}
+function body(g, cx, w, opts = {}) {             // torse vu de face ou de dos
+  fillR(g, cx - w, 17, cx + w - 1, 25, "c"); fillR(g, cx - w, 22, cx + w - 1, 22, "b");
+  fillR(g, cx - w - 3, 18, cx - w - 1, 23, "c"); fillR(g, cx + w, 18, cx + w + 2, 23, "c");          // bras
+  fillR(g, cx - w - 3, 24, cx - w - 1, 24, "s"); fillR(g, cx + w, 24, cx + w + 2, 24, "s");
+  fillR(g, cx - w + 1, 16, cx + w - 2, 17, "a");
+}
+// têtes dessinées pixel par pixel, à partir de la vue de face
+const HEAD_E = [
+"..........hh.hh.........",
+"..........hhhhhh........",
+"........hhhhhhhhhh......",
+".......hjhhhhhhhhhh.....",
+"......hjhhjhhhhhhhhh....",
+".....hhhhjhhhhhhhhhhh...",
+".....hhhhhhhhhhhhhhhh...",
+".....hhhhhhhhhhhhhhhhh..",
+".....hhhhhhhhhshhshsh...",
+".....hhhhhhhhhsshsssh...",
+".....hhhhhhhhsssoossso..",
+".....hhhhhhhhsssEessse..",
+".....hhhhhhhhssseRssses.",
+"......hhhhhhssRRssssss..",
+"..........hhhssssssMM...",
+"...............ssss....."];
+const HEAD_NE = [
+"........oo.oo.oo........",
+"......oojHojHoHHoo......",
+".....ojjjhhhHhhhHHo.....",
+"....ojhjhhhhHhhhhHHo....",
+"...ojhjhhhjHhhhhhhHHo...",
+"...ojhhhhjhhHhhhhhHHo...",
+"..ojhhhhhhhhhhhhhhHHHo..",
+"..ojhhhhhhhhhhhhhhHHHo..",
+"..ojhhhhhHhhhhHhhHhHHo..",
+"..ojhhhhhHhhhhHhhhhHHo..",
+"..ojhhhhHhhhhhhHhhhsHo..",
+"..ojhhhhHhhhhhhHhhssHo..",
+"..oHhhhhHhhhhhhHhhSsHo..",
+"...oHhhhhhhhhhhhhhSHo...",
+"....oHHhhhhhhhhhHHo.....",
+".....ooooSsssSSoooo....."];
+const HEAD_N = [
+"........oo.oo.oo........",
+"......oojHojHoHHoo......",
+".....ojjjhhhHhhhHHo.....",
+"....ojhjhhhhHhhhhHHo....",
+"...ojhjhhhjHhhhhhhHHo...",
+"...ojhhhhjhhHhhhhhHHo...",
+"..ojhhhhhhhhhhhhhhHHHo..",
+"..ojhhhhhhhhhhhhhhHHHo..",
+"..ojhhhhhHhhhhHhhHhHHo..",
+"..ojhhhhhHhhhhHhhhhHHo..",
+"..ojhhhhHhhhhhhHhhhHHo..",
+"..ojhhhhHhhhhhhHhhhhHo..",
+"..oHhhhhHhhhhhhHhhhhHo..",
+"...oHhhhhhhhhhhhhhHHo...",
+"....oHHhhhhhhhhhHHo.....",
+".....ooooSsssSSoooo....."];
+const VIEWS = {
+  // de dos (nord)
+  N(pose) { const g = grid();
+    HEAD_N.forEach((r, y) => r.split("").forEach((k, x) => { if (k !== ".") g[y][x] = k; }));   // même coupe que de face, vue de dos
+    fillR(g, 9, 15, 14, 16, "S");
+    body(g, 12, 6); dot(g, [[11,18],[12,18],[11,19],[12,19],[12,20],[13,21],[12,21]], "A");   // noeud et pans de l'écharpe
+    for (let k = 0; k < 8; k++) dot(g, [[16 - k, 18 + k]], "b");                       // sangle dans le dos
+    legsFront(g, pose); return rowsOf(g); },
+  // de profil, vers la droite (est)
+  E(pose) { const g = grid(), sw = pose === 0 ? 0 : pose;
+    HEAD_E.forEach((r, y) => r.split("").forEach((k, x) => { if (k !== ".") g[y][x] = k; }));   // tête dessinée pixel par pixel
+    fillR(g, 12, 15, 15, 16, "S");
+    fillR(g, 8, 17, 16, 25, "c"); fillR(g, 8, 22, 16, 22, "b"); fillR(g, 9, 16, 16, 17, "a"); fillR(g, 5, 17, 8, 18, "a"); dot(g, [[4,19],[5,19],[4,20]], "A");   // écharpe qui flotte derrière
+    // jambes qui se croisent
+    const L = [[10 - sw * 2, 0], [12 + sw * 2, 0]];
+    L.forEach(([lx], i) => { fillR(g, lx, 26, lx + 2, 29, i ? "p" : "P"); fillR(g, lx, 30, lx + 3, 32, i ? "B" : "K"); });
+    // bras avant, qui balance
+    const ax = 11 - sw; fillR(g, ax - 1, 17, ax + 3, 17, "o"); fillR(g, ax - 1, 18, ax - 1, 24, "o"); fillR(g, ax + 3, 18, ax + 3, 24, "o");
+    fillR(g, ax, 18, ax + 2, 23, "c"); fillR(g, ax, 24, ax + 2, 24, "s"); fillR(g, ax - 1, 25, ax + 3, 25, "o");
+    dot(g, [[15,17],[14,18],[13,19],[12,20]], "b");
+    return rowsOf(g); },
+  // trois quarts face (sud-est)
+  SE(pose) { const g = grid();
+    ADULT().slice(0, 16).forEach((r, y) => r.split("").forEach((k, x) => { if (k !== ".") g[y][x] = k; }));   // même tête que de face
+    fillR(g, 10, 15, 15, 16, "S");
+    body(g, 12, 6);
+    dot(g, [[8,17],[9,18],[10,19],[11,20],[12,21],[14,23],[15,24]], "b"); dot(g, [[15,23],[16,23],[16,24],[17,24]], "b"); dot(g, [[16,24]], "m");
+    dot(g, [[15,17],[16,17],[16,18],[17,19],[17,20]], "A"); dot(g, [[12,22],[13,22]], "m");
+    legsFront(g, pose); return rowsOf(g); },
+  // trois quarts dos (nord-est)
+  NE(pose) { const g = grid();
+    HEAD_NE.forEach((r, y) => r.split("").forEach((k, x) => { if (k !== ".") g[y][x] = k; }));
+    fillR(g, 9, 15, 14, 16, "S");
+    body(g, 12, 6); dot(g, [[9,18],[10,18],[9,19],[10,19],[9,20],[8,21],[9,21]], "A");
+    for (let k = 0; k < 8; k++) dot(g, [[15 - k, 18 + k]], "b");
+    legsFront(g, pose); return rowsOf(g); },
+};
+VIEWS.S = pose => pose === 0 ? ADULT() : stepLegs(stepLegs(ADULT(), pose > 0 ? "L" : "R", 27), pose > 0 ? "L" : "R", 27);
+// 8 directions : les vues gauche sont des miroirs des vues droite
+const DIRS = { S: ["S", false], SE: ["SE", false], E: ["E", false], NE: ["NE", false], N: ["N", false], NW: ["NE", true], W: ["E", true], SW: ["SE", true] };
+const dirCache = {};
+function dirFrames(dir) {
+  if (dirCache[dir]) return dirCache[dir];
+  const [v, flip] = DIRS[dir], f = p => flip ? flipRows(VIEWS[v](p)) : VIEWS[v](p);
+  const bobbed = rows => [".".repeat(24), ...rows.slice(0, 26), ...rows.slice(27)];
+  return (dirCache[dir] = [f(1), bobbed(f(0)), f(-1), bobbed(f(0))]);
+}
+function idleRows(dir) { const k = "idle-" + dir; if (!dirCache[k]) { const [v, flip] = DIRS[dir]; dirCache[k] = flip ? flipRows(VIEWS[v](0)) : VIEWS[v](0); } return dirCache[k]; }
+const DIR_ORDER = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
+function renderDirs(t) {
+  const c = ctxOf("dirs"); c.fillStyle = "#86d69a"; c.fillRect(0, 0, 232, 40);
+  DIR_ORDER.forEach((d, i) => { const fr = dirFrames(d)[Math.floor(t / 130) % 4]; c.globalAlpha = .22; c.fillStyle = "#1a3a2a"; c.fillRect(i * 29 + 5, 36, 18, 3); c.globalAlpha = 1; drawSprite(c, fr, PAL, i * 29 + 2, 3); });
+}
+// petit terrain : le héros se promène tout seul, ou au clavier (flèches, ZQSD, WASD)
+const walker = { x: 60, y: 40, dir: "S", keys: new Set(), auto: true, path: 0 };
+const AUTO = [[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1],[0,-1],[1,-1]];
+function dirName(dx, dy) { return (dy < 0 ? "N" : dy > 0 ? "S" : "") + (dx > 0 ? "E" : dx < 0 ? "W" : ""); }
+function renderField(t, dt) {
+  const c = ctxOf("field"), W = 160, H = 90;
+  for (let y = 0; y < H; y += 16) for (let x = 0; x < W; x += 16) grassTile(c, x, y);
+  let dx = 0, dy = 0;
+  if (walker.keys.size) { walker.auto = false;
+    if (["arrowleft","q","a"].some(k => walker.keys.has(k))) dx--; if (["arrowright","d"].some(k => walker.keys.has(k))) dx++;
+    if (["arrowup","z","w"].some(k => walker.keys.has(k))) dy--; if (["arrowdown","s"].some(k => walker.keys.has(k))) dy++; }
+  else if (walker.auto) { [dx, dy] = AUTO[Math.floor(t / 1400) % 8]; }
+  const moving = dx || dy;
+  if (moving) { const sp = .045 * dt / Math.hypot(dx, dy); walker.x = Math.max(0, Math.min(W - 24, walker.x + dx * sp)); walker.y = Math.max(-2, Math.min(H - 36, walker.y + dy * sp)); walker.dir = dirName(dx, dy); }
+  const fr = moving ? dirFrames(walker.dir)[Math.floor(t / 130) % 4] : idleRows(walker.dir);
+  c.globalAlpha = .22; c.fillStyle = "#1a3a2a"; c.fillRect(Math.round(walker.x) + 3, Math.round(walker.y) + 32, 18, 3); c.globalAlpha = 1;
+  drawSprite(c, fr, PAL, Math.round(walker.x), Math.round(walker.y));
+}
+function bindField() {
+  const el = document.getElementById("field");
+  el.addEventListener("keydown", e => { const k = e.key.toLowerCase(); if (["arrowleft","arrowright","arrowup","arrowdown","z","q","s","d","w","a"].includes(k)) { walker.keys.add(k); e.preventDefault(); } });
+  el.addEventListener("keyup", e => walker.keys.delete(e.key.toLowerCase()));
+  el.addEventListener("blur", () => walker.keys.clear());
+  document.querySelectorAll("[data-pad]").forEach(b => { const k = b.dataset.pad;
+    const on = e => { e.preventDefault(); walker.keys.add(k); }, off = () => walker.keys.delete(k);
+    b.addEventListener("pointerdown", on); b.addEventListener("pointerup", off); b.addEventListener("pointerleave", off); });
+}
+
+// ---------- Un décor vivant : ruisseau, arbres, rochers, herbes, oiseaux, particules ----------
+const NV = { wd:"#2a5e94", w:"#3a7cb6", wm:"#4f9acb", wl:"#7cc4e4", wh:"#d4f0fa", foam:"#f4fbff",
+  sand:"#d8bf86", sandd:"#b89a5e", wet:"#8e7a50",
+  r1:"#a4a8b0", r2:"#767c88", r3:"#cfd2d6", ro:"#2e2a36", moss:"#5f9a48", mossl:"#8cc45e",
+  l1:"#3f8a3c", l2:"#2b6532", l3:"#5fae48", l4:"#93d062", lo:"#1a3a24", tk:"#6e4630", tkd:"#47301f", tkl:"#916244",
+  gb:"#3f9e56", gt:"#9be08a", reed:"#4c8a3a", reedl:"#86bc4e", cat:"#6e4228", lily:"#3c9a52", lilyl:"#74c672", pink:"#f4a6c6",
+  bird:"#3a3040", beak:"#f2a23a", leafo:"#e0a03a", mush:"#d2463c", mushl:"#ffffff" };
+function rng(seed) { let s = seed >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
+const NW = 384, NH = 216;
+const hex = c => [1, 3, 5].map(i => parseInt(c.slice(i, i + 2), 16));
+// le ruisseau descend du haut à droite vers le bas à gauche
+const riverX = y => 266 - y * .55 + 12 * Math.sin(y / 26);
+const riverHW = y => 13 + 3 * Math.sin(y / 41 + 1);
+const inRiver = (x, y, m = 0) => Math.abs(x - riverX(y)) < riverHW(y) + m;
+const STONES = [[0, 0, 0]].slice(1);           // pierres de gué : [x, y, rayon]
+{ const y0 = 150; [-.6, 0, .6].forEach((k, i) => STONES.push([Math.round(riverX(y0 + i * 3) + k * riverHW(y0)), y0 + i * 3, 4.2])); }
+STONES.push([Math.round(riverX(60) + 4), 60, 2.6]);
+
+// ---- fond fixe : herbe, berges, galets, fleurs ----
+let natureBg = null;
+function natureBackground() {
+  if (natureBg) return natureBg;
+  const c = document.createElement("canvas"); c.width = NW; c.height = NH; const g = c.getContext("2d"), r = rng(7);
+  for (let y = 0; y < NH; y += 16) for (let x = 0; x < NW; x += 16) grassTile(g, x, y);
+  for (let k = 0; k < 14; k++) {                         // zones d'herbe plus sombre, tramées
+    const cx = r() * NW, cy = r() * NH, rx = 14 + r() * 22, ry = 8 + r() * 10;
+    for (let y = Math.floor(cy - ry); y < cy + ry; y++) for (let x = Math.floor(cx - rx); x < cx + rx; x++)
+      if (((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 < 1 && (x + 2 * y) % 4 === 0) px(g, T.gd, x, y);
+  }
+  for (let y = 0; y < NH; y++) {                         // berges de sable
+    const cx = riverX(y), hw = riverHW(y);
+    for (let x = Math.floor(cx - hw - 4); x <= Math.ceil(cx + hw + 4); x++) {
+      const d = Math.abs(x - cx) - hw; if (d > 4 || d < -1) continue;
+      px(g, d < .6 ? NV.wet : d < 2.4 ? NV.sand : (x + y) % 2 ? NV.sand : T.g, x, y);
+      if (d > 1 && d < 2.4 && r() < .08) px(g, NV.sandd, x, y);
+      if (d > 2.4 && d < 4 && r() < .35) px(g, T.gd, x, y);
+    }
+  }
+  for (let k = 0; k < 40; k++) {                         // galets sur les berges
+    const y = Math.floor(r() * NH), side = r() < .5 ? -1 : 1, x = Math.round(riverX(y) + side * (riverHW(y) + 1.5 + r() * 2));
+    px(g, NV.r2, x, y + 1, 2, 1); px(g, NV.r1, x, y, 2, 1); if (r() < .4) px(g, NV.r3, x, y);
+  }
+  for (let k = 0; k < 70; k++) {                         // petites fleurs semées
+    const x = Math.floor(r() * NW), y = Math.floor(r() * NH); if (inRiver(x, y, 6)) continue;
+    const col = [T.fw, NV.pink, T.fy, "#b8a8f0"][k % 4]; px(g, "#4f8f3e", x, y + 1); px(g, col, x, y); if (k % 3 === 0) { px(g, col, x - 1, y); px(g, col, x + 1, y); px(g, col, x, y - 1); px(g, T.fy, x, y); }
+  }
+  // touffes de fleurs et champignons
+  [[40,60,T.fw],[52,66,NV.pink],[64,58,T.fw],[300,170,T.fp],[316,178,T.fw],[330,166,NV.pink],[120,186,T.fw],[134,192,T.fp],[350,40,T.fw],[364,52,NV.pink],[90,120,T.fw]].forEach(([x, y, col]) => flower(g, x, y, col));
+  [[66,104],[71,106]].forEach(([x, y]) => { px(g, NV.ro, x - 1, y - 1, 5, 4); px(g, NV.mush, x, y - 1, 3, 2); px(g, NV.mush, x - 1, y, 5, 1); px(g, NV.mushl, x + 1, y - 1); px(g, NV.mushl, x - 1, y); px(g, "#f0e6d0", x + 1, y + 1, 1, 2); });
+  return (natureBg = c);
+}
+
+// ---- eau animée ----
+const waterCv = document.createElement("canvas"); waterCv.width = NW; waterCv.height = NH;
+const waterImg = waterCv.getContext("2d").createImageData(NW, NH);
+const WC = Object.fromEntries(["wd","w","wm","wl","wh","foam"].map(k => [k, hex(NV[k])]));
+let fishT0 = -1e9, fishAt = [0, 0];
+function renderWater(t) {
+  const d = waterImg.data; d.fill(0);
+  const set = (x, y, k) => { const i = (y * NW + x) * 4, c = WC[k]; d[i] = c[0]; d[i + 1] = c[1]; d[i + 2] = c[2]; d[i + 3] = 255; };
+  const flow = t * .018;                                  // le courant descend
+  for (let y = 0; y < NH; y++) {
+    const cx = riverX(y), hw = riverHW(y);
+    for (let x = Math.max(0, Math.ceil(cx - hw)); x <= Math.min(NW - 1, Math.floor(cx + hw)); x++) {
+      const u = (x - cx) / hw, deep = 1 - u * u;
+      let k = deep > .82 ? "wd" : deep > .45 ? "w" : deep > .18 ? "wm" : "wl";
+      const yy = Math.floor(y - flow * (.7 + deep * .5)), band = Math.floor(yy / 4), cell = Math.floor((x + band * 3) / 6);
+      const hsh = Math.abs(Math.sin(band * 12.9898 + cell * 78.233) * 43758.5453) % 1, inCell = (x + band * 3) % 6;
+      if (deep > .1 && yy % 4 === 0 && hsh < .3 && inCell < 2 + Math.floor(hsh * 8) % 3) k = hsh < .07 ? "wh" : "wl";   // petits reflets qui filent avec le courant
+      else if (deep > .7 && yy % 4 === 2 && hsh > .82 && inCell < 3) k = "wd";
+      if (Math.abs(u) > .88 && (x + y + Math.floor(t / 260)) % 3 === 0) k = "foam";  // écume au bord
+      STONES.forEach(([sx, sy, sr]) => { const dd = Math.hypot(x - sx, (y - sy) * 1.3);
+        if (dd > sr && dd < sr + 1.6 && (x * 7 + y * 3 + Math.floor(t / 160)) % 4) k = "foam";
+        if (y > sy + 2 && y < sy + 12 && Math.abs(x - sx + (y - sy) * .5) < (y - sy) * .25 && Math.sin((y - flow) * .9) > .3) k = "wl"; });
+      set(x, y, k);
+    }
+  }
+  // un poisson saute de temps en temps
+  const ft = t - fishT0;
+  if (ft > 7000) { fishT0 = t; const yy = 40 + ((t / 7000 | 0) * 53) % 120; fishAt = [Math.round(riverX(yy) - 4), yy]; }
+  if (ft < 1500) { const [fx, fy] = fishAt;
+    if (ft > 650) { const rr = (ft - 650) / 140; for (let a = 0; a < 40; a++) { const x = Math.round(fx + 6 + Math.cos(a / 40 * 6.28) * rr), y = Math.round(fy + Math.sin(a / 40 * 6.28) * rr * .5);
+      if (x >= 0 && x < NW && y >= 0 && y < NH && inRiver(x, y) && rr < 6) set(x, y, rr < 3 ? "foam" : "wh"); } } }
+  waterCv.getContext("2d").putImageData(waterImg, 0, 0);
+}
+function drawFish(ctx, t) {
+  const ft = t - fishT0; if (ft < 0 || ft > 650) return;
+  const k = ft / 650, [fx, fy] = fishAt, x = Math.round(fx + k * 7), y = Math.round(fy - Math.sin(Math.PI * k) * 9);
+  px(ctx, "#c8d8e0", x, y, 3, 1); px(ctx, "#8aa0b0", x + 1, y + 1, 2, 1); px(ctx, "#8aa0b0", x - 1, y - (k < .5 ? 1 : -1)); px(ctx, NV.ro, x + 2, y);
+  if (ft < 120) [[-1, 0], [1, -1], [2, 1]].forEach(([a, b]) => px(ctx, NV.foam, fx + a, fy + b));
+}
+
+// ---- rochers ----
+function rock(ctx, x, y, w, h, moss) {
+  for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) {
+    const u = (i + .5 - w / 2) / (w / 2), v = (j + .5 - h / 2) / (h / 2); if (u * u + v * v * (v < 0 ? 1 : .7) > 1) continue;
+    const edge = [[1,0],[-1,0],[0,1],[0,-1]].some(([a, b]) => { const uu = (i + a + .5 - w / 2) / (w / 2), vv = (j + b + .5 - h / 2) / (h / 2); return uu * uu + vv * vv * (vv < 0 ? 1 : .7) > 1; });
+    let c = -u * .5 - v * .9 > .45 ? NV.r3 : -u * .5 - v * .9 > -.3 ? NV.r1 : NV.r2;
+    if ((i * 5 + j * 3) % 11 === 0 && c !== NV.r3) c = NV.r2;
+    if (moss && v < -.25 && u > -.5 && (i + j) % 3) c = (i + j) % 2 ? NV.moss : NV.mossl;
+    px(ctx, edge ? NV.ro : c, x + i, y + j);
+  }
+}
+
+// ---- arbres en touffes de feuillage ----
+const treeCache2 = {};
+function leafyTree(seed, R) {
+  const k = seed + ":" + R; if (treeCache2[k]) return treeCache2[k];
+  const r = rng(seed), W = R * 2 + 8, Hc = Math.round(R * 1.7) + 6;
+  const blobs = [];
+  for (let i = 0; i < 11; i++) { const a = r() * 6.28, d = r() * R * .55;
+    blobs.push([W / 2 + Math.cos(a) * d, Hc / 2 + 1 + Math.sin(a) * d * .7, R * (.42 + r() * .2)]); }
+  blobs.push([W / 2, Hc / 2 - R * .35, R * .5]);
+  blobs.sort((a, b) => a[1] - b[1]);                     // les touffes du bas passent devant
+  const top = (x, y) => { for (let i = blobs.length - 1; i >= 0; i--) { const [bx, by, br] = blobs[i]; if (Math.hypot(x - bx, (y - by) * 1.15) < br) return i; } return -1; };
+  const can = document.createElement("canvas"); can.width = W; can.height = Hc; const g = can.getContext("2d");
+  for (let y = 0; y < Hc; y++) for (let x = 0; x < W; x++) {
+    const i = top(x + .5, y + .5); if (i < 0) continue;
+    const [bx, by, br] = blobs[i], nx = (x + .5 - bx) / br, ny = (y + .5 - by) / br;
+    const out = [[1,0],[-1,0],[0,1],[0,-1]].some(([a, b]) => top(x + a + .5, y + b + .5) < 0);
+    const under = top(x + .5, y - .5) !== i && top(x + .5, y - .5) >= 0 && top(x + .5, y - .5) < i;   // bord d'une touffe posée sur une autre
+    const n = r(), lit = -nx * .55 - ny * .85 + (n - .5) * .3;
+    let c = lit > .4 ? NV.l3 : lit > -.3 ? NV.l1 : NV.l2;
+    if (lit > .62 && n < .45) c = NV.l4;                                   // quelques feuilles au soleil
+    if (c === NV.l1 && n > .93) c = NV.l2;                                 // petits creux entre les feuilles
+    if (under) c = NV.l2;
+    if (out) c = NV.lo;
+    px(g, c, x, y);
+  }
+  // tronc
+  const trW = Math.max(4, Math.round(R / 3)), trH = Math.round(R * .9), tr = document.createElement("canvas"); tr.width = trW + 6; tr.height = trH; const h = tr.getContext("2d");
+  for (let y = 0; y < trH; y++) { const flare = y > trH - 4 ? (y - (trH - 4)) : 0;
+    for (let x = 3 - flare; x < 3 + trW + flare; x++) { const edge = x === 3 - flare || x === 2 + trW + flare || y === trH - 1;
+      px(h, edge ? NV.lo : x < 3 + trW / 2 - 1 ? NV.tkl : (x + y) % 4 === 0 ? NV.tkd : NV.tk, x, y); } }
+  return (treeCache2[k] = { can, tr, W, Hc, trW, trH });
+}
+function drawTree(ctx, t, x, y, seed, R) {          // (x, y) = pied du tronc
+  const T2 = leafyTree(seed, R), sway = Math.round(Math.sin(t * .0011 + seed) * .8 + Math.sin(t * .0031 + seed * 2) * .35);
+  ctx.globalAlpha = .2; ctx.fillStyle = "#1a3a2a";
+  for (let j = -3; j <= 3; j++) { const w = Math.round(R * 1.1 * Math.sqrt(1 - (j / 4) ** 2)); ctx.fillRect(x - w + 4, y + j, w * 2, 1); }
+  ctx.globalAlpha = 1;
+  ctx.drawImage(T2.tr, x - (T2.trW + 6) / 2, y - T2.trH);
+  ctx.drawImage(T2.can, x - T2.W / 2 + sway, y - T2.trH - T2.Hc + Math.round(R * .45));
+}
+
+function drawBush(ctx, t, x, y, seed, R) {          // un buisson : une touffe de feuillage posée au sol
+  const B = leafyTree(seed, R), sway = Math.round(Math.sin(t * .0013 + seed) * .5);
+  ctx.globalAlpha = .2; ctx.fillStyle = "#1a3a2a"; ctx.fillRect(x - R, y - 1, R * 2, 2); ctx.globalAlpha = 1;
+  ctx.drawImage(B.can, x - B.W / 2 + sway, y - B.Hc + 2);
+  if (seed % 3 === 0) [[-3, -8], [2, -11], [5, -6]].forEach(([a, b]) => { px(ctx, "#c2304a", x + a, y + b); px(ctx, "#f07a8a", x + a, y + b - 1); });   // baies
+}
+// ---- herbes et roseaux qui ondulent ----
+const TUFTS = [], REEDS = [], LILIES = [];
+{ const r = rng(11);
+  while (TUFTS.length < 150) { const cx = Math.floor(r() * NW), cy = 8 + Math.floor(r() * (NH - 8)); for (let n = 0; n < 4; n++) { const x = cx + Math.floor(r() * 14 - 7), y = cy + Math.floor(r() * 6 - 3); if (!inRiver(x, y, 6)) TUFTS.push([x, y, 4 + Math.floor(r() * 4)]); } }
+  TUFTS.sort((a, b) => a[1] - b[1]);
+  for (let k = 0; k < 9; k++) { const y0 = 10 + Math.floor(r() * (NH - 16)), side = k % 2 ? 1 : -1; if (y0 > 130 && y0 < 170) continue;
+    for (let n = 0; n < 4; n++) { const y = y0 + n % 2 * 2; REEDS.push([Math.round(riverX(y) + side * (riverHW(y) + 1 + n * 1.3)), y, 8 + Math.floor(r() * 7), n % 2 === 0]); } }
+  [[30, -1], [95, 1], [190, -1]].forEach(([y, s]) => LILIES.push([Math.round(riverX(y) + s * (riverHW(y) - 5)), y, y === 95])); }
+const wind = (x, t) => Math.sin(x * .045 - t * .0021) + .6 * Math.sin(x * .013 - t * .0009);   // une rafale qui traverse l'écran
+function drawTuft(ctx, t, x, y, h) {
+  const w = wind(x, t);
+  [-2, -1, 0, 1, 2].forEach((dx, i) => { const hh = h - Math.abs(dx) - (i % 2), off = w * (1 + Math.abs(dx) * .2) + dx * .4;
+    for (let k = 0; k < hh; k++) px(ctx, k < 1 ? "#2c7a40" : k < hh - 2 ? NV.gb : NV.gt, x + dx + Math.round(off * k / hh), y - k); });
+}
+function drawReed(ctx, t, x, y, h, cat) {
+  const w = wind(x, t) * 1.6;
+  for (let k = 0; k < h; k++) px(ctx, k > h * .6 ? NV.reedl : NV.reed, x + Math.round(w * (k / h) ** 1.5), y - k);
+  if (cat) { const cx = x + Math.round(w); px(ctx, NV.cat, cx, y - h - 3, 1, 4); px(ctx, "#9a6440", cx, y - h - 3); px(ctx, NV.reedl, cx, y - h - 4); }
+  else px(ctx, NV.reedl, x + Math.round(w) + (w > 0 ? 1 : -1), y - h);
+}
+function drawLily(ctx, t, x, y, flowerOn) {
+  const b = Math.round(Math.sin(t * .002 + x) * .6);
+  px(ctx, NV.lo, x - 3, y + b - 1, 7, 4); px(ctx, NV.lily, x - 2, y + b - 1, 5, 3); px(ctx, NV.lily, x - 3, y + b, 7, 2);
+  px(ctx, NV.lilyl, x - 2, y + b - 1, 2, 1); px(ctx, NV.wd, x, y + b - 1, 1, 2);
+  if (flowerOn) { px(ctx, NV.pink, x - 1, y + b - 2, 3, 2); px(ctx, "#fff0f6", x, y + b - 3); px(ctx, T.fy, x, y + b - 2); }
+}
+
+// ---- oiseaux : ils arrivent, picorent sur la branche, puis s'envolent ----
+const BIRD_UP = [[0,0],[1,1],[2,2],[3,1],[4,0]], BIRD_DN = [[0,2],[1,1],[2,2],[3,1],[4,2]];
+function drawBirds(ctx, t, perch) {
+  const P = 12000, tt = t % P;
+  [[0, 0], [5, -2], [10, 1]].forEach(([dx, dy], i) => {
+    const px0 = perch[0] + dx, py0 = perch[1] + dy, d = i * 180;
+    let x, y, fly = true;
+    if (tt < 2600 + d) { const k = Math.min(1, (tt) / (2600 + d)), e = 1 - (1 - k) ** 3; x = px0 - 140 * (1 - e); y = py0 - 70 * (1 - e) + Math.sin(k * 9) * 2; fly = k < 1; }
+    else if (tt < 8000 + d) { x = px0; y = py0 - ((Math.floor(tt / 400) + i) % 7 === 0 ? 1 : 0); fly = false; }
+    else { const k = (tt - 8000 - d) / 2800; x = px0 + 70 * k * k + 30 * k; y = py0 - 80 * k * k - 12 * k; }
+    x = Math.round(x); y = Math.round(y);
+    if (!fly) { px(ctx, NV.bird, x, y, 3, 2); px(ctx, NV.bird, x + 3, y - 1); px(ctx, NV.beak, x + 4, y - 1); px(ctx, "#6a5a70", x, y); }
+    else (Math.floor(t / 90 + i) % 2 ? BIRD_UP : BIRD_DN).forEach(([a, b]) => px(ctx, NV.bird, x + a, y + b));
+  });
+}
+
+// ---- petites vies : papillons, libellule, feuilles, pollen ----
+function drawButterfly(ctx, t, bx, by, ph, col) {
+  const x = Math.round(bx + 34 * Math.sin(t * .0006 + ph) + 9 * Math.sin(t * .0021 + ph)), y = Math.round(by + 12 * Math.sin(t * .0009 + ph * 2) + 4 * Math.sin(t * .0037));
+  const open = Math.floor(t / 110 + ph) % 2;
+  if (open) { px(ctx, col, x - 2, y, 2, 2); px(ctx, col, x + 1, y, 2, 2); px(ctx, NV.ro, x, y, 1, 2); }
+  else { px(ctx, col, x - 1, y, 1, 2); px(ctx, col, x + 1, y, 1, 2); px(ctx, NV.ro, x, y, 1, 2); }
+  ctx.globalAlpha = .18; px(ctx, "#1a3a2a", x - 1, y + 9, 3, 1); ctx.globalAlpha = 1;
+}
+function drawDragonfly(ctx, t) {
+  const seg = 1600, i = Math.floor(t / seg), k = (t % seg) / seg, e = k < .7 ? 0 : (k - .7) / .3, ee = e * e * (3 - 2 * e);
+  const at = n => { const y = 30 + ((n * 37) % 140); return [riverX(y) + ((n * 13) % 15) - 7, y]; };
+  const [x0, y0] = at(i), [x1, y1] = at(i + 1), x = Math.round(x0 + (x1 - x0) * ee), y = Math.round(y0 + (y1 - y0) * ee + Math.sin(t * .02) * .6);
+  px(ctx, "#1f8a8a", x, y, 5, 1); px(ctx, "#2fb8b0", x, y); px(ctx, NV.ro, x + 4, y);
+  if (Math.floor(t / 40) % 2) { px(ctx, "#e8f8ff", x + 1, y - 1, 2, 1); px(ctx, "#e8f8ff", x + 1, y + 1, 2, 1); }
+}
+const LEAVES = Array.from({ length: 7 }, (_, i) => ({ i, per: 6000 + i * 1300, off: i * 2300 }));
+function drawLeaves(ctx, t, trees) {
+  LEAVES.forEach(L => { const tt = (t + L.off) % L.per, [tx, ty, , R] = trees[L.i % trees.length];
+    const sx = tx - R * .6 + (L.i * 17) % (R * 1.2), sy = ty - R * 1.6, fall = Math.min(tt / 3800, 1);
+    const x = Math.round(sx + Math.sin(tt * .003 + L.i) * 5 + fall * 12), y = Math.round(sy + fall * (R * 1.6 + 4));
+    if (tt > 5200) return; ctx.globalAlpha = tt > 4400 ? 1 - (tt - 4400) / 800 : 1;
+    const c = L.i % 3 === 0 ? NV.leafo : NV.l3; px(ctx, c, x, y, Math.floor(tt / 250) % 2 ? 2 : 1, 1); if (Math.floor(tt / 250) % 2 === 0) px(ctx, c, x, y + 1);
+    ctx.globalAlpha = 1; });
+}
+const MOTES = Array.from({ length: 22 }, (_, i) => { const r = rng(100 + i); return [r() * NW, r() * NH, r() * 6.28]; });
+function drawMotes(ctx, t) {
+  MOTES.forEach(([x, y, p]) => { const yy = ((y - t * .006) % NH + NH) % NH, xx = x + Math.sin(t * .0012 + p) * 6;
+    const a = .5 + .5 * Math.sin(t * .004 + p); if (a < .25) return; ctx.globalAlpha = a * .9; px(ctx, "#fffbe0", Math.round(xx), Math.round(yy)); ctx.globalAlpha = 1; });
+}
+function drawCloudShadows(ctx, t) {
+  ctx.globalAlpha = .07; ctx.fillStyle = "#0e2a3a";
+  [[0, 50, 80, 26], [190, 150, 96, 30]].forEach(([ox, oy, rx, ry]) => { const cx = ((ox + t * .007) % (NW + rx * 2)) - rx;
+    for (let j = -ry; j <= ry; j++) { const w = Math.round(rx * Math.sqrt(1 - (j / ry) ** 2) * (1 + .12 * Math.sin(j * .5))); ctx.fillRect(Math.round(cx - w), oy + j, w * 2, 1); } });
+  ctx.globalAlpha = 1;
+}
+
+// ---- la scène ----
+const NTREES = [[44, 96, 3, 26], [118, 60, 9, 20], [345, 128, 5, 28], [322, 216, 13, 22], [20, 218, 21, 20], [376, 40, 17, 18],
+  [-6, 40, 31, 24], [34, 30, 33, 22], [84, 26, 37, 20], [158, 34, 41, 22], [210, 30, 43, 18], [326, 30, 47, 22], [380, 96, 51, 20], [150, 214, 53, 18]];
+const BUSHES = [[96, 104, 61, 9], [150, 120, 63, 8], [300, 104, 67, 10], [276, 190, 69, 9], [64, 190, 71, 8], [366, 160, 73, 9]];
+function renderNature(t) {
+  const c = ctxOf("nature");
+  c.drawImage(natureBackground(), 0, 0);
+  renderWater(t); c.drawImage(waterCv, 0, 0);
+  LILIES.forEach(([x, y, f]) => drawLily(c, t, x, y, f));
+  drawFish(c, t);
+  TUFTS.forEach(([x, y, h]) => drawTuft(c, t, x, y, h));
+  const items = [];
+  STONES.slice(0, 3).forEach(([x, y]) => items.push({ y: y + 2, fn: () => rock(c, x - 4, y - 2, 9, 5, false) }));
+  items.push({ y: 62, fn: () => rock(c, STONES[3][0] - 2, 58, 6, 4, true) });
+  items.push({ y: 176, fn: () => rock(c, 96, 158, 22, 17, true) }, { y: 177, fn: () => rock(c, 115, 168, 9, 8, false) }, { y: 80, fn: () => rock(c, 296, 68, 14, 11, true) }, { y: 123, fn: () => rock(c, 214, 116, 6, 4, false) });
+  REEDS.forEach(([x, y, h, cat]) => items.push({ y, fn: () => drawReed(c, t, x, y, h, cat) }));
+  NTREES.forEach(([x, y, seed, R]) => items.push({ y, fn: () => drawTree(c, t, x, y, seed, R) }));
+  BUSHES.forEach(([x, y, seed, R]) => items.push({ y, fn: () => drawBush(c, t, x, y, seed, R) }));
+  const hx = Math.round(riverX(146) - riverHW(146) - 26), hy = 120, fr = Math.floor(t / 700) % 2 ? dirFrames("E")[1] : idleRows("E");   // le héros respire au bord de l'eau
+  items.push({ y: hy + 34, fn: () => { c.globalAlpha = .22; px(c, "#1a3a2a", hx + 3, hy + 32, 18, 3); c.globalAlpha = 1; drawSprite(c, fr, PAL, hx, hy); } });
+  items.sort((a, b) => a.y - b.y).forEach(i => i.fn());
+  drawLeaves(c, t, NTREES);
+  drawBirds(c, t, [334, 74]);
+  drawButterfly(c, t, 70, 70, 0, "#fff6d8"); drawButterfly(c, t, 310, 176, 2.1, T.fy);
+  drawDragonfly(c, t);
+  drawMotes(c, t);
+  drawCloudShadows(c, t);
+}
+
+// ---------- L'Esprit capillaire de la rancoeur : le puits et la mini cinématique ----------
+const N = { g:"#24384a", gd:"#1a2a3a", gl:"#33506a", st:"#5c6478", std:"#3c4256", stl:"#868ea4", so:"#0e1018",
+  wood:"#5a4030", woodd:"#3a281e", woodl:"#7a5a40", iron:"#6a6e78", hole:"#05060a", hair:"#100c16", hairl:"#4a4868", moss:"#3e6a4a", rope:"#8a7a5a", fly:"#e8f6a0" };
+function nightGround(ctx, W, H) {
+  ctx.fillStyle = N.g; ctx.fillRect(0, 0, W, H);
+  for (let y = 0; y < H; y += 16) for (let x = 0; x < W; x += 16) [[2,3],[10,1],[6,9],[13,11],[4,14]].forEach(([a, b], i) => { ctx.fillStyle = i % 2 ? N.gd : N.gl; ctx.fillRect(x + a, y + b, 1, 1); });
+}
+function ell(ctx, cx, cy, rx, ry, col) { ctx.fillStyle = col; for (let y = -ry; y <= ry; y++) { const w = Math.round(rx * Math.sqrt(1 - (y * y) / (ry * ry || 1))); ctx.fillRect(cx - w, cy + y, w * 2 + 1, 1); } }
+// le puits : (x, y) coin haut-gauche, 36 × 46. s.spill : quantité de cheveux qui débordent ; s.crank : angle de la manivelle ; s.swing : balancement du seau
+function drawWell(ctx, x, y, t, s) {
+  const cx = x + 18, rimY = y + 22;
+  // poteaux, poutre (treuil), manivelle
+  [[x + 3], [x + 31]].forEach(([px]) => { ctx.fillStyle = N.so; ctx.fillRect(px - 1, y - 1, 4, 24); ctx.fillStyle = N.wood; ctx.fillRect(px, y, 2, 22); ctx.fillStyle = N.woodd; ctx.fillRect(px + 1, y, 1, 22); });
+  ctx.fillStyle = N.so; ctx.fillRect(x + 1, y + 3, 34, 5); ctx.fillStyle = N.wood; ctx.fillRect(x + 2, y + 4, 32, 3); ctx.fillStyle = N.woodl; ctx.fillRect(x + 2, y + 4, 32, 1);
+  ctx.fillStyle = N.rope; for (let k = 12; k < 25; k += 2) ctx.fillRect(x + k, y + 4, 1, 3);
+  const a = s.crank || 0, hx = x - 2 + Math.round(Math.cos(a) * 3), hy = y + 5 + Math.round(Math.sin(a) * 3);
+  ctx.fillStyle = N.so; ctx.fillRect(x - 1, y + 4, 3, 3); ctx.fillStyle = N.iron; ctx.fillRect(x, y + 5, 2, 1);
+  ctx.fillStyle = N.iron; ctx.fillRect(Math.min(x, hx), Math.min(y + 5, hy), Math.abs(hx - x) + 1, 1); ctx.fillRect(hx, Math.min(y + 5, hy), 1, Math.abs(hy - y - 5) + 1);
+  ctx.fillStyle = N.so; ctx.fillRect(hx - 2, hy - 1, 3, 3); ctx.fillStyle = N.woodl; ctx.fillRect(hx - 1, hy, 2, 1);
+  // toit
+  for (let r = 0; r < 8; r++) { const w = 12 + r * 3; ctx.fillStyle = N.so; ctx.fillRect(cx - w / 2 - 1, y - 9 + r, w + 2, 1); ctx.fillStyle = r % 3 === 2 ? N.woodd : N.wood; ctx.fillRect(cx - w / 2, y - 9 + r, w, 1); }
+  ctx.fillStyle = N.so; ctx.fillRect(cx - 21, y - 2, 42, 1);
+  // corde et seau qui se balance
+  const sw = Math.round((s.swing || 0) * Math.sin(t / 260)), by = y + 10;
+  ctx.fillStyle = N.rope; for (let k = y + 7; k < by; k++) ctx.fillRect(cx + Math.round(sw * (k - y - 7) / (by - y - 7)), k, 1, 1);
+  const bx = cx + sw - 3;
+  ctx.fillStyle = N.so; ctx.fillRect(bx - 1, by - 1, 9, 8); ctx.fillStyle = N.wood; ctx.fillRect(bx, by, 7, 6); ctx.fillStyle = N.woodl; ctx.fillRect(bx, by, 2, 6);
+  ctx.fillStyle = N.iron; ctx.fillRect(bx, by + 1, 7, 1); ctx.fillRect(bx, by + 4, 7, 1); ctx.fillStyle = N.so; ctx.fillRect(bx + 1, by - 3, 5, 1); ctx.fillRect(bx, by - 2, 1, 2); ctx.fillRect(bx + 6, by - 2, 1, 2);
+  drawWellBody(ctx, x, y);
+  ell(ctx, cx, rimY, 17, 6, N.so); ell(ctx, cx, rimY, 16, 5, N.stl); ell(ctx, cx, rimY, 13, 3, N.hole);
+  for (let k = -14; k <= 14; k += 6) { ctx.fillStyle = N.st; ctx.fillRect(cx + k, rimY + 4, 3, 1); }
+  drawSpill(ctx, x, rimY, t, s.spill || 0);
+}
+function drawSpill(ctx, x, rimY, t, sp) {     // des cheveux, beaucoup : ils sortent du trou et débordent par-dessus le rebord
+  for (let i = 0; i < 15; i++) {
+    const sx = x + 5 + i * 2 + (i % 2), len = Math.round(sp * (6 + (i * 7) % 13)), top = rimY - 1 - Math.round(sp * ((i * 5) % 4));
+    for (let k = 0; k < len + Math.round((rimY + 4 - top) * Math.min(1, sp * 2.5)); k++) {
+      const X = sx + Math.round(Math.sin(t / 500 + k * .4 + i) * (k / 9)), Y = top + k;
+      ctx.fillStyle = i % 3 ? N.hair : N.hairl; ctx.fillRect(X, Y, 1, 1);
+    }
+  }
+}
+function drawWellBody(ctx, x, y) {
+  const cx = x + 18, rimY = y + 22;
+  // corps du puits
+  ctx.fillStyle = N.so; ctx.fillRect(x + 1, rimY, 34, 22); ell(ctx, cx, rimY + 21, 17, 4, N.so);
+  ctx.fillStyle = N.st; ctx.fillRect(x + 2, rimY, 32, 21); ell(ctx, cx, rimY + 21, 16, 3, N.std);
+  for (let r = 0; r < 5; r++) for (let k = (r % 2) * 4; k < 32; k += 8) { ctx.fillStyle = N.std; ctx.fillRect(x + 2 + k, rimY + 2 + r * 4, 1, 4); ctx.fillRect(x + 2, rimY + 5 + r * 4, 32, 1); }
+  ctx.fillStyle = N.stl; ctx.fillRect(x + 3, rimY + 2, 2, 17);
+}
+// l'avant du puits, redessiné par-dessus quand quelque chose tombe dedans
+function drawWellFront(ctx, x, y, t, s) {
+  const cx = x + 18, rimY = y + 22;
+  drawWellBody(ctx, x, y);
+  ctx.save(); ctx.beginPath(); ctx.rect(x - 2, rimY + 1, 40, 40); ctx.clip();   // seulement la moitié avant : mêmes pixels qu'avant, sans couture
+  ell(ctx, cx, rimY, 17, 6, N.so); ell(ctx, cx, rimY, 16, 5, N.stl); ell(ctx, cx, rimY, 13, 3, N.hole);
+  for (let k = -14; k <= 14; k += 6) { ctx.fillStyle = N.st; ctx.fillRect(cx + k, rimY + 4, 3, 1); }
+  drawSpill(ctx, x, rimY, t, s.spill || 0);
+  ctx.restore();
+}
+function firefly(c, t, W, H) { for (let i = 0; i < 4; i++) { const x = (hash(i) * W + Math.sin(t / 900 + i) * 6) | 0, y = (hash(i + 5) * H * .7 + Math.cos(t / 700 + i * 2) * 4) | 0;
+  c.globalAlpha = .4 + .4 * Math.sin(t / 300 + i * 3); c.fillStyle = N.fly; c.fillRect(x, y, 1, 1); } c.globalAlpha = 1; }
+// carte : le puits seul. On ne voit jamais l'esprit, seulement ses cheveux.
+function renderSpiritCard(t) {
+  const c = ctxOf("spirit"); nightGround(c, 64, 64);
+  const ph = (t % 8000) / 8000, reach = ph < .4 ? 0 : ph < .6 ? (ph - .4) / .2 : ph < .8 ? 1 : 1 - (ph - .8) / .2;
+  drawWell(c, 14, 14, t, { spill: .7 + .3 * reach, swing: 1, crank: Math.PI });
+  // une mèche qui tâte le sol, puis se retire
+  for (let k = 0; k < Math.round(reach * 16); k++) { c.fillStyle = k % 5 === 2 ? N.hairl : N.hair; c.fillRect(46 + k, 52 + Math.round(Math.sin(t / 200 + k * .7) * .8), 1, 1); }
+}
+
+// ---------- Mini cinématique : les cheveux attrapent l'enfant par le pied ----------
+const CINE_LEN = 11000;
+const FRIEND_PAL = { ...PAL, c:"#5a8a4a", C:"#3e6634", l:"#86b46a", h:"#d8b060", H:"#a8803e", j:"#f4d890", p:"#6a5a4a", P:"#4a3e34" };
+const CINE_TEXT = [[0, "La nuit, près du vieux puits."], [600, "Des cheveux débordent du puits et glissent hors de vue…"], [2200, "Ils ont attrapé quelque chose."],
+  [2700, "Ton meilleur ami, traîné par le pied."], [4300, "Arraché du sol…"], [5600, "…et englouti."], [7000, "Le seau se balance encore."]];
+let friendFrames = null, cineStart = 0;
+const spriteCanvas = new Map();
+function spriteToCanvas(rows, pal) {
+  const key = rows.join("|"); if (spriteCanvas.has(key)) return spriteCanvas.get(key);
+  const cv = document.createElement("canvas"); cv.width = 24; cv.height = rows.length; drawSprite(cv.getContext("2d"), rows, pal, 0, 0); spriteCanvas.set(key, cv); return cv;
+}
+// dessine l'enfant tourné : ses pieds pointent dans la direction phi
+function drawTurned(ctx, rows, pal, cx, cy, phi) {
+  const cv = spriteToCanvas(rows, pal);
+  ctx.save(); ctx.imageSmoothingEnabled = false; ctx.translate(Math.round(cx), Math.round(cy)); ctx.rotate(phi - Math.PI / 2);
+  ctx.drawImage(cv, -12, -Math.round(rows.length / 2)); ctx.restore();
+}
+function hairLine(ctx, ax, ay, bx, by, e, taut, i) {
+  const n = Math.max(1, Math.round(Math.hypot(bx - ax, by - ay)));
+  for (let k = 0; k <= n; k++) {
+    const u = k / n, sag = (1 - taut) * Math.sin(u * Math.PI) * 4, wob = (1 - taut * .8) * Math.sin(e / 180 + k * .45 + i * 2);
+    const X = Math.round(ax + (bx - ax) * u), Y = Math.round(ay + (by - ay) * u + sag + wob);
+    ctx.fillStyle = N.hair; ctx.fillRect(X, Y, 1, 2); ctx.fillStyle = N.hairl; if (k % 3 === i % 3) ctx.fillRect(X, Y - 1, 1, 1);
+  }
+}
+function renderCine(t) {
+  const c = ctxOf("cine"), W = 128, H = 72;
+  if (!friendFrames) { const r = makeHero({ child: true, hair: .35, outfit: "tunique", pact: false, combat: false }).rows; friendFrames = [r, ...walkFrames(r, 23)]; }
+  const e = (t - cineStart) % CINE_LEN, ph = (a, b) => Math.max(0, Math.min(1, (e - a) / (b - a)));
+  const smooth = u => u * u * (3 - 2 * u);
+  nightGround(c, W, H);
+  ell(c, 116, 9, 6, 6, "#2a3450"); ell(c, 116, 9, 4, 4, "#e8ecd8"); ell(c, 115, 8, 1, 1, "#c8ccb8");
+  const wx = 14, wy = 16, rim = [wx + 30, wy + 25], hole = [wx + 18, wy + 21], groundY = 62;
+  const crawl = ph(600, 2200), dragRaw = ph(2700, 4300), drag = dragRaw * dragRaw, lift = smooth(ph(4300, 5600)), gone = e >= 5600;
+  const well = { spill: (.6 + .4 * crawl) * (1 - smooth(ph(5800, 9500))), crank: Math.PI, swing: gone ? 1.6 * (1 - ph(5600, 10000)) + .3 : .3 };
+  drawWell(c, wx, wy, e, well);
+  let feet = null, phi = Math.PI, body = null;
+  if (dragRaw > 0 && !gone) {
+    if (lift === 0) { const x = 140 - drag * 48; feet = [x - 13, groundY - 2]; body = [x, groundY - 4]; }
+    else { // l'arc du schéma : il décolle tôt, monte, puis plonge dans le puits
+      const p0 = [92, groundY - 4], p1 = [58, -20], p2 = [hole[0], hole[1] + 18], u = lift, v = 1 - u;
+      body = [v * v * p0[0] + 2 * u * v * p1[0] + u * u * p2[0], v * v * p0[1] + 2 * u * v * p1[1] + u * u * p2[1]];
+      const dx = 2 * v * (p1[0] - p0[0]) + 2 * u * (p2[0] - p1[0]), dy = 2 * v * (p1[1] - p0[1]) + 2 * u * (p2[1] - p1[1]);
+      phi = Math.atan2(dy, dx); feet = [body[0] + Math.cos(phi) * 13, body[1] + Math.sin(phi) * 13];
+    }
+  }
+  for (let i = 0; i < 4; i++) {
+    if (feet) hairLine(c, rim[0], rim[1] + i, feet[0], Math.min(feet[1], lift > .5 ? wy + 22 : 99) + (i - 1.5) * .8, e, lift > 0 ? 1 : .7, i);
+    else if (e > 2200 && e < 2700) hairLine(c, rim[0], rim[1] + i, 132, groundY - 2 + i, e, ph(2200, 2500), i);
+    else if (crawl > 0 && !gone) { const endX = rim[0] + crawl * (134 - rim[0]); hairLine(c, rim[0], rim[1] + i, endX, groundY - 3 + i + Math.sin(i) * 2, e, 0, i); }
+  }
+  if (gone) { const back = 1 - ph(5600, 6800); for (let i = 0; i < 3; i++) if (back > 0) hairLine(c, rim[0], rim[1] + i, rim[0] + back * 14, rim[1] + 6 + i, e, 0, i); }
+  if (body) {
+    const fr = friendFrames[1 + Math.floor(e / 80) % 4];
+    if (lift === 0) { c.globalAlpha = .3; c.fillStyle = N.so; c.fillRect(Math.round(body[0]) - 14, groundY + 2, 28, 2); c.globalAlpha = 1; }
+    c.save();
+    if (lift > .5) { c.beginPath(); c.rect(0, 0, W, wy + 25); c.clip(); }   // une fois au-dessus du trou, rien ne dépasse sous le puits
+    c.globalAlpha = 1 - ph(5200, 5600) * .8;                    // il s'assombrit en s'enfonçant dans le noir
+    drawTurned(c, fr, FRIEND_PAL, body[0], body[1], phi);
+    c.restore();
+    const fx = Math.round(feet[0]), fy = Math.round(feet[1]);
+    if (!(lift > .5 && fy > wy + 22)) { c.fillStyle = N.hair; [[0,-2],[1,-1],[2,0],[1,1],[0,2],[-1,1],[-1,-1],[0,0]].forEach(([a, b]) => c.fillRect(fx + a, fy + b, 1, 1)); c.fillStyle = N.hairl; c.fillRect(fx + 1, fy - 1, 1, 1); }
+    // l'avant du puits repasse devant lui : il tombe vraiment dedans
+    if (lift > .5) drawWellFront(c, wx, wy, e, well);
+  }
+  const fade = Math.max(1 - ph(0, 600), ph(10200, 11000));
+  if (fade > 0) { c.globalAlpha = fade; c.fillStyle = "#000"; c.fillRect(0, 0, W, H); c.globalAlpha = 1; }
+  let line = ""; CINE_TEXT.forEach(([at, txt]) => { if (e >= at) line = txt; });
+  const cap = document.getElementById("cine-cap"); if (cap.textContent !== line) cap.textContent = line;
+}
+
+// ---------- Au fond du puits : la vue plongeante (plus détaillée que le jeu) ----------
+const HORROR_W = 160, HORROR_H = 120, BAYER4 = [[0,8,2,10],[12,4,14,6],[3,11,1,9],[15,7,13,5]];
+const horrorImgs = {};
+function buildHorror(variant, rase = true) {   // rase : la tête d'Élio, rasée par son père le soir du jour 2 (false = les anciens cheveux blonds)
+  const cv = document.createElement("canvas"); cv.width = HORROR_W; cv.height = HORROR_H; const ctx = cv.getContext("2d");
+  const W = HORROR_W, H = HORROR_H, C = [80, 60];
+  const P = (x, y, c) => { x |= 0; y |= 0; if (x < 0 || y < 0 || x >= W || y >= H) return; ctx.fillStyle = c; ctx.fillRect(x, y, 1, 1); };
+  const rnd = (() => { let s = 4242; return () => (s = (s * 16807) % 2147483647) / 2147483647; })();
+  const ramp = (arr, v, x, y) => { const f = Math.max(0, Math.min(.999, v)) * (arr.length - 1) + BAYER4[y & 3][x & 3] / 16 - .5; return arr[Math.max(0, Math.min(arr.length - 1, Math.round(f)))]; };
+  const STONE = ["#040507", "#0c1015", "#171d24", "#232b34", "#323c46", "#46525c", "#5e6a72"];
+  const HAIR = ["#020103", "#08060c", "#110e18", "#1e1a2a", "#302b42"];
+  const SKIN = ["#120c0e", "#33242a", "#5e4646", "#8c6c66", "#b8968a", "#d8bcaa"];
+  const GOLD = ["#1e160a", "#4a3818", "#7a5e2a", "#a8843e", "#c8a456"];
+  const BLOOD = ["#160204", "#380508", "#640a10", "#921616", "#b8302a"];
+  const GREY = ["#16181a", "#34383a", "#5a5e5c", "#868a84", "#aeb0a6"];
+  // 1. le conduit vu d'en haut : des anneaux de pierres qui se resserrent vers le fond
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const dx = x - C[0], dy = (y - C[1]) * 1.18, r = Math.hypot(dx, dy), a = Math.atan2(dy, dx);
+    const lr = Math.log(r + 3) * 7.5, ring = Math.floor(lr), n = 8 + ring * 3, sg = (a / 6.2832 + .5) * n + ring * .37, seg = Math.floor(sg);
+    const mortar = lr - ring < .16 || sg - seg < .07 * (1 + ring * .05);
+    const light = Math.pow(Math.min(1, r / 95), .8) * .8 + Math.max(0, Math.cos(a + .9)) * .28 * Math.min(1, r / 60);
+    const stoneVar = (Math.sin(ring * 12.9898 + seg * 78.233) * 43758.5453) % 1;
+    let v = light * .9 + Math.abs(stoneVar) * .12 - (mortar ? .45 : 0) + ((lr - ring) - .5) * .3 * light;
+    P(x, y, ramp(STONE, v, x, y));
+  }
+  // 2. la masse de cheveux au fond, en tourbillon
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const dx = x - C[0], dy = (y - C[1]) * 1.18, r = Math.hypot(dx, dy), a = Math.atan2(dy, dx);
+    const edge = 34 + Math.sin(a * 7) * 4 + Math.sin(a * 13 + 1) * 2; if (r > edge) continue;
+    const swirl = .5 + .5 * Math.sin(a * 22 + r * .55 + Math.sin(r * .3) * 2);
+    P(x, y, ramp(HAIR, swirl * .7 + (r / edge) * .1 - .05 + (rnd() - .5) * .2, x, y));
+  }
+  // un mèche : (x, y, angle, longueur, épaisseur, courbure, enroulement)
+  function strand(x, y, ang, len, thick, bend, curl, hl = 4) {
+    for (let s = 0; s < len; s++) {
+      const k = s / len; ang += bend * Math.sin(s * .12 + bend * 9) * .08 + (k > .7 ? curl * (k - .7) * .9 : 0);
+      x += Math.cos(ang); y += Math.sin(ang);
+      const w = Math.max(1, Math.round(thick * (1 - k * .8)));
+      for (let q = 0; q < w; q++) P(x + q * Math.cos(ang + 1.57), y + q * Math.sin(ang + 1.57), q === 0 && s % 6 === 3 ? HAIR[hl] : HAIR[q ? 0 : 1]);
+    }
+    return [x, y];
+  }
+  // 3. les tentacules de cheveux qui remontent le long des parois
+  for (let i = 0; i < 64; i++) {
+    const a = rnd() * 6.2832, r0 = 22 + rnd() * 10;
+    strand(C[0] + Math.cos(a) * r0, C[1] + Math.sin(a) * r0 / 1.18, a + (rnd() - .5) * .6, 14 + rnd() * 40, 1 + rnd() * 2.5, (rnd() - .5) * 3, (rnd() < .5 ? -1 : 1) * (2 + rnd() * 3));
+  }
+  [[-1.75, 70], [-1.25, 64], [2.6, 58], [.35, 55]].forEach(([a, len]) => strand(C[0] + Math.cos(a) * 20, C[1] + Math.sin(a) * 17, a, len, 5, .6, a > 0 ? 3 : -3));  // grandes cornes de cheveux
+  // 4. la tête de l'ami, renversée vers nous
+  const F = [80, 63], frx = 20, fry = 23;
+  const inF = (x, y) => ((x - F[0]) / frx) ** 2 + ((y - F[1]) / fry) ** 2 <= 1;
+  for (let y = -30; y <= 10; y++) for (let x = -25; x <= 25; x++) { const d = (x / 24) ** 2 + ((y + 3) / 28) ** 2; if (d > 1 || (x / frx) ** 2 + (y / fry) ** 2 < .95) continue;
+    if (rase) { P(F[0] + x, F[1] + y, ramp(SKIN, .55 - d * .45 + x / 120, x, y)); if (((x * 7 + y * 13) & 7) === 0 || BAYER4[y & 3][x & 3] > 13) P(F[0] + x, F[1] + y, d > .8 ? HAIR[2] : GOLD[1]); }   // crâne rasé, un duvet de poils
+    else P(F[0] + x, F[1] + y, ramp(GOLD, .6 + .4 * Math.sin(x * 1.4 + y * .2) - d * .4, x, y)); }   // cheveux blonds mouillés
+  for (let y = -fry; y <= fry; y++) for (let x = -frx; x <= frx; x++) {
+    const d = (x / frx) ** 2 + (y / fry) ** 2; if (d > 1) continue;
+    const nx = x / frx, ny = y / fry, nz = Math.sqrt(Math.max(0, 1 - d));
+    let v = Math.max(0, nx * .45 - ny * .5 + nz * .74) * .85 + .1;
+    v -= Math.max(0, 1 - ((x + 8) / 7) ** 2 - ((y - 6) / 5) ** 2) * .08 + Math.max(0, 1 - ((x - 8) / 7) ** 2 - ((y - 6) / 5) ** 2) * .12;   // joues
+    v += Math.max(0, 1 - (x / 2) ** 2 - ((y - 1) / 6) ** 2) * .15;                                                                 // arête du nez
+    P(F[0] + x, F[1] + y, ramp(SKIN, v, x + 80, y + 64));
+  }
+  [[-9, 4], [-7, 6], [-11, 6], [9, 5], [7, 3], [11, 7], [-2, 2], [2, 3], [-5, 5]].forEach(([x, y]) => P(F[0] + x, F[1] + y, SKIN[2]));   // taches de rousseur
+  if (!rase) for (let x = -frx + 2; x <= frx - 2; x += 2) strand(F[0] + x, F[1] - fry - 3, 1.57 + x * .015, 4 + Math.abs(Math.sin(x * 3)) * 7, 1, .2, 0, 3);   // mèches blondes collées au front
+  if (!rase) for (let x = -frx + 3; x <= frx - 3; x += 3) { const l = 3 + Math.abs(Math.sin(x * 2)) * 6; for (let k = 0; k < l; k++) P(F[0] + x + Math.sin(k * .5) * .6, F[1] - fry + k, GOLD[k % 3 ? 3 : 2]); }
+  // sourcils froncés de terreur
+  [[-1, F[0] - 9], [1, F[0] + 9]].forEach(([sd, bx]) => { for (let k = -4; k <= 4; k++) { const y = F[1] - 10 - Math.round((k * sd + 4) / 4); P(bx + k, y, GOLD[1]); if (Math.abs(k) < 3) P(bx + k, y - 1, GOLD[2]); } });
+  // l'oreille gauche : un faisceau de cheveux s'y enfonce
+  const ear = [F[0] - frx - 1, F[1] + 1];
+  for (let y = -6; y <= 6; y++) for (let x = -3; x <= 2; x++) if ((x / 3) ** 2 + (y / 6) ** 2 <= 1) P(ear[0] + x, ear[1] + y, (x / 3) ** 2 + (y / 6) ** 2 > .6 ? SKIN[2] : SKIN[3]);
+  for (let i = 0; i < 11; i++) { let x = ear[0] - 22 - rnd() * 8, y = ear[1] - 12 + i * 2.4; const tx = ear[0], ty = ear[1] + (i - 5) * .3;
+    for (let s = 0; s <= 26; s++) { const u = s / 26; P(x + (tx - x) * u, y + (ty - y) * u + Math.sin(u * 6 + i) * 1.5 * (1 - u), s % 5 === 2 ? HAIR[4] : HAIR[1]); } }
+  for (let y = -2; y <= 2; y++) { P(ear[0], ear[1] + y, "#000"); P(ear[0] + 1, ear[1] + y, BLOOD[2]); }
+  for (let k = 0; k < 9; k++) P(ear[0] + 1 + (k > 4 ? 1 : 0), ear[1] + 3 + k, BLOOD[k % 3 === 0 ? 4 : 2]);
+  // les yeux
+  const EYEW = ["#5a4a48", "#a89490", "#d8ccc4", "#f0e8e0"];
+  function eyeball(ex, ey, r, look) {                    // un globe : blanc veiné, iris bleu, regard révulsé
+    for (let y = -r; y <= r; y++) for (let x = -r; x <= r; x++) { const d = (x * x + y * y) / (r * r); if (d > 1) continue;
+      P(ex + x, ey + y, ramp(EYEW, .95 - d * .6 + (x + y < 0 ? .1 : -.1), x, y)); }
+    for (let k = 0; k < 5; k++) { let x = ex + Math.cos(k * 1.3) * r, y = ey + Math.sin(k * 1.3) * r; for (let s = 0; s < r; s++) { x -= Math.cos(k * 1.3) * .8 + (rnd() - .5) * .5; y -= Math.sin(k * 1.3) * .8; P(x, y, BLOOD[s % 2 ? 2 : 3]); } }
+    const ix = ex + look[0], iy = ey + look[1];
+    for (let y = -2; y <= 2; y++) for (let x = -2; x <= 2; x++) if (x * x + y * y <= 4 && ((ix + x - ex) ** 2 + (iy + y - ey) ** 2) <= r * r) P(ix + x, iy + y, x * x + y * y <= 1 ? "#060404" : "#3a5a7a");
+    P(ex - 1, ey - 1, "#ffffff");
+  }
+  function socket(ex, ey, full) {                        // paupières gonflées, et soit l'œil, soit un trou
+    for (let y = -4; y <= 4; y++) for (let x = -6; x <= 6; x++) { const d = (x / 6) ** 2 + (y / 4) ** 2; if (d > 1) continue;
+      P(ex + x, ey + y, d > .6 ? "#7a3a42" : (full ? "#5a2a2a" : (d > .3 ? BLOOD[1] : "#010001"))); }
+    for (let x = -5; x <= 5; x++) { P(ex + x, ey - 4 + Math.abs(x) / 3, SKIN[1]); if (x % 2) P(ex + x, ey - 5 + Math.abs(x) / 3, "#2a1a14"); }   // cils
+  }
+  function bloodTears(ex, ey, n, lenBase) {
+    for (let s = 0; s < n; s++) { let x = ex - 3 + s * 3, y = ey + 3; const len = lenBase + s * 4;
+      for (let k = 0; k < len; k++) { y += 1; x += (rnd() - .5) * .6; if (!inF(x | 0, y | 0)) break; P(x, y, ramp(BLOOD, .85 - k / len * .5, x | 0, y | 0)); }
+      P(x, y + 1, BLOOD[3]); }
+  }
+  function hairFrom(ex, ey, side, n, len) {
+    for (let i = 0; i < n; i++) strand(ex + (rnd() - .5) * 2, ey + (rnd() - .5) * 2, (side > 0 ? -.3 : 3.45) + (i - (n - 1) / 2) * .45, len + rnd() * len, i < 2 ? 2 : 1, (rnd() - .5) * 3, side * (2 + rnd() * 3), 3);
+  }
+  const eyes = [[F[0] - 8, F[1] - 4, -1], [F[0] + 8, F[1] - 4, 1]];
+  if (variant === 1) {          // les yeux sont encore là, révulsés ; les cheveux sortent par le coin des yeux
+    eyes.forEach(([ex, ey, sd]) => { socket(ex, ey, true); eyeball(ex, ey, 4, [0, -3]); bloodTears(ex, ey, 2, 12);
+      for (let i = 0; i < 4; i++) strand(ex - sd * 5, ey + 2, 1.57 + sd * (.2 + i * .25), 12 + rnd() * 14, i < 2 ? 2 : 1, (rnd() - .5) * 2, sd * 2, 3); });
+  } else if (variant === 2) {   // un œil tombé, qui pend sur la joue au bout de son nerf
+    const [lx, ly, ls] = eyes[0], [rx, ry, rs] = eyes[1];
+    socket(lx, ly, true); eyeball(lx, ly, 4, [1, -3]); bloodTears(lx, ly, 2, 10);
+    for (let i = 0; i < 3; i++) strand(lx - ls * 5, ly + 2, 1.57 + ls * (.2 + i * .25), 12 + rnd() * 12, i < 1 ? 2 : 1, (rnd() - .5) * 2, ls * 2, 3);
+    socket(rx, ry, false); bloodTears(rx, ry, 3, 14); hairFrom(rx, ry, rs, 5, 18);
+    const fall = [F[0] + 15, F[1] + 11];
+    for (let k = 0; k <= 14; k++) { const u = k / 14; P(rx + (fall[0] - rx) * u + Math.sin(u * 3.14) * 3, ry + (fall[1] - ry) * u, k % 3 ? BLOOD[2] : BLOOD[4]); P(rx + (fall[0] - rx) * u + Math.sin(u * 3.14) * 3 + 1, ry + (fall[1] - ry) * u, BLOOD[1]); }
+    eyeball(fall[0], fall[1], 4, [-2, 1]);
+  } else {                      // les deux orbites vides ; les globes sont pris dans les cheveux, plus loin
+    eyes.forEach(([ex, ey, sd]) => { socket(ex, ey, false); bloodTears(ex, ey, 3, 14); hairFrom(ex, ey, sd, 6, 20); });
+    [[F[0] - 31, F[1] + 18, [2, -1]], [F[0] + 33, F[1] - 12, [-2, 2]]].forEach(([x, y, look]) => {
+      strand(x - 8, y - 2, .15, 16, 1, .5, 1, 3); strand(x - 8, y + 2, -.1, 16, 1, .5, -1, 3); eyeball(x, y, 4, look); strand(x - 7, y + 4, -.5, 14, 1, .4, 1, 3); });
+  }
+  // le nez : des mèches sortent des narines
+  const nose = [F[0], F[1] + 6];
+  P(nose[0] - 2, nose[1], "#000"); P(nose[0] - 1, nose[1], "#000"); P(nose[0] + 1, nose[1], "#000"); P(nose[0] + 2, nose[1], "#000");
+  P(nose[0] - 3, nose[1] - 1, SKIN[2]); P(nose[0] + 3, nose[1] - 1, SKIN[2]); P(nose[0], nose[1] - 3, SKIN[5]); P(nose[0], nose[1] - 2, SKIN[4]);
+  [[-1.5, 1.9], [1.5, 1.2]].forEach(([o, ang]) => { for (let i = 0; i < 3; i++) strand(nose[0] + o, nose[1], ang + (i - 1) * .35, 7 + i * 4, 1, 1.5, o > 0 ? 2 : -2, 3); });
+  for (let k = 0; k < 6; k++) { P(nose[0] - 2, nose[1] + 1 + k, BLOOD[3 - (k % 2)]); P(nose[0] + 2, nose[1] + 1 + k * .8, BLOOD[2]); }
+  // la bouche, ouverte sur un cri muet : lèvres bleuies, dents de lait, langue
+  const M = [F[0], F[1] + 15];
+  for (let y = -4; y <= 4; y++) for (let x = -5; x <= 5; x++) { const d = (x / 5) ** 2 + (y / 4) ** 2; if (d > 1) continue;
+    P(M[0] + x, M[1] + y, d > .65 ? (y < 0 ? "#6a5260" : "#8a6a74") : (y > 1 ? "#4a1a22" : "#050203")); }
+  [-2, -1, 1, 2].forEach(x => { P(M[0] + x, M[1] - 2, "#e8dcc8"); P(M[0] + x, M[1] - 1, x % 2 ? "#c8bca8" : "#e8dcc8"); });
+  P(M[0] - 1, M[1] + 2, "#7a3040"); P(M[0], M[1] + 2, "#8a3a48"); P(M[0] + 1, M[1] + 2, "#7a3040");
+
+  // 6. quelques mèches repassent devant tout
+  for (let i = 0; i < 8; i++) { const a = rnd() * 6.28; strand(C[0] + Math.cos(a) * 34, C[1] + Math.sin(a) * 30, a + (rnd() - .5) * .8, 14 + rnd() * 18, 1, (rnd() - .5) * 3, 2); }
+  // 7. vignette
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const d = Math.hypot((x - 80) / 80, (y - 60) / 60);
+    if (d > .9 && BAYER4[y & 3][x & 3] / 16 < (d - .9) * 2) P(x, y, "#000"); }
+  // seuils d'apparition : les parois proches d'abord, le fond en dernier
+  const data = ctx.getImageData(0, 0, W, H), th = new Float32Array(W * H);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const r = Math.hypot(x - C[0], (y - C[1]) * 1.18);
+    th[y * W + x] = .08 + .62 * (1 - Math.min(1, r / 95)) + BAYER4[y & 3][x & 3] / 16 * .14; }
+  return { data, th };
+}
+// p : de 0 (noir complet) à 1 (les yeux se sont habitués)
+// o.rase (true par défaut) : tête rasée, comme dans le scénario réécrit ; o.doux : version atténuée (PLAN-06b), assombrie et le rouge éteint
+function renderHorror(ctx, p, variant = 1, o = {}) {
+  const rase = o.rase !== false, key = variant + (rase ? "" : "b");
+  if (!horrorImgs[key]) horrorImgs[key] = buildHorror(variant, rase);
+  const { data, th } = horrorImgs[key], out = ctx.createImageData(HORROR_W, HORROR_H), dim = o.doux ? .45 : 1;
+  for (let i = 0; i < th.length; i++) {
+    const f = Math.max(0, Math.min(1, (p - th[i]) / .22)), x = i % HORROR_W, y = (i / HORROR_W) | 0;
+    const k = f >= 1 ? 1 : (BAYER4[y & 3][x & 3] / 16 < f ? (f > .5 ? .7 : .35) : 0);
+    let r = data.data[i * 4], g = data.data[i * 4 + 1], b = data.data[i * 4 + 2];
+    if (o.doux) { const m = (r + g + b) / 3; r = m + (r - m) * .25; g = m + (g - m) * .25; b = m + (b - m) * .25 + 4; }
+    out.data[i * 4] = r * k * dim; out.data[i * 4 + 1] = g * k * dim; out.data[i * 4 + 2] = b * k * dim; out.data[i * 4 + 3] = 255;
+  }
+  ctx.putImageData(out, 0, 0);
+}
+
+// ---------- L'esprit parle à travers l'enfant : portrait de dialogue animé ----------
+const TALK_LINES = ["Tu es venu le chercher ?", "Il avait si peur… C'était délicieux.", "Approche. Laisse-moi goûter la tienne.", "Ou bien… prête-moi tes cheveux."];
+let talkBase = null;
+function talkPortrait(ctx, t, open) {
+  if (!talkBase) { if (!horrorImgs[3]) horrorImgs[3] = buildHorror(3); talkBase = document.createElement("canvas"); talkBase.width = HORROR_W; talkBase.height = HORROR_H; talkBase.getContext("2d").putImageData(horrorImgs[3].data, 0, 0); }
+  const OX = 48, OY = 31, P = (x, y, c) => { ctx.fillStyle = c; ctx.fillRect(Math.round(x), Math.round(y), 1, 1); };
+  ctx.imageSmoothingEnabled = false; ctx.drawImage(talkBase, -OX, -OY);
+  const SK = ["#5e4646", "#8c6c66", "#b8968a"], HL = "#302b42", HB = "#050308";
+  // la mâchoire : on recouvre l'ancienne bouche de peau, puis on redessine une bouche qui s'ouvre
+  const M = [80 - OX, 78 - OY], drop = open * 2, ry = 1 + open * 4.5;
+  for (let y = -5; y <= 7; y++) for (let x = -6; x <= 6; x++) if ((x / 6) ** 2 + (y / 6.5) ** 2 <= 1) P(M[0] + x, M[1] + y, SK[(x + y + 40) % 3 === 0 ? 0 : (x > 2 ? 0 : 1)]);
+  [[-5, "#640a10"], [-4, "#921616"], [4, "#640a10"], [5, "#380508"]].forEach(([x, col]) => { for (let y = -5; y <= 7; y++) if ((x / 6) ** 2 + (y / 6.5) ** 2 <= 1) P(M[0] + x + (y > 3 ? Math.sign(x) * -1 : 0), M[1] + y, col); });
+  for (let y = -Math.ceil(ry) - 1; y <= Math.ceil(ry) + 1; y++) for (let x = -6; x <= 6; x++) { const d = (x / 6) ** 2 + (y / (ry + 1)) ** 2; if (d > 1) continue;
+    P(M[0] + x, M[1] + drop / 2 + y, d > .62 ? (y < 0 ? "#6a5260" : "#8a6a74") : "#050203"); }
+  [-2, -1, 1, 2].forEach(x => P(M[0] + x, M[1] + drop / 2 - ry + .5, "#e8dcc8"));
+  if (open > .35) [-2, 1, 2].forEach(x => P(M[0] + x, M[1] + drop / 2 + ry - .5, "#c8bca8"));
+  // les cheveux qui tirent la bouche : des orbites jusqu'aux coins et au centre
+  const eyes = [[72 - OX, 59 - OY], [88 - OX, 59 - OY]];
+  [[eyes[0], [M[0] - 4, M[1] + drop / 2]], [eyes[1], [M[0] + 4, M[1] + drop / 2]], [eyes[0], [M[0] - 1, M[1] + drop / 2 + ry * .6]], [eyes[1], [M[0] + 1, M[1] + drop / 2 + ry * .6]]].forEach(([[ax, ay], [bx, by]], i) => {
+    const n = 22, sag = (1 - open) * 3;
+    for (let s = 0; s <= n; s++) { const u = s / n, x = ax + (bx - ax) * u + Math.sin(u * 3.14) * (i % 2 ? sag : -sag) + Math.sin(t / 140 + u * 8 + i) * .6 * (1 - open * .7), y = ay + (by - ay) * u;
+      P(x, y, s % 5 === 2 ? HL : HB); }
+  });
+  // des mèches qui ondulent hors des orbites
+  eyes.forEach(([ex, ey], sd) => { const side = sd ? 1 : -1;
+    for (let i = 0; i < 6; i++) { let x = ex, y = ey, a = (side > 0 ? -.4 : 3.54) + (i - 2.5) * .42; const len = 7 + (i * 5) % 7;
+      for (let s = 0; s < len; s++) { a += Math.sin(t / 260 + s * .45 + i * 1.3) * .22; x += Math.cos(a); y += Math.sin(a); P(x, y, s % 4 === 1 ? HL : HB); } } });
+}
+// boîte de dialogue : le texte s'écrit, la bouche suit les voyelles
+function renderTalk(t) {
+  const c = ctxOf("talk"), per = 4200, idx = Math.floor(t / per) % TALK_LINES.length, local = t % per, line = TALK_LINES[idx];
+  const shown = Math.min(line.length, Math.floor(local / 65)), typing = shown < line.length;
+  const ch = line[Math.max(0, shown - 1)] || " ", vowel = /[aeiouyéèàâêîôû]/i.test(ch);
+  const open = typing ? (vowel ? .55 + .45 * Math.abs(Math.sin(local / 70)) : .15 + .2 * Math.abs(Math.sin(local / 50))) : .05;
+  talkPortrait(c, t, open);
+  const el = document.getElementById("talk-text"), txt = line.slice(0, shown);
+  if (el.textContent !== txt) el.textContent = txt;
+}
+
+const A = ADULT(), C = CHILD();
+const sprites = { walk: walkFrames(A, 27), idle: [A, bobUpper(A, 27)], child: C, childBob: bobUpper(C, 23) };
+const sceneCtx = document.getElementById("scene").getContext("2d");
+const ctxOf = id => document.getElementById(id).getContext("2d");
+const OLD = ["................","....oooooooo....","...ohhhhhhhho...","...ohhhhhhhHo...","...ohssssssHo...","...osesssseso...","...osssssssSo...","....oSssssSo....","....ooSSSSoo....","...ocllcccCo....","..oclcccccCCo...",".ococcccccCCoco.",".oCoccccccCCoCo.",".osobbbmbbbboso.","..oocccccccCoo..","...occcCcccCo...","...oCCCooCCCo...","....oppooppo....","....oppooppo....","....oppooppo....","....oBBooBBo....","...oBBBooBBBo...","...oooo..oooo...","................"];
+function paint(id, rows, pal, dy = 0) { const c = ctxOf(id); c.clearRect(0, 0, 28, 38); drawSprite(c, rows, pal, 2, 2 + dy); return c; }
+function renderSprites(t) {
+  const i2 = Math.floor(t / 500) % 2, idle = sprites.idle[i2];
+  paint("sp-child", i2 ? sprites.childBob : sprites.child, CHILD_PAL, 34 - C.length);
+  paint("sp-idle", idle, PAL);
+  paint("sp-walk", sprites.walk[Math.floor(t / 130) % 4], PAL);
+  const v = (name, id) => { const V = VARIANTS[name]; return paint(id, V.mod(idle), { ...V.pal, ...V.extra }); };
+  v("scar", "sp-scar");
+  const cc = v("curse", "sp-curse"); cc.globalAlpha = .5 + .5 * Math.sin(t / 200); cc.fillStyle = "#d6a0ff"; cc.fillRect(10, 13 + i2, 1, 1); cc.fillRect(17, 13 + i2, 1, 1); cc.globalAlpha = 1;
+  const bc = v("bless", "sp-bless"); bc.globalAlpha = .6 + .3 * Math.sin(t / 300); bc.fillStyle = "#ffd84a"; bc.fillRect(9, 0 + i2, 10, 1); bc.fillRect(8, 1 + i2, 1, 1); bc.fillRect(19, 1 + i2, 1, 1); bc.globalAlpha = 1;
+  const sp = Math.floor(t / 140) % 8; bc.fillStyle = "#fff6c8"; bc.fillRect(3 + sp * 3, 34 - sp * 4, 1, 1);
+}
+function renderCompare() {
+  const c = ctxOf("compare"); c.fillStyle = "#86d69a"; c.fillRect(0, 0, 64, 40);
+  drawSprite(c, OLD, { ...PAL, c:"#3f7a5a", C:"#2a5442", l:"#6ea87b" }, 8, 14);
+  drawSprite(c, A, PAL, 34, 4);
+  c.fillStyle = "#2a2030"; c.globalAlpha = .25; c.fillRect(0, 38, 64, 1); c.globalAlpha = 1;
+}
+renderCompare();
+bindLab();
+bindField();
+let horrorT0 = 0, horrorV = 3, horrorRun = 0;
+function playHorror() { horrorT0 = performance.now(); const run = ++horrorRun, c = document.getElementById("horror").getContext("2d");
+  (function step(now) { if (run !== horrorRun) return; const p = Math.max(0, (now - horrorT0 - 1200) / 6000);
+    if (p < 1 && !still) { renderHorror(c, p, horrorV); requestAnimationFrame(step); } else renderHorror(c, 1, horrorV); })(horrorT0); }
+document.getElementById("horror-show").addEventListener("click", () => { ["horror", "horror-again", "talk-box"].forEach(id => document.getElementById(id).hidden = false); document.getElementById("horror-veil").hidden = true; playHorror(); });
+document.getElementById("horror-again").addEventListener("click", playHorror);
+
+document.getElementById("cine-replay").addEventListener("click", () => { cineStart = performance.now(); if (still) renderCine(cineStart + 5000); });
+const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let lastT = 0;
+function loop(t) { const dt = Math.min(50, t - lastT || 16); lastT = t; renderDirs(t); renderField(t, dt); renderNature(t); drawScene(sceneCtx, t, sprites); renderSprites(t); renderLab(t); renderSpiritCard(t); renderCine(t); if (!document.getElementById("talk-box").hidden) renderTalk(t); if (!still) requestAnimationFrame(loop); }
+requestAnimationFrame(loop);
+
+if (still) { renderSpiritCard(4000); renderCine(5000); }
+
+</script>

@@ -3,7 +3,7 @@
 // on dit au joueur quoi faire, puis on lui rend la main jusqu'à ce que l'étape soit finie (g.until).
 // Les réactions aux objets, aux personnages, aux zones et aux sorties sont posées par étape dans H.
 // Positions en tuiles (at), comme dans les cartes.
-import * as A from '../../art/shared.js';
+import * as A from 'virtual:rpg-art';
 import type { Game } from '../../engine/game';
 import { Handlers } from '../../engine/handlers';
 import { openArea, type Dir, type Drawable, type MapObject } from '../../engine/maps';
@@ -39,9 +39,8 @@ const obj = (g: Game, map: string, id: string) => g.maps[map].file.objects.find(
 /** Les personnages ont la tête de leur rôle du moment. */
 function looks(g: Game) {
   g.hero.look = heroLook();
-  const alias: Record<string, string> = { enfant_a: 'enfant1', enfant_b: 'enfant2', enfant_c: 'enfant3' };
   for (const id of ['mere', 'margot', 'basile', 'fauvel', 'aubin', 'ysol', 'enfant_a', 'enfant_b', 'enfant_c', 'villageois1', 'mere_basile'])
-    g.actor(id, { look: LOOKS[alias[id] ?? id] });
+    g.actor(id, { look: LOOKS[id] });
   g.actor('elio', { look: LOOKS[state.day >= 3 ? 'elio_capuche' : 'elio'] });
 }
 

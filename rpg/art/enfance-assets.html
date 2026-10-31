@@ -1,8 +1,145 @@
-// Fichier généré par scripts/import-art.mjs depuis rpg/art/src/ : ne pas modifier à la main.
-/* eslint-disable */
-// @ts-nocheck
-const ctxOf = (id) => document.getElementById(id).getContext('2d');
-// ---------- sprites.js ----------
+<title>Assets de l'enfance</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout : une colonne de lecture, des "planches" de sprites en grille qui se replient sur mobile */
+:root {
+  --bg: #eef1ec; --panel: #ffffff; --ink: #1f2430; --muted: #5d6573; --line: #d5dad2;
+  --accent: #b4691f; --accent-soft: #f6e7d3; --stage: #dfe5dc;
+  --f-display: "Pixelify Sans", "Courier New", monospace;
+  --f-body: "Atkinson Hyperlegible", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #15171d; --panel: #1e2129; --ink: #e9e6df; --muted: #9ba2ae; --line: #2f3440;
+  --accent: #e2a04f; --accent-soft: #3a2c1c; --stage: #252933; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #15171d; --panel: #1e2129; --ink: #e9e6df; --muted: #9ba2ae; --line: #2f3440;
+  --accent: #e2a04f; --accent-soft: #3a2c1c; --stage: #252933; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 32px 64px; }
+.wrap { max-width: 960px; margin: 0 auto; display: grid; gap: 40px; }
+h1, h2, h3 { font-family: var(--f-display); font-weight: 700; text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(2rem, 5vw, 3rem); }
+h2 { font-size: 1.6rem; }
+h3 { font-size: 1.1rem; }
+p { margin: 0; max-width: 65ch; }
+.lead { color: var(--muted); font-size: 1.05rem; }
+.eyebrow { font-family: var(--f-display); text-transform: uppercase; letter-spacing: .08em; font-size: .8rem; color: var(--accent); }
+section { display: grid; gap: 16px; }
+canvas { image-rendering: pixelated; image-rendering: crisp-edges; display: block; }
+.stage { background: var(--stage); border-radius: 6px; padding: 16px; display: grid; gap: 12px; }
+.scene { width: 100%; max-width: 960px; aspect-ratio: 16 / 9; height: auto; border-radius: 4px; }
+.caption { font-size: .85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+button.pal { font: inherit; font-family: var(--f-display); font-size: .95rem; padding: 8px 14px; border-radius: 4px; border: 2px solid var(--line);
+  background: var(--panel); color: var(--ink); cursor: pointer; }
+button.pal[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+button.pal:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.sprites { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
+.sprite { background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 12px; display: grid; gap: 8px; justify-items: center; text-align: center; }
+.sprite canvas { width: 120px; height: 168px; object-fit: contain; }
+.sprite b { font-family: var(--f-display); font-weight: 500; font-size: .95rem; }
+.sprite span { font-size: .8rem; color: var(--muted); line-height: 1.3; }
+.swatches { display: flex; flex-wrap: wrap; gap: 3px; }
+.swatches i { width: 22px; height: 22px; border-radius: 2px; display: block; box-shadow: inset 0 0 0 1px rgba(0,0,0,.15); }
+.palrow { display: grid; gap: 6px; }
+.palrow p { font-size: .9rem; color: var(--muted); }
+.choices { display: grid; gap: 14px; }
+.choice { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 18px; display: grid; gap: 10px; }
+.choice h3 { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.choice h3 small { font-family: var(--f-body); font-weight: 400; font-size: .85rem; color: var(--muted); }
+.opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.opt { border: 1px dashed var(--line); border-radius: 4px; padding: 10px 12px; font-size: .92rem; min-width: 0; }
+.opt.reco { border: 2px solid var(--accent); background: var(--accent-soft); }
+.opt strong { display: block; font-family: var(--f-display); font-weight: 500; font-size: 1rem; }
+.opt .tag { font-family: var(--f-display); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.sizes { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.sizes figure { margin: 0; display: grid; gap: 6px; }
+.sizes canvas { width: 100%; height: auto; border-radius: 3px; }
+code { font-size: .88em; background: var(--stage); padding: 1px 5px; border-radius: 3px; }
+ol.flow { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; max-width: 70ch; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+.lab { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 720px) { .lab { grid-template-columns: 1fr; } }
+.lab-stage canvas { width: 100%; height: auto; }
+.lab-controls { display: grid; gap: 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 16px; }
+.ctl { display: grid; gap: 6px; font-size: .95rem; border: 0; margin: 0; padding: 0; min-width: 0; }
+.ctl > label, .ctl > span, .ctl legend { font-family: var(--f-display); font-weight: 500; display: flex; justify-content: space-between; gap: 8px; padding: 0; }
+.ctl output { font-family: var(--f-body); color: var(--accent); font-variant-numeric: tabular-nums; }
+.ctl input[type=range] { width: 100%; accent-color: var(--accent); }
+.ctl select { font: inherit; padding: 6px 8px; border-radius: 4px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+fieldset.ctl label { display: flex; justify-content: flex-start; gap: 8px; align-items: center; font-family: var(--f-body); font-weight: 400; }
+button.small { justify-self: start; font: inherit; font-size: .85rem; padding: 4px 10px; border-radius: 4px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.ctl label.check { display: flex; justify-content: flex-start; gap: 8px; align-items: center; font-family: var(--f-body); font-weight: 400; }
+.spirit-row { display: grid; grid-template-columns: minmax(0, 200px) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 640px) { .spirit-row { grid-template-columns: 1fr; } }
+.spirit-row .sprite canvas { width: 160px; height: 160px; }
+.cine canvas { width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 4px; }
+.cine .caption { min-height: 2.6em; }
+.horror { min-width: 0; }
+.horror canvas { box-sizing: border-box; width: 100%; height: auto; aspect-ratio: 4 / 3; border-radius: 4px; background: #000; }
+[hidden] { display: none !important; }
+.veil { box-sizing: border-box; width: 100%; aspect-ratio: 4 / 3; max-width: 100%; display: grid; place-content: center; gap: 12px; text-align: center; background: #07060a; color: #c9c2d6; border-radius: 4px; padding: 16px; }
+.veil .small { justify-self: center; }
+.talk { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: center; background: #07060a; color: #e6e0ee; border: 3px solid #3a3450; border-radius: 6px; padding: 14px; }
+.talk canvas { width: 160px; height: 160px; border: 2px solid #3a3450; background: #000; }
+@media (max-width: 480px) { .talk { grid-template-columns: 1fr; } }
+.talk-name { font-family: var(--f-display); color: #b8a8d8; letter-spacing: .08em; }
+.talk-body p { font-family: var(--f-display); font-size: 1.25rem; min-height: 3em; margin-top: 6px; }
+.field-wrap { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: center; }
+@media (max-width: 560px) { .field-wrap { grid-template-columns: 1fr; justify-items: center; } }
+#field { width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 4px; outline-offset: 3px; }
+#field:focus-visible { outline: 3px solid var(--accent); }
+.pad { display: grid; grid-template-areas: ". u ." "l . r" ". d ."; gap: 4px; }
+.pad button { width: 44px; height: 44px; font-size: 1rem; border-radius: 6px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; touch-action: none; }
+</style>
+
+<div class="wrap">
+  <header style="display:grid;gap:12px">
+    <span class="eyebrow">RPG · chapitre 1 · l'enfance</span>
+    <h1>Les assets de l'enfance</h1>
+    <p class="lead">Tout ce qui se dessine pendant les quatre jours de l'enfance : personnages, portraits, poules, objets, effets au puits et plans spéciaux. Chaque image est générée par le code du jeu (dossier <code>src</code>) ; les identifiants renvoient au catalogue des assets.</p>
+  </header>
+  <section>
+    <h2>Personnages</h2>
+    <p>Le héros avec ses trois coupes, Élio et ses variantes, la bande, les adultes et les villageois. Chacun tourne dans les 8 directions et marche (PER-01 à PER-15).</p>
+    <div class="sprites" id="g-chars"></div>
+  </section>
+  <section>
+    <h2>Portraits de dialogue</h2>
+    <p>64 × 64, une bouche qui suit le texte et des expressions (POR-01 à POR-08). Cliquer sur un portrait change d'expression.</p>
+    <div class="sprites" id="g-portraits"></div>
+  </section>
+  <section>
+    <h2>Poses</h2>
+    <p>À genoux, affalé, assis sur le lit, allongé, à la baignade et la tache dans la paume.</p>
+    <div class="stage"><canvas id="poses" class="scene" width="300" height="120" style="aspect-ratio:5/2"></canvas></div>
+  </section>
+  <section>
+    <h2>La grange et les poules</h2>
+    <p>Le mini-jeu : on interagit avec une poule pour qu'elle bouge, une ou plusieurs fois, jusqu'à trouver l'œuf (ANI-01 à ANI-03, OBJ-01 à OBJ-05).</p>
+    <div class="stage"><canvas id="farm" class="scene" width="300" height="90" style="aspect-ratio:10/3"></canvas></div>
+  </section>
+  <section>
+    <h2>Objets et décors</h2>
+    <p>Le salon de Fauvel, la maison du héros, chez Ysol, le moulin, le cercueil ; dehors le chêne de Margot, le buisson de Basile, la baignade, le cimetière et les icônes d'inventaire. Le cache-cache se joue seulement dehors : « pas le droit de se cacher à l'intérieur ! ».</p>
+    <div class="stage"><canvas id="props" class="scene" width="400" height="260" style="aspect-ratio:400/260"></canvas></div>
+  </section>
+  <section>
+    <h2>Au puits, la nuit 3</h2>
+    <p>À l'échelle de la carte : les mèches du combat (ciseaux en un coup, bâton en trois), la saisie par la cheville, le ruban qui tombe dans le puits, le pacte, et l'indicateur d'objet interactif (ANI-22 à ANI-24, UI-07).</p>
+    <div class="stage"><canvas id="fx" class="scene" width="320" height="80" style="aspect-ratio:4/1"></canvas></div>
+  </section>
+  <section>
+    <h2>Plans spéciaux</h2>
+    <p>Gros plans et cinématiques, plein écran à la résolution du jeu (384 × 216). Ils se rejouent en boucle ; les boutons choisissent la variante.</p>
+    <div id="plans" style="display:grid;gap:28px"></div>
+  </section>
+</div>
+
+<script>
+const PERSONNAGES = {"heros":{"nom":"Toi","enfant":true,"portrait":"heros","palette":"CHILD_PAL","note":"sprite choisi par le jeu selon la coupe : heros_long, heros_pointes, heros_court"},"mere":{"nom":"Mère","sprite":"mere","portrait":"mere","enfant":false,"cheveux":0.45,"tenue":"mage","palette":"mere"},"elio":{"nom":"Élio","sprite":"elio","portrait":"elio","enfant":true,"cheveux":0.9,"palette":"elio"},"elio_rase":{"nom":"Élio","variante_de":"elio","sprite":"elio_rase","portrait":"elio_rase","enfant":true,"cheveux":0,"palette":"elio"},"elio_capuche":{"nom":"Élio","variante_de":"elio","sprite":"elio_capuche","portrait":"elio_capuche","enfant":true,"cheveux":0,"palette":"elio_capuche"},"margot":{"nom":"Margot","sprite":"margot","portrait":"margot","enfant":true,"cheveux":0.75,"palette":"margot"},"basile":{"nom":"Basile","sprite":"basile","portrait":"basile","enfant":true,"cheveux":0.15,"palette":"basile"},"fauvel":{"nom":"Maître Fauvel","sprite":"fauvel","portrait":"fauvel","enfant":false,"cheveux":0.2,"palette":"fauvel"},"aubin":{"nom":"Aubin","sprite":"aubin","portrait":"aubin","enfant":false,"cheveux":1,"palette":"aubin"},"ysol":{"nom":"Grand-mère Ysol","sprite":"ysol","portrait":"ysol","enfant":false,"cheveux":0.3,"palette":"ysol"},"mere_basile":{"nom":"La mère de Basile","sprite":"mere_basile","enfant":false,"cheveux":0.4,"palette":"mere_basile"},"enfant_a":{"nom":"Un enfant","sprite":"enfant1","enfant":true,"cheveux":0.3,"palette":"enfant_a"},"enfant_b":{"nom":"Une enfant","sprite":"enfant2","enfant":true,"cheveux":0.55,"palette":"enfant_b"},"enfant_c":{"nom":"Un petit","sprite":"enfant3","enfant":true,"cheveux":0.3,"palette":"enfant_c"},"villageois1":{"nom":"Un homme","sprite":"villageois1","enfant":false,"cheveux":0.3,"palette":"villageois"},"villageois2":{"nom":"Une femme","sprite":"villageois2","enfant":false,"cheveux":0.3,"palette":"villageois"},"esprit":{"nom":"???","note":"l'Esprit du puits parle par le visage d'Élio : portrait animé talkPortrait (horror.js)"}};
 // Demi-sprites gauches (12 colonnes), miroir automatique, ombrage automatique
 const ADULT_L = [
 "........oo.o",
@@ -118,7 +255,6 @@ const CHILD = () => details(autoshade(build(CHILD_L)), false);
 function walkFrames(base, cut) { const sL = stepLegs(stepLegs(base, "L", cut), "L", cut), sR = stepLegs(stepLegs(base, "R", cut), "R", cut);
   return [sL, bobUpper(base, cut), sR, bobUpper(base, cut)]; }
 
-// ---------- scene.js ----------
 // ---------- Palette (originale, fraîche, inspirée des RPG DS) ----------
 const PAL = {
   o:"#2a2030", h:"#5a3a2e", H:"#3e2620", j:"#8a5a40", s:"#f6cfae", S:"#d9967e", e:"#2a2030", E:"#ffffff", M:"#b0605a", R:"#f2a6a0",
@@ -243,246 +379,6 @@ function drawScene(ctx, t, sprites) {
   items.sort((a, b) => a.y - b.y).forEach(i => i.fn());
 }
 
-// ---------- herolab.js ----------
-// ---------- Générateur d'apparence : un seul dessin, des paramètres continus ----------
-const OUTFITS = {
-  tunique: { name: "Tunique de voyage", pal: {} },
-  mage: { name: "Robe de mage", pal: { c:"#5a4aa8", C:"#3c3078", l:"#8a7ad0", a:"#e2b84a", A:"#a8822e", r:"#ffe08a" },
-    rows: L => { const R = L.slice(); R[24] = "..oooccccccc"; R.splice(25, 9, "...occcccccc", "...occcccccc", "...occcccccc", "..occcccccccc".slice(0, 12), "..occcccccccc".slice(0, 12), "..oaaaaaaaaa", "..oooooooooo", ".....oBBBo..", ".....ooooo.."); return R; }, legCut: 32 },
-  guerrier: { name: "Armure de guerrier", pal: { c:"#8e9aac", C:"#5f6a7c", l:"#c8d0dc", q:"#b4bdca", Q:"#6e7888", w:"#eef1f6", b:"#5a3a26" },
-    rows: L => { const R = L.slice(); R[16] = "...ooaaaaaaa"; R[17] = "..oqqoaaaaaa"; R[18] = ".oqqqqoccccc"; R[19] = ".oqqqqoccccc"; R[20] = "..oooocccccc"; return R; } },
-  voleur: { name: "Cape de voleur", pal: { c:"#4e4a3c", C:"#302e26", l:"#6e6a54", u:"#3c4a3a", U:"#25301f", v:"#5e7254", a:"#2e2a30", A:"#1c1a20", r:"#4a4450" },
-    rows: L => L.map((r, y) => { r = pad(r); if (y <= 8) r = r.replace(/h/g, "u"); if (y >= 9 && y <= 17) r = ".ouu" + r.slice(4); if (y === 13 || y === 14) r = r.slice(0, 7) + "aaaaa"; if (y === 18) r = ".oo" + r.slice(3); return r; }),
-    hood: true, mask: true },
-};
-// Cheveux : frange + deux mèches devant (à l'intérieur des bras) + une masse derrière le corps
-function growHair(L, len, child, floating) {
-  const R = L.map(pad);
-  const put = (y, x, k) => { if (!R[y]) return; const g = R[y].split(""); g[x] = k; R[y] = g.join(""); };
-  if (len >= 1) R[9] = "..ohhhhhssss";
-  if (len >= 3) R[10] = "..ohhhoossss";
-  if (floating || len < 3) return R;
-  const n = Math.min(len - 2, child ? 9 : 13);
-  for (let k = 0; k <= n; k++) {
-    const y = 12 + k, end = k === n;
-    if (y <= 15) { put(y, 2, "o"); put(y, 3, end ? "o" : "h"); put(y, 4, end ? "o" : "h"); }
-    else { put(y, 3, "o"); put(y, 4, end ? "o" : "h"); put(y, 5, end ? "o" : "h"); put(y, 6, "o"); }
-  }
-  return R;
-}
-function backHair(len, H) {
-  if (len < 2) return null;
-  const end = Math.min(H - 3, 10 + Math.round(len * 1.4)), L = [];
-  for (let y = 0; y < H; y++) {
-    if (y < 6 || y > end + 1) { L.push("."); continue; }
-    const x0 = y < 12 ? 2 : y < 18 ? 1 : y < 24 ? 2 : Math.min(5, 3 + Math.floor((y - 24) / 3));
-    if (y === end + 1) { L.push(".".repeat(x0 - 1) + [..."o".repeat(13 - x0)].map((c, i) => i % 2 ? "." : "o").join("")); continue; }
-    L.push(".".repeat(x0 - 1) + "o" + "h".repeat(12 - x0));
-  }
-  return autoshade(build(L));
-}
-// Pacte de l'Esprit capillaire : en combat, les cheveux se soulèvent et ondulent
-function drawLiveHair(ctx, x0, y0, len, t, pal) {
-  if (len < 2) return;
-  const anchors = [[4, 10, Math.PI + .45], [19, 10, -.45], [3, 14, Math.PI + .1], [20, 14, -.1], [7, 3, Math.PI + 1.15], [16, 3, -1.15]];
-  const n = Math.min(anchors.length, 2 + Math.floor(len / 3)), L = 3 + len * 1.15;
-  const strands = [];
-  anchors.slice(0, n).forEach((a, i) => { strands.push([a, L, 0, i, 0]); strands.push([[a[0], a[1] + 1, a[2] + .12], L * .8, 0, i, 1.3]); });
-  if (len >= 12) strands.push([[20, 12, .5], L * 1.4, 1, 7, 0]);       // la mèche qui saisit
-  strands.forEach(([[ax, ay, base], len2, grab, i, ph], si) => {
-    let x = x0 + ax, y = y0 + ay;
-    for (let s = 0; s < len2; s++) {
-      const k = s / len2, curl = grab ? Math.max(0, k - .65) * 7 : 0;
-      const th = base + .6 * Math.sin(t / 300 + s * .38 + i * 1.7 + ph) * k + curl + (grab ? .3 * Math.sin(t / 480) : 0);
-      x += Math.cos(th); y += Math.sin(th);
-      const X = Math.round(x), Y = Math.round(y);
-      ctx.fillStyle = s % 6 === 3 ? pal.j : (ph ? pal.h : pal.H);
-      ctx.fillRect(X, Y, 1, 1);
-      if (s < 3) { ctx.fillStyle = pal.h; ctx.fillRect(X, Y + 1, 1, 1); }
-    }
-  });
-}
-function beard(rows, amount) {
-  if (amount <= 0) return rows;
-  const stub = [[9,14],[14,14],[11,14],[12,14],[6,13],[17,13]];
-  const full = [[10,13],[13,13],[5,13],[6,13],[17,13],[18,13],[6,14],[7,14],[9,14],[10,14],[11,14],[12,14],[13,14],[14,14],[16,14],[17,14],[8,15],[9,15],[10,15],[11,15],[12,15],[13,15],[14,15],[15,15],[10,16],[11,16],[12,16],[13,16]];
-  if (amount < .5) return set(rows, stub, "S");
-  rows = set(rows, full, "h");
-  return set(rows, [[7,13],[16,13],[8,14],[15,14]], "j");
-}
-function makeHero(o) {
-  const outfit = OUTFITS[o.outfit];
-  let L = o.child ? CHILD_L.slice() : ADULT_L.slice();
-  const len = Math.round(o.hair * (o.child ? 9 : 14));
-  if (!o.child && outfit.rows && !outfit.hood) L = outfit.rows(L);
-  const floating = o.pact && o.combat;
-  L = growHair(L, len, o.child, floating);
-  if (outfit.hood) L = outfit.rows(L);
-  let rows = details(autoshade(build(L)), !o.child && o.outfit !== "mage");
-  if (!o.child && !outfit.mask) rows = beard(rows, Math.max(0, (o.hair - .45) / .55));
-  if (outfit.hood) rows = rows.map((r, y) => y <= 8 ? r.replace(/[jH]/g, "U") : r);
-  if (outfit.mask) rows = set(rows, [[11,13],[12,13]], "a");
-  const cut = o.child ? 23 : (outfit.legCut || 27);
-  return { rows, cut, len, back: floating ? null : backHair(len, rows.length) };
-}
-const BLESS_PAL = { h:"#efe2b4", H:"#c9b07a", j:"#fffbe6", s:"#ffe6cc", S:"#e8b896", c:"#f4f0e6", C:"#c9c0aa", l:"#ffffff", a:"#f2e6c0", A:"#cbb98c", m:"#ffd84a", u:"#e8e0c8", U:"#bfb294", v:"#fffaf0", q:"#f0e2a8", Q:"#c4a85a", w:"#fffbe0" };
-const CURSE_PAL = { h:"#2e2a36", H:"#1c1822", j:"#4a4458", s:"#d4bcc4", S:"#9c8090", c:"#4e3a6e", C:"#33264e", l:"#7a5aa0", a:"#3a2a48", A:"#241a30", u:"#2e2240", U:"#1c1428", v:"#4a3a66", q:"#6a5a88", Q:"#3a2e54", w:"#9a8ab8", e:"#5a2a7a" };
-function heroPalette(o) {
-  const base = { ...PAL, ...(o.child ? { c:"#e0a03a", C:"#b0702a", l:"#f6c868" } : {}), ...OUTFITS[o.outfit].pal, X:"#b23a36" };
-  if (o.pact) { base.h = mix(base.h, "#2a2238", .55); base.H = mix(base.H, "#16121e", .55); base.j = mix(base.j, "#6a5a8a", .5); }
-  const out = {}, bw = o.bless * .65, cw = o.curse * .65;
-  for (const k in base) {
-    const mb = BLESS_PAL[k] ? mix(base[k], BLESS_PAL[k], bw) : base[k];
-    const mc = CURSE_PAL[k] ? mix(base[k], CURSE_PAL[k], cw) : base[k];
-    out[k] = bw + cw > 0 ? mix(mb, mc, cw / (bw + cw)) : base[k];
-  }
-  return out;
-}
-const VEINS = [[17,13],[6,13],[18,14],[5,14],[17,10],[6,10],[1,22],[22,21],[2,21],[21,22],[18,9],[5,9]];
-function ring(rows, x0, y0, dist) {
-  const solid = (x, y) => rows[y] && rows[y][x] && rows[y][x] !== ".";
-  const pts = [];
-  for (let y = -dist; y < rows.length + dist; y++) for (let x = -dist; x < 24 + dist; x++) {
-    if (solid(x, y)) continue;
-    let near = false;
-    for (let dy = -dist; dy <= dist && !near; dy++) for (let dx = -dist; dx <= dist; dx++) if (Math.abs(dx) + Math.abs(dy) <= dist && solid(x + dx, y + dy)) { near = true; break; }
-    let nearer = false;
-    if (dist > 1) for (let dy = -(dist - 1); dy <= dist - 1 && !nearer; dy++) for (let dx = -(dist - 1); dx <= dist - 1; dx++) if (Math.abs(dx) + Math.abs(dy) <= dist - 1 && solid(x + dx, y + dy)) { nearer = true; break; }
-    if (near && !nearer) pts.push([x0 + x, y0 + y]);
-  }
-  return pts;
-}
-// Le corps porte les marques (couleurs, veines, yeux). L'aura vient des croyances : voir drawAura.
-function drawHero(ctx, o, frame, x0, y0, t, back, len) {
-  const pal = heroPalette(o), rows = frame;
-  if (back) drawSprite(ctx, back, pal, x0, y0);
-  if (o.pact && o.combat) drawLiveHair(ctx, x0, y0, len, t, pal);
-  const c = o.curse, pulse = .5 + .5 * Math.sin(t / 260);
-  drawSprite(ctx, rows, pal, x0, y0);
-  const nv = Math.floor(Math.max(0, c - .2) / .8 * VEINS.length);
-  ctx.fillStyle = "#6a2a8a"; VEINS.slice(0, nv).forEach(([x, y]) => { if (rows[y] && rows[y][x] !== "." && rows[y][x] !== "o") ctx.fillRect(x0 + x, y0 + y, 1, 1); });
-  if (c > .3) { ctx.globalAlpha = Math.min(1, (c - .3) / .5) * (.6 + .4 * pulse); ctx.fillStyle = "#d090ff"; [[7,11],[16,11]].forEach(([x, y]) => { if (rows[y][x] !== "a") ctx.fillRect(x0 + x, y0 + y, 1, 1); }); }
-  ctx.globalAlpha = 1;
-}
-// ---------- Auras : allégeance × renommée × regard des gens ----------
-const FAITHS = {
-  aucune: { name: "Aucune allégeance" },
-  divin: { name: "Un dieu de lumière", aime: { glow:"#ffd86a", mote:"#fff3b0", ray:"#ffe9a0" }, craint: { glow:"#dfeeff", mote:"#ffffff", ray:"#f4fbff" } },
-  sombre: { name: "Un diable ou dieu sombre", aime: { glow:"#4a1240", smoke:"#8a2a6a", ember:"#ff7a4a" }, craint: { glow:"#0c0610", smoke:"#1a1220", ember:"#ff2a2a" } },
-  paien: { name: "Un esprit des légendes", aime: { glow:"#2a8a5a", wisp:"#a8f4c8", core:"#ffffff", leaf:"#7ac050" }, craint: { glow:"#3a2a1a", wisp:"#e8e0c8", core:"#c04030", leaf:"#8a5a30" } },
-  athee: { name: "Athée, refuse tout" },
-};
-const hash = n => { n = Math.sin(n * 127.1) * 43758.5453; return n - Math.floor(n); };
-function auraColors(o) {
-  const F = FAITHS[o.faith], k = (o.regard + 1) / 2, out = {};
-  for (const key in F.aime) out[key] = mix(F.craint[key], F.aime[key], k);
-  return out;
-}
-function ellipse(ctx, cx, cy, rx, ry, col, alpha) {
-  ctx.globalAlpha = alpha; ctx.fillStyle = col;
-  for (let y = -ry; y <= ry; y++) for (let x = -rx; x <= rx; x++) if ((x * x) / (rx * rx) + (y * y) / (ry * ry) <= 1) ctx.fillRect(cx + x, cy + y, 1, 1);
-  ctx.globalAlpha = 1;
-}
-function drawAura(ctx, o, x0, y0, t, layer, h = 34) {
-  const r = o.renown, f = o.faith; if (f === "aucune" || r <= 0) return;
-  const cx = x0 + 12, fy = y0 + h - 1, n = 4 + Math.round(r * 16), feared = o.regard < 0;
-  if (f === "athee") {
-    if (layer === "back") { const rx = 11 + Math.round(r * 3); ctx.fillStyle = "#b8bec6";
-      for (let a = 0; a < 6.28; a += .2) { if (Math.floor(a * 5 + t / 400) % 3 === 0) continue; ctx.globalAlpha = .55 * r; ctx.fillRect(Math.round(cx + Math.cos(a) * rx), Math.round(fy + Math.sin(a) * 3), 1, 1); }
-      ctx.globalAlpha = 1; return; }
-    if (r < .2) return;
-    // la magie s'éteint à son contact : des étincelles grises qui grésillent
-    const k = Math.floor(t / 180);
-    for (let i = 0; i < 2 + Math.round(r * 5); i++) { const s = k * 7 + i; if (hash(s) > .7) continue;
-      const a = hash(s + 1) * 6.28, d = 12 + hash(s + 2) * 4; ctx.globalAlpha = .7; ctx.fillStyle = "#9aa0a8";
-      ctx.fillRect(Math.round(cx + Math.cos(a) * d), Math.round(y0 + h / 2 + Math.sin(a) * d * .7), 1, 1); ctx.fillStyle = "#d8dce2"; ctx.fillRect(Math.round(cx + Math.cos(a) * (d + 1)), Math.round(y0 + h / 2 + Math.sin(a) * (d + 1) * .7), 1, 1); }
-    ctx.globalAlpha = 1; return;
-  }
-  const C = auraColors(o);
-  if (f === "divin") {
-    if (layer === "back") {
-      ellipse(ctx, cx, fy, 9 + Math.round(r * 5), 3, C.glow, .25 + .3 * r);
-      const top = y0 - 8 - Math.round(r * 8);
-      ctx.globalAlpha = .12 + .18 * r; ctx.fillStyle = C.glow; ctx.fillRect(cx - 9, top + 6, 18, fy - top - 6);
-      [-10, -5, 0, 5, 10].forEach((dx, i) => { const a = (.2 + .3 * r) * (.4 + .6 * Math.sin(t / 300 + i * 1.7) ** 2) * (feared ? 1.3 : 1);
-        ctx.globalAlpha = Math.min(1, a); ctx.fillStyle = C.ray; ctx.fillRect(cx + dx, top + (i % 2) * 4, i === 2 ? 2 : 1, fy - top); });
-    } else for (let i = 0; i < n; i++) {
-      const p = (t / 45 + i * 37) % 44, x = cx - 12 + Math.round(hash(i) * 24), y = fy - p;
-      ctx.globalAlpha = Math.max(0, 1 - p / 44) * (.6 + .4 * r); ctx.fillStyle = C.mote; ctx.fillRect(x, Math.round(y), 1, 1);
-      if (i % 3 === 0) { ctx.fillRect(x - 1, Math.round(y), 3, 1); ctx.fillRect(x, Math.round(y) - 1, 1, 3); }
-    }
-  }
-  if (f === "sombre") {
-    if (layer === "back") ellipse(ctx, cx, fy, 10 + Math.round(r * 6), 3 + Math.round(r), C.glow, .35 + .35 * r);
-    for (let i = 0; i < n; i++) {
-      if ((i % 2 === 0) !== (layer === "back")) continue;
-      const p = (t / 60 + i * 29) % 44, sway = Math.round(Math.sin(t / 420 + i) * 2);
-      const x = cx - 13 + Math.round(hash(i + 9) * 26) + sway, y = Math.round(fy - 1 - p), sz = p < 12 ? 4 : p < 26 ? 3 : 2;
-      ctx.globalAlpha = Math.max(0, 1 - p / 44) * (.55 + .4 * r); ctx.fillStyle = C.smoke; ctx.fillRect(x, y, sz, sz - 1); ctx.fillRect(x + 1, y - 1, sz - 2 || 1, 1);
-    }
-    if (layer === "front") for (let i = 0; i < 2 + Math.round(r * 7); i++) {
-      const p = (t / 30 + i * 41) % 36; ctx.globalAlpha = Math.max(0, 1 - p / 36); ctx.fillStyle = C.ember;
-      ctx.fillRect(cx - 10 + Math.round(hash(i + 3) * 20), Math.round(fy - 4 - p), 1, 1);
-    }
-    // une présence qui veille derrière lui, quand il est très craint
-    if (layer === "back" && feared && r > .65) { const a = (r - .65) / .35 * (.6 + .4 * Math.sin(t / 500)); ctx.globalAlpha = a; ctx.fillStyle = C.ember;
-      ctx.fillRect(cx - 4, y0 - 4, 2, 1); ctx.fillRect(cx + 3, y0 - 4, 2, 1); }
-  }
-  if (f === "paien") {
-    if (layer === "back") ellipse(ctx, cx, fy, 8 + Math.round(r * 5), 2, C.glow, .25 + .25 * r);
-    const m = 1 + Math.round(r * 4);
-    for (let i = 0; i < m; i++) for (let tr = 5; tr >= 0; tr--) {
-      const a = (t - tr * 60) / 700 + i * 6.283 / m, front = Math.sin(a) > 0;
-      if (front !== (layer === "front")) continue;
-      const x = Math.round(cx + Math.cos(a) * 15), y = Math.round(y0 + h * .55 + Math.sin(a) * 5 - Math.sin(t / 500 + i) * 2);
-      ctx.globalAlpha = tr ? .8 / tr : 1; ctx.fillStyle = C.wisp; ctx.fillRect(x, y, tr < 3 ? 2 : 1, tr < 3 ? 2 : 1);
-      if (!tr) { ctx.fillRect(x - 1, y, 4, 2); ctx.fillRect(x, y - 1, 2, 4); ctx.fillStyle = C.core; ctx.fillRect(x, y, 2, 2); }
-    }
-    if (layer === "front" && r > .3) for (let i = 0; i < 1 + Math.round(r * 7); i++) {
-      const p = (t / 70 + i * 23) % 40, x = cx - 12 + Math.round(hash(i + 20) * 24 + Math.sin(t / 300 + i) * 2);
-      ctx.globalAlpha = Math.max(0, 1 - p / 40); ctx.fillStyle = C.leaf; ctx.fillRect(x, Math.round(y0 - 6 + p), 2, 1);
-    }
-  }
-  ctx.globalAlpha = 1;
-}
-const labState = { pact: false, combat: false, child: false, hair: .15, bless: 0, curse: 0, outfit: "tunique", faith: "divin", renown: .6, regard: .6 };
-let labHero = null;
-function rebuildLab() {
-  const h = makeHero(labState), bb = h.back && [".".repeat(24), ...h.back.slice(0, -1)];
-  labHero = { idle: [h.rows, bobUpper(h.rows, h.cut)], walk: walkFrames(h.rows, h.cut), back: h.back, backBob: bb, len: h.len };
-}
-function renderLab(t) {
-  if (!labHero) rebuildLab();
-  const c = ctxOf("lab"); c.clearRect(0, 0, 96, 60);
-  c.fillStyle = "#86d69a"; c.fillRect(0, 0, 96, 60);
-  [[5,7],[29,3],[50,9],[13,44],[82,30],[44,52],[70,6],[90,50]].forEach(([x, y]) => { c.fillStyle = "#a8e8b4"; c.fillRect(x, y, 1, 1); c.fillStyle = "#6cbf84"; c.fillRect(x + 1, y, 1, 1); });
-  const h = labHero.idle[0].length, y0 = 58 - h - 3;
-  const i2 = Math.floor(t / 500) % 2, w4 = Math.floor(t / 130) % 4;
-  const heroes = [[14, labHero.idle[i2], i2 ? labHero.backBob : labHero.back], [58, labHero.walk[w4], w4 % 2 ? labHero.backBob : labHero.back]];
-  heroes.forEach(([x, fr]) => { c.globalAlpha = .22; c.fillStyle = "#1a3a2a"; c.fillRect(x + 3, y0 + h - 2, 18, 3); c.globalAlpha = 1; drawAura(c, labState, x, y0, t, "back", h); });
-  heroes.forEach(([x, fr, bk]) => { drawHero(c, labState, fr, x, y0, t, bk, labHero.len); drawAura(c, labState, x, y0, t, "front", h); });
-}
-function bindLab() {
-  const out = (id, txt) => { document.getElementById(id).textContent = txt; };
-  const upd = () => {
-    const days = +document.getElementById("hair").value;
-    labState.hair = days / 365; labState.bless = +document.getElementById("bless").value / 100; labState.curse = +document.getElementById("curse").value / 100;
-    labState.outfit = document.querySelector('input[name="outfit"]:checked').value; labState.child = document.getElementById("age").value === "child";
-    labState.pact = document.getElementById("pact").checked; labState.combat = document.getElementById("combat").checked;
-    const L = Math.round(labState.hair * (labState.child ? 9 : 14));
-    out("pact-v", !labState.pact ? "" : L === 0 ? "le pacte dort" : L < 5 ? "faible" : L < 10 ? "forte" : "maximale");
-    labState.faith = document.getElementById("faith").value; labState.renown = +document.getElementById("renown").value / 100; labState.regard = +document.getElementById("regard").value / 100;
-    const rg = labState.regard; out("renown-v", Math.round(labState.renown * 100)); out("regard-v", rg < -.6 ? "terrifie" : rg < -.15 ? "inquiète" : rg <= .15 ? "partagé" : rg <= .6 ? "respecté" : "adoré");
-    out("hair-v", days === 0 ? "le jour même" : days < 60 ? days + " jours" : Math.round(days / 30) + " mois");
-    out("bless-v", Math.round(labState.bless * 100)); out("curse-v", Math.round(labState.curse * 100));
-    rebuildLab();
-  };
-  document.querySelectorAll(".lab-controls input, .lab-controls select").forEach(el => el.addEventListener("input", upd));
-  document.getElementById("barber").addEventListener("click", () => { document.getElementById("hair").value = 0; upd(); });
-  upd();
-}
-
-// ---------- dirs.js ----------
 // ---------- Le héros dans les 8 directions ----------
 // Chaque vue est composée de formes simples (ellipses, rectangles), puis contourée et ombrée automatiquement.
 function grid(h = 34) { return Array.from({ length: h }, () => Array(24).fill(".")); }
@@ -638,7 +534,6 @@ function bindField() {
     b.addEventListener("pointerdown", on); b.addEventListener("pointerup", off); b.addEventListener("pointerleave", off); });
 }
 
-// ---------- nature.js ----------
 // ---------- Un décor vivant : ruisseau, arbres, rochers, herbes, oiseaux, particules ----------
 const NV = { wd:"#2a5e94", w:"#3a7cb6", wm:"#4f9acb", wl:"#7cc4e4", wh:"#d4f0fa", foam:"#f4fbff",
   sand:"#d8bf86", sandd:"#b89a5e", wet:"#8e7a50",
@@ -696,7 +591,34 @@ const waterCv = document.createElement("canvas"); waterCv.width = NW; waterCv.he
 const waterImg = waterCv.getContext("2d").createImageData(NW, NH);
 const WC = Object.fromEntries(["wd","w","wm","wl","wh","foam"].map(k => [k, hex(NV[k])]));
 let fishT0 = -1e9, fishAt = [0, 0];
-/* renderWater : remplacée plus loin */
+function renderWater(t) {
+  const d = waterImg.data; d.fill(0);
+  const set = (x, y, k) => { const i = (y * NW + x) * 4, c = WC[k]; d[i] = c[0]; d[i + 1] = c[1]; d[i + 2] = c[2]; d[i + 3] = 255; };
+  const flow = t * .018;                                  // le courant descend
+  for (let y = 0; y < NH; y++) {
+    const cx = riverX(y), hw = riverHW(y);
+    for (let x = Math.max(0, Math.ceil(cx - hw)); x <= Math.min(NW - 1, Math.floor(cx + hw)); x++) {
+      const u = (x - cx) / hw, deep = 1 - u * u;
+      let k = deep > .82 ? "wd" : deep > .45 ? "w" : deep > .18 ? "wm" : "wl";
+      const yy = Math.floor(y - flow * (.7 + deep * .5)), band = Math.floor(yy / 4), cell = Math.floor((x + band * 3) / 6);
+      const hsh = Math.abs(Math.sin(band * 12.9898 + cell * 78.233) * 43758.5453) % 1, inCell = (x + band * 3) % 6;
+      if (deep > .1 && yy % 4 === 0 && hsh < .3 && inCell < 2 + Math.floor(hsh * 8) % 3) k = hsh < .07 ? "wh" : "wl";   // petits reflets qui filent avec le courant
+      else if (deep > .7 && yy % 4 === 2 && hsh > .82 && inCell < 3) k = "wd";
+      if (Math.abs(u) > .88 && (x + y + Math.floor(t / 260)) % 3 === 0) k = "foam";  // écume au bord
+      STONES.forEach(([sx, sy, sr]) => { const dd = Math.hypot(x - sx, (y - sy) * 1.3);
+        if (dd > sr && dd < sr + 1.6 && (x * 7 + y * 3 + Math.floor(t / 160)) % 4) k = "foam";
+        if (y > sy + 2 && y < sy + 12 && Math.abs(x - sx + (y - sy) * .5) < (y - sy) * .25 && Math.sin((y - flow) * .9) > .3) k = "wl"; });
+      set(x, y, k);
+    }
+  }
+  // un poisson saute de temps en temps
+  const ft = t - fishT0;
+  if (ft > 7000) { fishT0 = t; const yy = 40 + ((t / 7000 | 0) * 53) % 120; fishAt = [Math.round(riverX(yy) - 4), yy]; }
+  if (ft < 1500) { const [fx, fy] = fishAt;
+    if (ft > 650) { const rr = (ft - 650) / 140; for (let a = 0; a < 40; a++) { const x = Math.round(fx + 6 + Math.cos(a / 40 * 6.28) * rr), y = Math.round(fy + Math.sin(a / 40 * 6.28) * rr * .5);
+      if (x >= 0 && x < NW && y >= 0 && y < NH && inRiver(x, y) && rr < 6) set(x, y, rr < 3 ? "foam" : "wh"); } } }
+  waterCv.getContext("2d").putImageData(waterImg, 0, 0);
+}
 function drawFish(ctx, t) {
   const ft = t - fishT0; if (ft < 0 || ft > 650) return;
   const k = ft / 650, [fx, fy] = fishAt, x = Math.round(fx + k * 7), y = Math.round(fy - Math.sin(Math.PI * k) * 9);
@@ -871,7 +793,6 @@ function renderNature(t) {
   drawCloudShadows(c, t);
 }
 
-// ---------- spirit.js ----------
 // ---------- L'Esprit capillaire de la rancoeur : le puits et la mini cinématique ----------
 const N = { g:"#24384a", gd:"#1a2a3a", gl:"#33506a", st:"#5c6478", std:"#3c4256", stl:"#868ea4", so:"#0e1018",
   wood:"#5a4030", woodd:"#3a281e", woodl:"#7a5a40", iron:"#6a6e78", hole:"#05060a", hair:"#100c16", hairl:"#4a4868", moss:"#3e6a4a", rope:"#8a7a5a", fly:"#e8f6a0" };
@@ -1014,7 +935,6 @@ function renderCine(t) {
   const cap = document.getElementById("cine-cap"); if (cap.textContent !== line) cap.textContent = line;
 }
 
-// ---------- horror.js ----------
 // ---------- Au fond du puits : la vue plongeante (plus détaillée que le jeu) ----------
 const HORROR_W = 160, HORROR_H = 120, BAYER4 = [[0,8,2,10],[12,4,14,6],[3,11,1,9],[15,7,13,5]];
 const horrorImgs = {};
@@ -1208,142 +1128,133 @@ function renderTalk(t) {
   if (el.textContent !== txt) el.textContent = txt;
 }
 
-// ---------- world.js ----------
-// ---------- Monde : le format commun de toutes les cartes du jeu ----------
-// Une carte = rpg/data/maps/<id>.json, la liste des cartes = rpg/data/maps/index.json (voir README).
-// Unité partout : la tuile de 16 px, fractions permises (au pixel, 1/16 de tuile).
-// Ce fichier ne touche pas au DOM : les scripts node (export, collisions) le chargent aussi.
-const TILE = 16;
-const MAPS = {};                                   // id -> carte, rempli au chargement
-const MOMENTS = ["aube", "matin", "fin de matinée", "midi", "après-midi", "fin d'après-midi", "soir", "veillée", "nuit"];
-const DIRS8 = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
-
-// ---- conditions : when = { day?: n | [n], moment?: m | [m], night?: bool, if?: "drapeau && !autre" } ----
-// ctx = { day, moment, night, flags } ; une clé absente du contexte ne filtre pas (la carte de travail montre tout).
-function flagsOk(expr, flags) {
-  return expr.split("||").some(part => part.split("&&").every(term => { const s = term.trim(), neg = s.startsWith("!"), k = neg ? s.slice(1).trim() : s;
-    return !!flags[k] !== neg; }));
-}
-function whenOk(when, ctx = {}) {
-  if (!when) return true;
-  if (when.night !== undefined && ctx.night !== undefined && !!when.night !== !!ctx.night) return false;
-  if (when.day !== undefined && ctx.day && ![].concat(when.day).includes(ctx.day)) return false;
-  if (when.moment !== undefined && ctx.moment && ![].concat(when.moment).includes(ctx.moment)) return false;
-  if (when.if && ctx.flags && !flagsOk(when.if, ctx.flags)) return false;
-  return true;
-}
-// variants : [{ when, ...champs }] ; chaque variante qui s'applique remplace ces champs de l'objet.
-// Une variante est plus stricte que when : il faut que le contexte donne le jour, le moment et les drapeaux qu'elle demande.
-function whenExact(when, ctx = {}) {
-  if (!when) return true;
-  if (when.day !== undefined && !ctx.day) return false;
-  if (when.moment !== undefined && !ctx.moment) return false;
-  if (when.if && !ctx.flags) return false;
-  if (when.night !== undefined && ctx.night === undefined) return false;
-  return whenOk(when, ctx);
-}
-function resolveObj(o, ctx) {
-  if (!o.variants) return o;
-  return o.variants.reduce((acc, v) => { if (!whenExact(v.when, ctx)) return acc; const { when, ...rest } = v; return { ...acc, ...rest }; }, o);
-}
-function visibleObjects(map, ctx, opts = {}) {
-  return map.objects.filter(o => whenOk(o.when, ctx)).map(o => resolveObj(o, ctx)).filter(o => !o.hidden || opts.showHidden || (opts.state && opts.state[o.id] && opts.state[o.id].shown));
-}
-
-// ---- décor extérieur : taille par défaut (px), emprise solide (px, dans la boîte) ----
-// x, y, w, h d'un objet = sa boîte de dessin, en tuiles. resize : "ratio" (garde la forme), "free", ou rien (taille fixe).
-const cx_ = (x, w) => x + w / 2;
-const XTYPES = {
-  arbre:        { label: "Arbre", size: [40, 48], resize: "ratio", foot: (x, y, w, h) => [cx_(x, w) - 4, y + h - 5, 8, 5] },
-  petit_arbre:  { label: "Petit arbre", size: [28, 34], resize: "ratio", foot: (x, y, w, h) => [cx_(x, w) - 3, y + h - 4, 6, 4] },
-  chene:        { label: "Grand chêne", size: [76, 92], resize: "ratio", foot: (x, y, w, h) => [cx_(x, w) - 9, y + h - 8, 18, 8] },
-  buisson:      { label: "Buisson", size: [22, 20], resize: "ratio", foot: (x, y, w, h) => [x + 3, y + h - 8, w - 6, 8] },
-  rocher:       { label: "Rocher", size: [12, 9], resize: "free", foot: (x, y, w, h) => [x, y, w, h] },
-  caillou:      { label: "Caillou", size: [6, 4], resize: "free" },
-  fleurs:       { label: "Fleurs", size: [12, 12] },
-  champignons:  { label: "Champignons", size: [10, 6] },
-  souche:       { label: "Souche", size: [16, 11], foot: (x, y, w, h) => [x + 2, y + 2, 12, 9] },
-  tonneau:      { label: "Tonneau", size: [12, 19], foot: (x, y, w, h) => [x, y + 8, 12, 11] },
-  caisse:       { label: "Caisse", size: [12, 11], foot: (x, y, w, h) => [x, y + 3, w, h - 3] },
-  banc:         { label: "Banc", size: [28, 11], foot: (x, y, w, h) => [x, y + 3, w, h - 3] },
-  cloture:      { label: "Clôture", size: [24, 10], foot: (x, y, w, h) => [x, y + 4, w, 6] },
-  panneau:      { label: "Panneau", size: [16, 18], foot: (x, y, w, h) => [x + 5, y + 12, 6, 6] },
-  maison:       { label: "Maison", size: [74, 74], foot: (x, y, w, h) => [x + 4, y + 46, 64, 28], door: [28, 50, 16, 24], windows: [[10, 48], [50, 48]] },
-  grange:       { label: "Grange", size: [66, 62], foot: (x, y, w, h) => [x + 3, y + 30, 60, 32], door: [19, 35, 26, 27], windows: [] },
-  moulin:       { label: "Moulin", size: [62, 64], foot: (x, y, w, h) => [x + 3, y + 30, 58, 34], door: [23, 41, 12, 23], windows: [[9, 30], [41, 28]] },
-  roue:         { label: "Roue du moulin", size: [30, 30] },
-  lavoir:       { label: "Lavoir", size: [58, 42], foot: (x, y, w, h) => [x + 3, y + 22, 52, 20] },
-  puits:        { label: "Puits", size: [44, 56], foot: (x, y, w, h) => [x + 5, y + 32, 34, 20] },
-  pont:         { label: "Pont", size: [30, 20], bridge: true },
-  fontaine:     { label: "Fontaine", size: [34, 30], foot: (x, y, w, h) => [x + 2, y + 12, 30, 16] },
-  table_nappe:  { label: "Table à longue nappe", size: [32, 20], foot: (x, y, w, h) => [x, y + 6, w, h - 6] },
-  rouet:        { label: "Rouet", size: [18, 20], foot: (x, y, w, h) => [x + 2, y + 12, 14, 8] },
-  corde_linge:  { label: "Corde à linge", size: [44, 22] },
-  traces_mur:   { label: "Traces de pas (mur)", size: [8, 14] },
-  tresse_paille:{ label: "Tresse de paille", size: [10, 6] },
-  tombe:        { label: "Tombe", size: [12, 16], foot: (x, y, w, h) => [x + 1, y + 8, 10, 8] },
-  croix:        { label: "Croix", size: [12, 20], foot: (x, y, w, h) => [x + 3, y + 14, 6, 6] },
-  muret:        { label: "Muret", size: [32, 12], resize: "free", foot: (x, y, w, h) => [x, y + 2, w, h - 2] },
-  portail:      { label: "Portail", size: [28, 22] },
-  fosse:        { label: "Fosse", size: [20, 14], foot: (x, y, w, h) => [x, y, w, h] },
-  trainee:      { label: "Traînée de cheveux", size: [48, 32], resize: "free" },
-  balle:        { label: "Balle", size: [6, 6] },
-  lanterne:     { label: "Lanterne", size: [6, 8] },
+// ---------- Intérieurs : données pures (exportées aussi en interiors.json) ----------
+// Unités : tuiles de 16 px. Les 2 premières rangées (y = 0 et 1) sont le mur du fond.
+// Chaque objet : id, type (fonction de dessin), x, y, w, h en tuiles, solid (bloque le passage),
+// interact (facultatif) : ce que le joueur peut faire, avec les effets du scénario de l'enfance.
+// secret: true = l'objet n'est jamais signalé au joueur (pas de surbrillance en jeu).
+const INTERIORS = {
+  tile: 16,
+  rooms: {
+    maison_salle: {
+      name: "Maison du héros — la salle", place: "maison", w: 12, h: 9, floor: "bois", wall: "platre",
+      objects: [
+        { id: "cheminee", type: "cheminee", x: 1, y: 0, w: 3, h: 3, solid: true, light: [2.5, 2.4, 40],
+          interact: { label: "La cheminée", text: "Jour 1, veillée : Ysol chante la comptine de l'enfant des deux lumières, au coin du feu." } },
+        { id: "etagere", type: "etagere", x: 5, y: 0, w: 2, h: 2, solid: false },
+        { id: "fenetre", type: "fenetre", x: 8, y: 0, w: 2, h: 2, solid: false },
+        { id: "porte_chambre", type: "porte", x: 10, y: 0, w: 1, h: 2, solid: false },
+        { id: "fauteuil_ysol", type: "fauteuil", x: 1, y: 3, w: 2, h: 2, solid: true,
+          interact: { label: "Le fauteuil d'Ysol", text: "Ysol s'y berce pendant la veillée. « Beaucoup d'enfants sont nés cette nuit-là. »" } },
+        { id: "tapis", type: "tapis", x: 4, y: 4, w: 4, h: 3, solid: false },
+        { id: "table", type: "table", x: 5, y: 4, w: 3, h: 2, solid: true },
+        { id: "bol_de_lait", type: "bol", x: 6, y: 4, w: 1, h: 1, solid: false, on: "table",
+          interact: { label: "Le bol de lait", text: "Jour 2, soir (optionnel) : le boire, le laisser, ou y ajouter son pain (béni +5).", scene: "s8_bol_de_lait" } },
+        { id: "chaise_g", type: "chaise", x: 4, y: 5, w: 1, h: 1, solid: true },
+        { id: "chaise_d", type: "chaise", x: 8, y: 5, w: 1, h: 1, solid: true },
+        { id: "tonneau", type: "tonneau", x: 1, y: 6, w: 1, h: 1, solid: true },
+        { id: "plante", type: "plante", x: 10, y: 6, w: 1, h: 1, solid: true },
+        { id: "marmite", type: "marmite", x: 4, y: 2, w: 1, h: 1, solid: true },
+      ],
+      exits: [ { x: 5, y: 8, w: 2, to: "village", spawn: "maison", label: "Sortir" }, { x: 10, y: 1, w: 1, to: "maison_chambre", spawn: [3.5, 5], label: "La chambre" } ],
+      npcs: [ { id: "mere", x: 7.5, y: 2.6, when: "jour" }, { id: "hero", x: 5.5, y: 6.2, when: "jour", child: true } ],
+    },
+    maison_chambre: {
+      name: "Maison du héros — la chambre", place: "maison", w: 8, h: 7, floor: "bois", wall: "platre",
+      objects: [
+        { id: "fenetre_chambre", type: "fenetre", x: 3, y: 0, w: 2, h: 2, solid: false, secret: true,
+          interact: { label: "La fenêtre", text: "Elle s'ouvre la nuit, et rien ne le signale. Première sortie : voleur +1 (une fois). Le seul indice vient de Margot, à la rivière.", flag: "sorti_fenetre_une_fois" } },
+        { id: "lit", type: "lit", x: 1, y: 2, w: 2, h: 3, solid: true,
+          interact: { label: "Le lit", text: "Se coucher fait passer au jour suivant." } },
+        { id: "chevet", type: "chevet", x: 3, y: 2, w: 1, h: 1, solid: true },
+        { id: "bougie", type: "bougie", x: 3, y: 2, w: 1, h: 1, solid: false, on: "chevet", light: [3.5, 2.2, 34],
+          interact: { label: "La bougie", text: "La souffler ou la laisser allumée. Allumée 2 nuits ou plus : peur du noir. Soufflée et sorti 2 nuits ou plus : il aime le noir.", flag: "bougie_allumee_nuits" } },
+        { id: "coffre", type: "coffre", x: 5, y: 2, w: 2, h: 1, solid: true,
+          interact: { label: "Le coffre", text: "Ses affaires d'enfant. Un bon endroit pour cacher des ciseaux." } },
+        { id: "tapis_ch", type: "tapis", x: 3, y: 3, w: 4, h: 3, solid: false },
+        { id: "porte_chambre", type: "seuil", x: 3, y: 6, w: 2, h: 1, solid: false,
+          interact: { label: "La porte", text: "Elle donne sur la salle. Fermée à clé la nuit : la mère a peur de la Rancunière." } },
+      ],
+      exits: [ { x: 3, y: 6, w: 2, to: "maison_salle", spawn: [10, 2.6], label: "La salle" } ],
+      npcs: [ { id: "chat", x: 4.6, y: 4.4, when: "nuit" } ],
+    },
+    grange: {
+      name: "La grange", place: "grange", w: 12, h: 9, floor: "terre", wall: "planches",
+      objects: [
+        { id: "poutre", type: "poutre", x: 0, y: 2, w: 12, h: 1, solid: false, above: true },
+        { id: "araignee", type: "araignee", x: 6, y: 2, w: 1, h: 3, solid: false, above: true,
+          interact: { label: "L'araignée", text: "Jour 1, matin : elle descend de la poutre et se pose sur le panier. La laisser grimper (aime les araignées), la chasser, ou crier et lâcher le panier (deux œufs cassés).", scene: "s1_grange" } },
+        { id: "outils", type: "outils", x: 1, y: 0, w: 2, h: 2, solid: false },
+        { id: "lucarne", type: "fenetre", x: 9, y: 0, w: 2, h: 2, solid: false },
+        { id: "nichoirs", type: "nichoirs", x: 4, y: 0, w: 4, h: 2, solid: true,
+          interact: { label: "Les nichoirs", text: "« Six œufs, pas cinq. Et tu ne traînes pas, Élio t'attend déjà sur la place. »" } },
+        { id: "panier", type: "panier", x: 6, y: 4, w: 1, h: 1, solid: true,
+          interact: { label: "Le panier à œufs", text: "C'est là que l'araignée se pose." } },
+        { id: "foin1", type: "foin", x: 9, y: 3, w: 2, h: 2, solid: true },
+        { id: "foin2", type: "foin", x: 10, y: 5, w: 2, h: 2, solid: true },
+        { id: "foin3", type: "foin", x: 1, y: 5, w: 2, h: 2, solid: true },
+        { id: "seau", type: "seau", x: 3, y: 3, w: 1, h: 1, solid: true },
+      ],
+      exits: [ { x: 5, y: 8, w: 2, to: "village", spawn: "grange", label: "Sortir" } ],
+      npcs: [ { id: "poule", x: 3.4, y: 6.2, when: "jour" }, { id: "poule", x: 8.2, y: 6.8, when: "jour" }, { id: "poule", x: 7.6, y: 3.2, when: "jour" }, { id: "mere", x: 3.2, y: 2.4, when: "jour" } ],
+    },
+    barbier: {
+      name: "Chez Fauvel, le barbier", place: "barbier", w: 10, h: 8, floor: "damier", wall: "platre",
+      objects: [
+        { id: "miroir", type: "miroir", x: 3, y: 0, w: 2, h: 2, solid: false },
+        { id: "fauteuil_barbier", type: "fauteuil_barbier", x: 3, y: 2, w: 2, h: 2, solid: true,
+          interact: { label: "Le fauteuil", text: "Jour 2, matin : « Court, comme un soldat », « Juste un peu, derrière », ou sauter de la chaise et filer (cheveux longs, voleur +1).", scene: "s5_barbier" } },
+        { id: "comptoir", type: "comptoir", x: 6, y: 2, w: 3, h: 1, solid: true },
+        { id: "ciseaux", type: "ciseaux", x: 7, y: 2, w: 1, h: 1, solid: false, on: "comptoir",
+          interact: { label: "Les ciseaux", text: "Les prendre : voleur +1, trait Doigts légers. Personne ne s'en rend compte avant le lendemain. Au puits, ils coupent une mèche par coup (contre 3 avec un bâton).", flag: "a_ciseaux" } },
+        { id: "etagere_b", type: "etagere", x: 7, y: 0, w: 2, h: 2, solid: false },
+        { id: "banc", type: "banc", x: 1, y: 5, w: 3, h: 1, solid: true,
+          interact: { label: "Le banc d'attente", text: "La mère attend ici pendant la coupe." } },
+        { id: "plante_b", type: "plante", x: 8, y: 5, w: 1, h: 1, solid: true },
+        { id: "cheveux_sol", type: "cheveux_sol", x: 3, y: 4, w: 2, h: 1, solid: false },
+      ],
+      exits: [ { x: 4, y: 7, w: 2, to: "village", spawn: "barbier", label: "Sortir" } ],
+      npcs: [ { id: "fauvel", x: 5.6, y: 1.8, when: "jour" } ],
+    },
+    moulin: {
+      name: "Le moulin d'Aubin", place: "moulin", w: 12, h: 9, floor: "pierre", wall: "pierre",
+      objects: [
+        { id: "engrenage", type: "engrenage", x: 8, y: 0, w: 2, h: 2, solid: false },
+        { id: "meule", type: "meule", x: 4, y: 3, w: 4, h: 3, solid: true,
+          interact: { label: "La meule", text: "Elle tourne avec la roue. Aubin y passe ses journées, sans parler." } },
+        { id: "sacs", type: "sacs", x: 1, y: 2, w: 2, h: 2, solid: true },
+        { id: "sacs2", type: "sacs", x: 9, y: 5, w: 2, h: 2, solid: true },
+        { id: "echelle", type: "echelle", x: 10, y: 0, w: 1, h: 3, solid: false,
+          interact: { label: "L'échelle", text: "Elle monte à la chambre d'Élio." } },
+        { id: "etabli", type: "table", x: 1, y: 6, w: 2, h: 1, solid: true },
+        { id: "couteau", type: "couteau", x: 1, y: 6, w: 1, h: 1, solid: false, on: "etabli",
+          interact: { label: "Le couteau d'Aubin", text: "Nuit 2, Élio l'entend l'aiguiser. Jour 3, à l'aube, il coupe les tresses avec." } },
+        { id: "poele", type: "poele", x: 5, y: 0, w: 2, h: 2, solid: true,
+          interact: { label: "Le poêle", text: "Aubin y a jeté les tresses d'Élio." } },
+      ],
+      exits: [ { x: 5, y: 8, w: 2, to: "village", spawn: "moulin", label: "Sortir" }, { x: 10, y: 2, w: 1, to: "chambre_elio", spawn: [3, 4], label: "Monter" } ],
+      npcs: [ { id: "aubin", x: 8.4, y: 4.2, when: "jour" } ],
+    },
+    chambre_elio: {
+      name: "Le moulin — la chambre d'Élio", place: "moulin", w: 7, h: 6, floor: "bois", wall: "planches",
+      objects: [
+        { id: "fenetre_elio", type: "fenetre", x: 4, y: 0, w: 2, h: 2, solid: false,
+          interact: { label: "La fenêtre d'Élio", text: "Nuit 2 : « Qu'est-ce que tu fais là ? T'es sorti par ta fenêtre ? »", scene: "n2_elio" } },
+        { id: "lit_elio", type: "lit", x: 1, y: 2, w: 2, h: 3, solid: true },
+        { id: "epee", type: "epee_bois", x: 4, y: 3, w: 1, h: 1, solid: false,
+          interact: { label: "L'épée en bois", text: "Pour le jeu des brigands, sur la place." } },
+        { id: "ruban_lit", type: "ruban", x: 1, y: 2, w: 1, h: 1, solid: false, on: "lit_elio",
+          interact: { label: "Un ruban", text: "Celui de ses tresses. Le jour 3, on en retrouve un dans la cendre devant le moulin." } },
+        { id: "trappe", type: "trappe", x: 5, y: 4, w: 1, h: 1, solid: false },
+      ],
+      exits: [ { x: 5, y: 4, w: 1, to: "moulin", spawn: [9.6, 3], label: "Descendre" } ],
+      npcs: [ { id: "elio", x: 3.4, y: 2.2, when: "jour" } ],
+    },
+  },
+  // lieu de la carte -> pièce d'entrée
+  entries: { maison: "maison_salle", grange: "grange", barbier: "barbier", moulin: "moulin" },
 };
 
-// ---- rivière : distance d'un point (px) à la ligne brisée, et abscisse le long du courant ----
-function segDist(px_, py_, ax, ay, bx, by) { const dx = bx - ax, dy = by - ay, L = dx * dx + dy * dy || 1;
-  const k = Math.max(0, Math.min(1, ((px_ - ax) * dx + (py_ - ay) * dy) / L)); return [Math.hypot(px_ - ax - k * dx, py_ - ay - k * dy), k, Math.sqrt(L)]; }
-function riverAtPx(river, x, y) {
-  let best = 1e9, s = 0, acc = 0; const P = river.points;
-  for (let i = 0; i < P.length - 1; i++) { const [d, k, L] = segDist(x, y, P[i][0] * TILE, P[i][1] * TILE, P[i + 1][0] * TILE, P[i + 1][1] * TILE);
-    if (d < best) { best = d; s = acc + k * L; } acc += L; }
-  return [best, s];
-}
-const riverHalfPx = (river, s) => river.half * TILE + (river.wobble || 0) * TILE * Math.sin(s / 37);
-const inRect = (r, x, y) => x >= r.x && x < r.x + r.w && y >= r.y && y < r.y + r.h;
-
-// ---- emprises en px (pour le jeu : collisions ; pour l'éditeur : sélection) ----
-function objBoxPx(o) { return [o.x * TILE, o.y * TILE, o.w * TILE, o.h * TILE]; }
-function objFootPx(map, o) {
-  const b = objBoxPx(o);
-  if (map.kind === "piece") return b;
-  const ty = XTYPES[o.type]; if (o.foot) return [b[0] + o.foot[0] * TILE, b[1] + o.foot[1] * TILE, o.foot[2] * TILE, o.foot[3] * TILE];
-  return ty && ty.foot ? ty.foot(...b) : null;
-}
-
-// ---- grille de collision : une chaîne par rangée, 1 = bloqué ----
-// pièce : les deux rangées du mur du fond ; partout : les meubles et bâtiments solides (tuile couverte à plus de moitié) ;
-// extérieur : l'eau, sauf les hauts-fonds (terrain.shallows) et sous un pont. Les sorties ne libèrent rien (on bute contre une porte pour la prendre).
-// Les objets qui ont un when ne comptent pas : le jeu les gère selon le moment.
-function mapCollision(map) {
-  const g = Array.from({ length: Math.ceil(map.h) }, (_, y) => Array.from({ length: Math.ceil(map.w) }, () => map.kind === "piece" && y < 2));
-  const block = ([fx, fy, fw, fh]) => { let x0 = Math.round(fx / TILE), x1 = Math.round((fx + fw) / TILE), y0 = Math.round(fy / TILE), y1 = Math.round((fy + fh) / TILE);
-    if (x1 <= x0) { x0 = Math.floor((fx + fw / 2) / TILE); x1 = x0 + 1; } if (y1 <= y0) { y0 = Math.floor((fy + fh / 2) / TILE); y1 = y0 + 1; }
-    for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) if (g[y] && x >= 0 && x < g[y].length) g[y][x] = true; };
-  map.objects.filter(o => o.solid && !o.when && !o.on).forEach(o => { const f = objFootPx(map, o); if (f) block(f); });
-  const ter = map.terrain || {};
-  if (ter.river) { const bridges = map.objects.filter(o => XTYPES[o.type] && XTYPES[o.type].bridge);
-    for (let y = 0; y < g.length; y++) for (let x = 0; x < g[y].length; x++) { const X = (x + .5) * TILE, Y = (y + .5) * TILE, [d, s] = riverAtPx(ter.river, X, Y);
-      if (d >= riverHalfPx(ter.river, s) + 2) continue;
-      if ((ter.shallows || []).some(r => inRect(r, x + .5, y + .5)) || bridges.some(b => inRect(b, x + .5, y + .5))) continue;
-      g[y][x] = true; } }
-  return g.map(r => r.map(b => b ? 1 : 0).join(""));
-}
-
-// ---- une carte vide, prête à remplir dans l'éditeur ----
-function blankMap(id, name, kind, w, h, chapter) {
-  const m = { id, name, chapter: chapter || "", kind, tile: TILE, w, h, objects: [], exits: [], spawns: {}, zones: {}, npcs: [], scenes: [] };
-  if (kind === "piece") { m.floor = "bois"; m.wall = "platre"; m.spawns.entree = { x: w / 2, y: h - 1.2, dir: "N" }; }
-  else m.terrain = { paths: [], plazas: [], fields: [], shallows: [] };
-  return m;
-}
-// ce qu'on écrit dans le fichier : la carte, plus sa grille de collision recalculée
-function mapForExport(map) { const m = JSON.parse(JSON.stringify(map)); Object.keys(m).filter(k => k.startsWith("_")).forEach(k => delete m[k]); m.collision = mapCollision(m); return m; }
-
-if (typeof module !== "undefined") module.exports = { TILE, MAPS, MOMENTS, DIRS8, XTYPES, whenOk, whenExact, resolveObj, visibleObjects, mapCollision, mapForExport, blankMap, riverAtPx, riverHalfPx, objFootPx };
-
-// ---------- interiors.js ----------
 // ---------- Intérieurs : dessin des sols, murs et meubles ----------
 // drawRoom(ctx, room, t, opts) dessine une carte « piece » (rpg/data/maps) dans un canvas de room.w*16 x room.h*16.
 // Les meubles sont dans FURNI : une fonction par type, (ctx, x, y, w, h, t, night, état, objet) en pixels.
@@ -1569,284 +1480,6 @@ function drawFurni(g, o, t, night, st) {
 // collisions pour le jeu : voir mapCollision (world.js) ; ici en booléens, pour l'éditeur
 function roomCollision(room) { return mapCollision(room).map(r => [...r].map(c => c === "1")); }
 
-// ---------- exterior.js ----------
-// ---------- Cartes extérieures : dessin de n'importe quelle carte « exterieur » à partir de son JSON ----------
-// drawMap(ctx, map, t, opts) dessine la carte entière dans un canvas de map.w*16 x map.h*16.
-// opts : { night, day, moment, flags } (filtrent les when), actors: [{ y, draw(ctx) }] (le jeu place ses personnages,
-// triés avec le décor par la ligne des pieds y en px ; les npcs du JSON ne sont alors pas dessinés),
-// animals (false = pas de bêtes), state (état des objets), showHidden (montre les objets cachés, pour l'éditeur).
-// drawAnyMap choisit drawMap ou drawRoom selon map.kind.
-
-// ---- habitants : palettes et silhouettes ----
-const NPC_PAL = {
-  margot: { ...CHILD_PAL, c:"#c44a6a", C:"#8e2e4a", l:"#ea7a92", h:"#c8562c", H:"#8e3a1e", j:"#ec8a50" },
-  basile: { ...CHILD_PAL, c:"#5a8a4a", C:"#3e6634", l:"#86b46a", h:"#2e2a36", H:"#1c1822", j:"#4a4458" },
-  elio: FRIEND_PAL,
-  elio_capuche: { ...FRIEND_PAL, h:"#5a5a6e", H:"#3e3e50", j:"#7a7a8e" },
-  enfant_a: { ...CHILD_PAL, c:"#3a7cb6", C:"#2a5e94", l:"#6aa6d4", h:"#e8c070", H:"#b8903e", j:"#f8e0a0" },
-  enfant_b: { ...CHILD_PAL, c:"#e8dcc0", C:"#b8aa88", l:"#ffffff", h:"#8a3a2a", H:"#5e2418", j:"#b4583a" },
-  enfant_c: { ...CHILD_PAL, c:"#8a5aa0", C:"#5e3a74", l:"#b48ad0", h:"#3a2a20", H:"#241812", j:"#5a4434" },
-  mere: { ...PAL, c:"#8a5aa0", C:"#5e3a74", l:"#b48ad0", h:"#7a4a2a", H:"#5a3420", j:"#a06a40", a:"#f4ead2", A:"#c9c0aa", r:"#ffffff" },
-  fauvel: { ...PAL, c:"#f4ead2", C:"#c9c0aa", l:"#ffffff", h:"#9a9aa8", H:"#6a6a78", j:"#c4c4d0", a:"#2a5e94", A:"#1e4470" },
-  aubin: { ...PAL, c:"#6a5a4a", C:"#4a3e34", l:"#8a7a66", h:"#3a3040", H:"#241e2a", j:"#5a5060", a:"#8a8494", A:"#5e5a68" },
-  ysol: { ...PAL, c:"#4a6a8a", C:"#34506a", l:"#6a8aaa", h:"#d8d4dc", H:"#a8a4b0", j:"#f0eef4", a:"#8a3a4a", A:"#5e2434", s:"#eec4a4", S:"#c8907a" },
-  mere_basile: { ...PAL, c:"#5a8a4a", C:"#3e6634", l:"#86b46a", h:"#2e2a36", H:"#1c1822", j:"#4a4458", a:"#e8dcc0", A:"#b8aa88" },
-  client: { ...PAL, c:"#f4f4f4", C:"#d0d0d8", l:"#ffffff", h:"#f4f4f4", H:"#d0d0d8", j:"#ffffff" },
-  villageois: { ...PAL, c:"#7a6a4a", C:"#5a4a34", l:"#9a8a66", h:"#4a3a2a", H:"#2e2418", j:"#6a5a44" },
-};
-const CHILD_IDS = new Set(["hero", "margot", "basile", "elio", "elio_capuche", "enfant_a", "enfant_b", "enfant_c"]);
-const ANIMALS = new Set(["poule", "poule_rousse", "poule_blanche", "chat", "chat_dort"]);
-let mapSprites = null;
-function npcSprites() { return mapSprites || (mapSprites = { child: CHILD(), childBob: bobUpper(CHILD(), 23), adult: ADULT(), adultBob: bobUpper(ADULT(), 27) }); }
-// une personne, les pieds en (fx, fy) px
-function drawPerson(c, n, fx, fy, t) {
-  const S = npcSprites(), key = n.look || n.id, child = CHILD_IDS.has(key) || n.child, bob = (Math.floor(t / 600) + Math.round(fx)) % 2;
-  const pal = key === "hero" ? CHILD_PAL : NPC_PAL[key] || NPC_PAL.villageois, x = Math.round(fx) - 12, y = Math.round(fy) - (child ? 27 : 34);
-  c.globalAlpha = .22; c.fillStyle = "#1a3a2a"; c.fillRect(x + 3 + (child ? 0 : 1), Math.round(fy) - 2, child ? 16 : 18, 3); c.globalAlpha = 1;
-  drawSprite(c, child ? (bob ? S.childBob : S.child) : (bob ? S.adultBob : S.adult), pal, x, y);
-}
-function drawAnimal(c, n, fx, fy, t, i) {
-  const x = Math.round(fx), y = Math.round(fy);
-  if (n.id === "chat" || n.id === "chat_dort") return drawChat(c, x - 6, y - 6, n.id === "chat_dort" ? 0 : t);
-  const col = { poule_rousse: ["#c8622c", "#9a4420"], poule_blanche: ["#ffffff", "#e0dcd0"] }[n.id];
-  if (!col) return drawPoule(c, x - 5, y - 8, t, i);
-  const sv = [IC_POULE.b, IC_POULE.d]; IC_POULE.b = col[0]; IC_POULE.d = col[1]; drawPoule(c, x - 5, y - 8, t, i); IC_POULE.b = sv[0]; IC_POULE.d = sv[1];
-}
-
-// ---- dessin du décor : une fonction par type, (c, t, X, Y, W, H, o, env) avec la boîte en px ----
-function withRoof(cols, fn) { const old = { rf: T.rf, rfd: T.rfd, rfl: T.rfl }; Object.assign(T, cols); fn(); Object.assign(T, old); }
-const ROOFS = { rouge: null, bleu: { rf: "#3a7cb6", rfd: "#2a5e94", rfl: "#6aa6d4" }, vert: { rf: "#5a8a4a", rfd: "#3e6634", rfl: "#86b46a" },
-  orange: { rf: "#c88a3a", rfd: "#9a6428", rfl: "#e8b060" }, violet: { rf: "#7a5a9a", rfd: "#54406e", rfl: "#a488c4" }, gris: { rf: "#7a7484", rfd: "#54505e", rfl: "#a4a0ae" } };
-function barberPole(ctx, x, y, t) {
-  px(ctx, NV.ro, x - 1, y - 1, 5, 16); for (let k = 0; k < 14; k++) px(ctx, ((k + Math.floor(t / 180)) % 4) < 2 ? "#d2463c" : "#f4ead2", x, y + k, 3, 1);
-  px(ctx, "#2a5e94", x, y + 6, 3, 1); px(ctx, T.fy, x, y - 1, 3, 1);
-}
-function barn(ctx, x, y) {
-  const W = 64;
-  px(ctx, T.fo, x + 2, y + 22, W - 4, 40); px(ctx, "#a8483a", x + 3, y + 23, W - 6, 38);
-  for (let k = x + 6; k < x + W - 4; k += 5) px(ctx, "#8a3a30", k, y + 23, 1, 38);
-  px(ctx, T.fo, x + 18, y + 34, 28, 28); px(ctx, "#6a4428", x + 19, y + 35, 26, 27); px(ctx, "#8a5a36", x + 19, y + 35, 13, 27);
-  px(ctx, "#e8dcc0", x + 19, y + 35, 26, 2); for (let k = 0; k < 13; k++) { px(ctx, "#e8dcc0", x + 19 + k * 2, y + 37 + k * 2, 2, 2); px(ctx, "#e8dcc0", x + 43 - k * 2, y + 37 + k * 2, 2, 2); }
-  px(ctx, T.fo, x + 26, y + 26, 12, 7); px(ctx, "#3a2a20", x + 27, y + 27, 10, 5); px(ctx, "#d8b85a", x + 28, y + 30, 8, 2);   // foin au grenier
-  for (let r = 0; r < 24; r++) { const inset = Math.max(0, 12 - Math.floor(r / 2)), w = W - inset * 2;
-    px(ctx, T.fo, x + inset - 1, y + r, w + 2, 1); px(ctx, r % 4 === 3 ? "#4a3a34" : r < 4 ? "#7a6a60" : "#5e4e46", x + inset, y + r, w, 1); }
-  px(ctx, T.fo, x - 1, y + 23, W + 2, 1);
-}
-function mill(ctx, x, y) {
-  const W = 60;
-  px(ctx, T.fo, x + 2, y + 20, W - 4, 42);
-  for (let j = 0; j < 40; j++) for (let i = 0; i < W - 6; i++) { const brick = (Math.floor((i + (Math.floor(j / 4) % 2) * 4) / 8) + Math.floor(j / 4)) % 3;
-    px(ctx, (j % 4 === 3 || (i + (Math.floor(j / 4) % 2) * 4) % 8 === 7) ? "#7a7484" : brick ? "#b4aca0" : "#c8c0b2", x + 3 + i, y + 21 + j); }
-  px(ctx, T.fo, x + 22, y + 40, 14, 22); px(ctx, "#6a4428", x + 23, y + 41, 12, 21); px(ctx, "#8a5a36", x + 23, y + 41, 12, 2);
-  px(ctx, T.fo, x + 8, y + 30, 10, 9); px(ctx, T.win, x + 9, y + 31, 8, 7); px(ctx, T.wdd, x + 12, y + 31, 2, 7);           // la cuisine
-  px(ctx, T.fo, x + 40, y + 28, 10, 9); px(ctx, T.win, x + 41, y + 29, 8, 7); px(ctx, T.wdd, x + 44, y + 29, 2, 7);         // la fenêtre d'Élio
-  for (let r = 0; r < 22; r++) { const inset = Math.max(0, 11 - Math.floor(r / 2)), w = W - inset * 2;
-    px(ctx, T.fo, x + inset - 1, y + r, w + 2, 1); px(ctx, r % 4 === 3 ? "#5a3a24" : r < 4 ? "#a8784c" : "#8a5a38", x + inset, y + r, w, 1); }
-  px(ctx, T.fo, x - 1, y + 21, W + 2, 1);
-}
-function millWheel(ctx, x, y, t, still) {     // la roue tourne avec le courant ; arrêtée, elle ne bouge plus et ne fait plus d'écume
-  const R = 12, a0 = still ? .3 : t / 1100;
-  ell(ctx, x, y, R + 1, R + 1, T.fo); ell(ctx, x, y, R, R, "#8a5a36"); ell(ctx, x, y, R - 2, R - 2, T.fo); ell(ctx, x, y, R - 3, R - 3, "#3a5e7a");
-  for (let k = 0; k < 8; k++) { const a = a0 + k * Math.PI / 4, c = Math.cos(a), s = Math.sin(a);
-    for (let r = 2; r < R - 2; r++) px(ctx, "#6a4428", Math.round(x + c * r), Math.round(y + s * r));
-    px(ctx, T.fo, Math.round(x + c * (R + 1)) - 1, Math.round(y + s * (R + 1)) - 1, 3, 3); px(ctx, "#a8784c", Math.round(x + c * (R + 1)), Math.round(y + s * (R + 1))); }
-  px(ctx, T.fo, x - 2, y - 2, 5, 5); px(ctx, "#8a8080", x - 1, y - 1, 3, 3);
-  if (!still) for (let k = 0; k < 3; k++) { const tt = (t / 500 + k / 3) % 1; px(ctx, NV.foam, Math.round(x - 6 + k * 6 + tt * 3), Math.round(y + R - 1 - tt * 4)); }
-}
-function washhouse(ctx, x, y, t) {     // le lavoir : un bassin sous un auvent
-  px(ctx, T.fo, x, y + 16, 52, 22); px(ctx, "#b4aca0", x + 1, y + 17, 50, 20); px(ctx, "#8a8494", x + 1, y + 34, 50, 3);
-  px(ctx, NV.ro, x + 5, y + 21, 42, 12); px(ctx, NV.w, x + 6, y + 22, 40, 10);
-  for (let k = 0; k < 5; k++) px(ctx, NV.wl, x + 8 + ((k * 9 + Math.floor(t / 300)) % 36), y + 24 + (k % 3) * 3, 3, 1);
-  px(ctx, "#cfc8bc", x + 6, y + 22, 40, 1);
-  [x + 2, x + 46].forEach(p0 => { px(ctx, T.fo, p0, y + 4, 5, 30); px(ctx, "#7a4a2c", p0 + 1, y + 5, 3, 28); });
-  for (let r = 0; r < 10; r++) { px(ctx, T.fo, x - 3, y - 4 + r, 58, 1); px(ctx, r % 3 === 2 ? "#5a4a54" : r < 2 ? "#9a8a90" : "#7a6a74", x - 2, y - 4 + r, 56, 1); }
-  px(ctx, "#f4ead2", x + 30, y + 18, 6, 3); px(ctx, "#c8d8f0", x + 37, y + 18, 5, 3);   // du linge posé sur la margelle
-}
-const DAY_WELL = { st:"#8a8e98", std:"#5e6270", stl:"#b4b8c2", so:"#2a2030", hole:"#14121a" };
-function dayWell(ctx, x, y, t, night, spill) { const old = {}; Object.keys(DAY_WELL).forEach(k => { old[k] = N[k]; if (!night) N[k] = DAY_WELL[k]; });
-  drawWell(ctx, x, y, t, { swing: .4, crank: Math.PI, spill }); Object.assign(N, old); }
-function oakColors(fn) { const keys = { l1: "#4c7e36", l2: "#34602c", l3: "#6c9c40", l4: "#a4c45c" }, old = {}; Object.keys(keys).forEach(k => { old[k] = NV[k]; NV[k] = keys[k]; }); fn(); Object.assign(NV, old); }
-
-const XDRAW = {
-  arbre: (c, t, X, Y, W, H, o) => drawTree(c, t, Math.round(X + W / 2), Math.round(Y + H), o.seed || 1, Math.round(W / 2)),
-  petit_arbre: (c, t, X, Y, W, H, o) => drawTree(c, t, Math.round(X + W / 2), Math.round(Y + H), o.seed || 1, Math.round(W / 2)),
-  chene: (c, t, X, Y, W, H, o) => { const fx = Math.round(X + W / 2), fy = Math.round(Y + H);
-    oakColors(() => drawTree(c, t, fx, fy, 100000 + (o.seed || 7), Math.round(W / 2)));
-    [[-14, -50], [10, -58], [-4, -40], [18, -44], [-20, -38]].forEach(([a, b], i) => { const k = W / 76; px(c, "#8a5a28", fx + Math.round(a * k), fy + Math.round(b * k)); if (i % 2) px(c, "#5a3a18", fx + Math.round(a * k), fy + Math.round(b * k) - 1); }); },
-  buisson: (c, t, X, Y, W, H, o) => { const R = Math.round((W - 4) / 2), bx = Math.round(X + R + 2), by = Math.round(Y + 2 * R);
-    // pieds : quelqu'un est caché dedans, les sabots dépassent (cache-cache)
-    if (o.pieds) { const w = Math.floor(t / 600) % 4 === 0 ? 1 : 0; [[-7 + w, 0], [1, 0]].forEach(([a]) => { fill(c, "#7a4a2c", bx + a, by - 1, 5, 3); fill(c, "#7a6a50", bx + a, by - 3, 3, 2); }); }
-    drawBush(c, t, bx, by, o.seed || 1, R); },
-  rocher: (c, t, X, Y, W, H, o) => rock(c, X, Y, Math.round(W), Math.round(H), !!o.moss),
-  caillou: (c, t, X, Y, W, H, o) => rock(c, X, Y, Math.round(W), Math.round(H), !!o.moss),
-  fleurs: (c, t, X, Y, W, H, o) => { const cols = [T.fw, NV.pink, T.fy]; [[0, 0], [7, 3], [3, 6]].forEach(([a, b], i) => flower(c, X + a, Y + b, cols[((o.seed || 0) + i) % 3])); },
-  champignons: (c, t, X, Y) => [[1, 1], [6, 3]].forEach(([a, b]) => { const x = X + a, y = Y + b; px(c, NV.ro, x - 1, y - 1, 5, 4); px(c, NV.mush, x, y - 1, 3, 2); px(c, NV.mush, x - 1, y, 5, 1); px(c, NV.mushl, x + 1, y - 1); px(c, NV.mushl, x - 1, y); px(c, "#f0e6d0", x + 1, y + 1, 1, 2); }),
-  souche: (c, t, X, Y) => { const x = X + 2; box(c, x, Y + 3, 12, 8, IC.woodd); box(c, x, Y, 12, 5, "#c8945e"); fill(c, IC.woodd, x + 4, Y + 2, 4, 1); fill(c, IC.woodk, x - 2, Y + 9, 3, 2); fill(c, IC.woodk, x + 11, Y + 9, 3, 2); },
-  tonneau: (c, t, X, Y) => FURNI.tonneau(c, X - 2, Y + 5, 16, 16, t),
-  caisse: (c, t, X, Y) => { box(c, X, Y, 12, 11, IC.wood); fill(c, IC.woodd, X + 1, Y + 5, 10, 1); fill(c, IC.woodd, X + 1, Y + 1, 1, 9); fill(c, IC.woodd, X + 10, Y + 1, 1, 9); fill(c, IC.woodl, X + 2, Y + 1, 8, 1); },
-  banc: (c, t, X, Y) => FURNI.banc(c, X, Y - 4, 28, 16, t),
-  cloture: (c, t, X, Y, W) => { const n = Math.max(2, Math.round(W / 7)); for (let k = 0; k < n; k++) box(c, X + k * 7, Y, 3, 10, IC.wood); fill(c, IC.o, X, Y + 2, W, 3); fill(c, IC.woodl, X, Y + 3, W, 1); fill(c, IC.o, X, Y + 6, W, 3); fill(c, IC.wood, X, Y + 7, W, 1); },
-  panneau: (c, t, X, Y) => { fill(c, IC.o, X + 6, Y + 6, 4, 12); fill(c, IC.woodd, X + 7, Y + 6, 2, 12); box(c, X, Y, 16, 9, IC.wood); fill(c, IC.woodd, X + 3, Y + 3, 10, 1); fill(c, IC.woodd, X + 3, Y + 5, 7, 1); },
-  maison: (c, t, X, Y, W, H, o) => { withRoof(ROOFS[o.toit] || {}, () => cottage(c, X, Y + 10)); if (o.enseigne === "barbier") barberPole(c, X + 22, Y + 54, t);
-    if (o.paille) { fill(c, IC.strawd, X + 32, Y + 47, 8, 1); for (let k = 0; k < 4; k++) fill(c, k % 2 ? IC.straw : IC.strawd, X + 33 + k * 2, Y + 48 + (k % 2), 1, 3); } },
-  grange: (c, t, X, Y) => barn(c, X + 1, Y),
-  moulin: (c, t, X, Y) => mill(c, X + 1, Y),
-  roue: (c, t, X, Y, W, H, o) => millWheel(c, Math.round(X + W / 2), Math.round(Y + H / 2), t, !!o.still),
-  lavoir: (c, t, X, Y) => washhouse(c, X + 3, Y + 4, t),
-  puits: (c, t, X, Y, W, H, o, env) => dayWell(c, X + 4, Y + 10, t, env.night, o.cheveux || 0),
-  pont: (c, t, X, Y) => { px(c, T.fo, X, Y, 30, 20); for (let k = 0; k < 28; k += 3) { px(c, "#8a5a36", X + 1 + k, Y + 1, 2, 18); px(c, "#a8784c", X + 1 + k, Y + 1, 2, 1); } px(c, "#5a3a24", X, Y, 30, 2); px(c, "#5a3a24", X, Y + 18, 30, 2); },
-  fontaine: (c, t, X, Y) => {      // un bassin rond et une colonne qui verse
-    ell(c, X + 17, Y + 21, 16, 8, NV.ro); ell(c, X + 17, Y + 20, 15, 7, "#b4aca0"); ell(c, X + 17, Y + 19, 12, 5, NV.ro); ell(c, X + 17, Y + 19, 11, 4, NV.w);
-    for (let k = 0; k < 4; k++) px(c, NV.wl, X + 9 + ((k * 5 + Math.floor(t / 250)) % 16), Y + 17 + (k % 2) * 3, 2, 1);
-    box(c, X + 14, Y + 2, 7, 17, "#b4aca0"); fill(c, "#cfc8bc", X + 15, Y + 3, 2, 15); box(c, X + 12, Y, 11, 4, "#cfc8bc");
-    const d = Math.floor(t / 90) % 4; [[X + 10, Y + 5], [X + 24, Y + 5]].forEach(([a, b], i) => { for (let k = 0; k < 10; k++) if ((k + d) % 4) px(c, k % 3 ? NV.wl : NV.wh, a + (i ? 1 : -1) * Math.floor(k / 4), b + k); }); },
-  table_nappe: (c, t, X, Y, W, H) => { box(c, X, Y + 2, W, H - 2, IC.cloth); fill(c, "#ffffff", X + 1, Y + 3, W - 2, 2); fill(c, IC.clothd, X + 1, Y + 9, W - 2, 1);
-    for (let i = X + 3; i < X + W - 2; i += 5) fill(c, IC.clothd, i, Y + 10, 1, H - 11); fill(c, IC.redl, X + 2, Y + H - 3, W - 4, 1); },
-  rouet: (c, t, X, Y) => { const a = t / 700; ell(c, X + 9, Y + 8, 7, 7, IC.o); ell(c, X + 9, Y + 8, 6, 6, IC.woodl); ell(c, X + 9, Y + 8, 4, 4, IC.o);
-    for (let k = 0; k < 4; k++) { const ca = Math.cos(a + k * .8), sa = Math.sin(a + k * .8); for (let r = 0; r < 5; r++) px(c, IC.wood, Math.round(X + 9 + ca * r), Math.round(Y + 8 + sa * r)); }
-    box(c, X + 1, Y + 14, 16, 4, IC.woodd); fill(c, IC.woodk, X + 2, Y + 18, 2, 2); fill(c, IC.woodk, X + 14, Y + 18, 2, 2); fill(c, IC.cloth, X + 15, Y + 5, 2, 9); },
-  corde_linge: (c, t, X, Y, W) => { fill(c, IC.woodk, X + 1, Y + 2, 2, 20); fill(c, IC.woodk, X + W - 3, Y + 2, 2, 20); for (let i = 0; i < W - 4; i++) px(c, "#d8d0c0", X + 2 + i, Y + 3 + Math.round(Math.sin(i / (W - 4) * Math.PI) * 3));
-    const sw = Math.round(Math.sin(t / 600)); [[6, IC.cloth, 9], [18, "#c8d8f0", 8], [30, "#f4c8c8", 7]].forEach(([a, col, h]) => { if (a + 8 < W) { const y0 = Y + 4 + Math.round(Math.sin((a + 4) / (W - 4) * Math.PI) * 3); box(c, X + a + sw, y0, 8, h, col); } }); },
-  traces_mur: (c, t, X, Y) => [[1, 10], [4, 6], [1, 2]].forEach(([a, b]) => { fill(c, "#8a6a4a", X + a, Y + b, 3, 2); fill(c, "#6a4a30", X + a + 1, Y + b + 2, 1, 1); }),
-  tresse_paille: (c, t, X, Y) => { fill(c, IC.strawd, X, Y, 10, 1); for (let k = 0; k < 5; k++) fill(c, k % 2 ? IC.straw : IC.strawd, X + 1 + k * 2, Y + 1 + (k % 2), 1, 4); },
-  tombe: (c, t, X, Y) => { box(c, X + 1, Y, 10, 12, "#a4a8b0"); fill(c, "#cfd2d6", X + 2, Y + 1, 2, 10); fill(c, "#767c88", X + 4, Y + 4, 4, 1); fill(c, "#767c88", X + 5, Y + 3, 2, 3); fill(c, "#6a5a3a", X, Y + 12, 12, 4); fill(c, "#4f8f3e", X + 2, Y + 12, 2, 1); },
-  croix: (c, t, X, Y) => { box(c, X + 4, Y, 4, 18, IC.woodd); box(c, X, Y + 4, 12, 4, IC.woodd); fill(c, IC.wood, X + 5, Y + 1, 1, 16); fill(c, "#6a5a3a", X + 2, Y + 17, 8, 3); },
-  muret: (c, t, X, Y, W, H) => { box(c, X, Y + 2, W, H - 2, "#a4a8b0"); for (let i = X + 1; i < X + W - 1; i++) for (let j = Y + 3; j < Y + H - 1; j++) if ((j - Y) % 4 === 1 || (i + ((j - Y) >> 2) * 4) % 8 === 0) px(c, "#767c88", i, j);
-    fill(c, "#cfd2d6", X + 1, Y + 1, W - 2, 2); fill(c, NV.moss, X + 3, Y + 1, 4, 1); },
-  portail: (c, t, X, Y) => { box(c, X, Y + 2, 4, 20, "#767c88"); box(c, X + 24, Y + 2, 4, 20, "#767c88"); for (let k = 0; k < 5; k++) fill(c, "#3a3440", X + 6 + k * 4, Y + 8, 1, 14); fill(c, "#3a3440", X + 4, Y + 9, 20, 1); fill(c, "#3a3440", X + 4, Y + 18, 20, 1); },
-  fosse: (c, t, X, Y, W, H) => { box(c, X, Y, W, H, "#4a3424"); fill(c, "#2a1c14", X + 2, Y + 2, W - 4, H - 4); fill(c, "#8a6a4a", X + W + 1, Y, 4, H); },
-  trainee: (c, t, X, Y, W, H, o) => {      // de longs cheveux noirs mouillés qui rampent sur le sol, d'un bout à l'autre de la boîte
-    const pts = o.pts || [[0, 0], [W / TILE, H / TILE]];
-    for (let i = 0; i < pts.length - 1; i++) { const [ax, ay] = pts[i], [bx, by] = pts[i + 1], n = Math.ceil(Math.hypot(bx - ax, by - ay) * TILE);
-      for (let k = 0; k <= n; k++) { const x = X + (ax + (bx - ax) * k / n) * TILE, y = Y + (ay + (by - ay) * k / n) * TILE;
-        for (let s = -2; s <= 2; s++) if ((k + s * 3) % 4) px(c, s % 2 ? "#1a1418" : "#2e2a36", Math.round(x + s + Math.sin(k / 5 + s) * 1.5), Math.round(y + Math.cos(k / 6 + s) * 1.2)); } } },
-  balle: (c, t, X, Y) => { const b = Math.abs(Math.sin(t / 260)) * 4; c.globalAlpha = .25; px(c, "#1a3a2a", X, Y + 5, 6, 1); c.globalAlpha = 1; box(c, X, Y - Math.round(b), 6, 5, IC.red); fill(c, IC.cloth, X + 1, Y + 1 - Math.round(b), 2, 1); },
-  lanterne: (c, t, X, Y) => { px(c, NV.ro, X, Y, 6, 8); px(c, "#ffe8a0", X + 1, Y + 2, 4, 5); px(c, NV.ro, X + 2, Y - 2, 2, 2); },
-};
-// bâtiments dont la cheminée fume
-const SMOKE = { maison: [52, 0] };
-
-// ---- fond fixe d'une carte : herbe, champs, places, chemins, berges, fleurs (en cache, refait si le terrain change) ----
-const bgCache = new WeakMap();
-const seedOf = s => [...String(s)].reduce((a, ch) => (a * 31 + ch.charCodeAt(0)) >>> 0, 7);
-function nearPathPx(ter, x, y, m) { return (ter.paths || []).some(p => p.slice(1).some((b, i) => segDist(x, y, p[i][0] * TILE, p[i][1] * TILE, b[0] * TILE, b[1] * TILE)[0] < m)); }
-function inPlazaPx(ter, x, y, m = 0) { return (ter.plazas || []).some(p => Math.hypot(x - p.x * TILE, (y - p.y * TILE) * 1.25) < p.r * TILE + m); }
-function inFieldPx(ter, x, y, m = 0) { return (ter.fields || []).some(f => x > f.x * TILE - m && x < (f.x + f.w) * TILE + m && y > f.y * TILE - m && y < (f.y + f.h) * TILE + m); }
-function mapStatic(map) {
-  const ter = map.terrain || {}, hit = bgCache.get(ter); if (hit && hit.w === map.w && hit.h === map.h) return hit;
-  const W = Math.ceil(map.w * TILE), H = Math.ceil(map.h * TILE), c = document.createElement("canvas"); c.width = W; c.height = H;
-  const g = c.getContext("2d"), r = rng(seedOf(map.id));
-  for (let y = 0; y < H; y += 16) for (let x = 0; x < W; x += 16) grassTile(g, x, y);
-  for (let k = 0; k < W * H / 7800; k++) { const cx = r() * W, cy = r() * H, rx = 16 + r() * 26, ry = 8 + r() * 12;
-    for (let y = Math.floor(cy - ry); y < cy + ry; y++) for (let x = Math.floor(cx - rx); x < cx + rx; x++)
-      if (((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 < 1 && (x + 2 * y) % 4 === 0) px(g, T.gd, x, y); }
-  (ter.fields || []).forEach(f => { const x0 = Math.round(f.x * TILE), y0 = Math.round(f.y * TILE), w = Math.round(f.w * TILE), h = Math.round(f.h * TILE);   // champ de blé, clôturé
-    for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) { const row = (y - y0) % 5; px(g, row === 0 ? "#8a6a3e" : row === 4 ? "#a88a50" : ((x + y) % 3 ? "#d8b85a" : "#c8a24a"), x, y); }
-    for (let x = x0 - 2; x < x0 + w + 2; x += 4) { px(g, NV.tkd, x, y0 - 3, 1, 4); px(g, NV.tkd, x, y0 + h, 1, 4); }
-    px(g, NV.tk, x0 - 2, y0 - 2, w + 4, 1); px(g, NV.tk, x0 - 2, y0 + h + 1, w + 4, 1); });
-  (ter.plazas || []).forEach(p => { const pcx = p.x * TILE, pcy = p.y * TILE, pr = p.r * TILE;
-    for (let y = Math.floor(pcy - pr - 3); y <= pcy + pr + 3; y++) for (let x = Math.floor(pcx - pr - 3); x <= pcx + pr + 3; x++) { const d = Math.hypot(x - pcx, (y - pcy) * 1.25);
-      if (d < pr) px(g, ((Math.floor(x / 4) + Math.floor(y / 3)) % 2) ? "#d9cdb0" : "#cfc2a2", x, y);
-      if (d < pr && (x % 4 === 0 || y % 3 === 0)) px(g, "#b8aa88", x, y);
-      if (d >= pr && d < pr + 2.5 && (x + y) % 2) px(g, T.sab, x, y); } });
-  (ter.paths || []).forEach(p => p.slice(1).forEach((b, i) => { const a = p[i], n = Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) * TILE);
-    for (let k = 0; k <= n; k++) { const x = (a[0] + (b[0] - a[0]) * k / n) * TILE, y = (a[1] + (b[1] - a[1]) * k / n) * TILE;
-      for (let j = -5; j <= 5; j++) for (let i2 = -5; i2 <= 5; i2++) if (Math.hypot(i2, j) < 4.6) px(g, T.sa, Math.round(x + i2), Math.round(y + j)); } }));
-  (ter.paths || []).forEach(p => p.slice(1).forEach((b, i) => { const a = p[i], n = Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) * TILE / 3);
-    for (let k = 0; k <= n; k++) { const x = Math.round((a[0] + (b[0] - a[0]) * k / n) * TILE), y = Math.round((a[1] + (b[1] - a[1]) * k / n) * TILE); if (k % 2) px(g, T.sad, x + (k % 3) - 1, y + (k % 4) - 2); } }));
-  const water = [];
-  if (ter.river) { const xs = ter.river.points.map(p => p[0] * TILE), x0 = Math.max(0, Math.floor(Math.min(...xs) - 60)), x1 = Math.min(W, Math.ceil(Math.max(...xs) + 60));
-    for (let y = 0; y < H; y++) for (let x = x0; x < x1; x++) { const [d, s] = riverAtPx(ter.river, x, y), hw = riverHalfPx(ter.river, s), e = d - hw;
-      if (e < 0) { water.push([x, y, d / hw, s, (ter.shallows || []).some(q => inRect(q, x / TILE, y / TILE))]); continue; }
-      if (e < 1) px(g, NV.wet, x, y); else if (e < 3) px(g, r() < .08 ? NV.sandd : NV.sand, x, y); else if (e < 4.5 && (x + y) % 2) px(g, NV.sand, x, y); } }
-  const free = (x, y, m) => !(ter.river && riverAtPx(ter.river, x, y)[0] < ter.river.half * TILE + m) && !nearPathPx(ter, x, y, 7) && !inPlazaPx(ter, x, y, 4) && !inFieldPx(ter, x, y, 4);
-  for (let k = 0; k < W * H / 2900; k++) {                       // fleurs semées
-    const x = Math.floor(r() * W), y = Math.floor(r() * H); if (!free(x, y, 6)) continue;
-    const col = [T.fw, NV.pink, T.fy, "#b8a8f0"][k % 4]; px(g, "#4f8f3e", x, y + 1); px(g, col, x, y); if (k % 3 === 0) { px(g, col, x - 1, y); px(g, col, x + 1, y); px(g, col, x, y - 1); px(g, T.fy, x, y); } }
-  const tufts = [], reeds = [];
-  while (tufts.length < W * H / 920) { const cx = r() * W, cy = 8 + r() * (H - 8); for (let n = 0; n < 4; n++) { const x = Math.round(cx + r() * 14 - 7), y = Math.round(cy + r() * 6 - 3); if (free(x, y, 4)) tufts.push([x, y, 4 + Math.floor(r() * 4)]); } }
-  tufts.sort((a, b) => a[1] - b[1]);
-  if (ter.river) for (let k = 0; k < H / 30; k++) { const y0 = 20 + r() * (H - 40); if (nearPathPx(ter, riverXAt(ter.river, y0), y0, 16)) continue;
-    for (let x = 0; x < W; x++) { const [d, s] = riverAtPx(ter.river, x, y0); if (Math.abs(d - riverHalfPx(ter.river, s) - 1.5) < .6) { if ((ter.shallows || []).some(q => inRect(q, x / TILE, y0 / TILE))) break; for (let n = 0; n < 4; n++) reeds.push([x + n * (k % 2 ? 1 : -1), Math.round(y0) + n % 2 * 2, 8 + Math.floor(r() * 6), n % 2 === 0]); break; } } }
-  const waterCv = document.createElement("canvas"); waterCv.width = W; waterCv.height = H;
-  const out = { w: map.w, h: map.h, bg: c, water, tufts, reeds, waterCv, waterImg: null };
-  bgCache.set(ter, out); return out;
-}
-function riverXAt(river, y) { const P = river.points; for (let i = 0; i < P.length - 1; i++) { const a = P[i], b = P[i + 1]; if ((y - a[1] * TILE) * (y - b[1] * TILE) <= 0) { const k = (y - a[1] * TILE) / ((b[1] - a[1]) * TILE || 1); return (a[0] + (b[0] - a[0]) * k) * TILE; } } return P[0][0] * TILE; }
-const WCOL = Object.fromEntries(["wd", "w", "wm", "wl", "wh", "foam"].map(k => [k, hex(NV[k])]));
-function renderWater(st, map, objs, t) {
-  const W = st.waterCv.width, H = st.waterCv.height; if (!st.waterImg) st.waterImg = st.waterCv.getContext("2d").createImageData(W, H);
-  const d = st.waterImg.data, flow = t * .018, wheels = objs.filter(o => o.type === "roue" && !o.still).map(o => [(o.x + o.w / 2) * TILE, (o.y + o.h / 2) * TILE]);
-  st.water.forEach(([x, y, u, s, shallow]) => { let deep = 1 - u * u; if (shallow) deep *= .3; let k = deep > .82 ? "wd" : deep > .45 ? "w" : deep > .18 ? "wm" : "wl";
-    const yy = Math.floor(s - flow * (.7 + deep * .5)), band = Math.floor(yy / 4), cell = Math.floor((x + band * 3) / 6);
-    const hsh = Math.abs(Math.sin(band * 12.9898 + cell * 78.233) * 43758.5453) % 1, inCell = (x + band * 3) % 6;
-    if (deep > .1 && yy % 4 === 0 && hsh < .3 && inCell < 2 + Math.floor(hsh * 8) % 3) k = hsh < .07 ? "wh" : "wl";
-    else if (deep > .7 && yy % 4 === 2 && hsh > .82 && inCell < 3) k = "wd";
-    if (u > .88 && (x + y + Math.floor(t / 260)) % 3 === 0) k = "foam";
-    wheels.forEach(([wx, wy]) => { if (Math.abs(x - wx - 2) < 4 && y > wy + 4 && y < wy + 30 && (x + y + Math.floor(t / 120)) % 3) k = y < wy + 16 ? "foam" : "wl"; });   // remous sous la roue
-    const i = (y * W + x) * 4, c = WCOL[k]; d[i] = c[0]; d[i + 1] = c[1]; d[i + 2] = c[2]; d[i + 3] = 255; });
-  st.waterCv.getContext("2d").putImageData(st.waterImg, 0, 0);
-}
-
-// ---- une carte extérieure entière ----
-function drawMap(c, map, t, opts = {}) {
-  const night = !!opts.night, ctx = { day: opts.day, moment: opts.moment, night, flags: opts.flags }, env = { night };
-  const st = mapStatic(map), objs = visibleObjects(map, ctx, opts);
-  c.drawImage(st.bg, 0, 0);
-  if (st.water.length) { renderWater(st, map, objs, t); c.drawImage(st.waterCv, 0, 0); }
-  objs.filter(o => o.type === "pont" || o.type === "trainee" || o.flat).forEach(o => drawXObj(c, t, o, env));      // ce qui est posé à plat passe sous tout le reste
-  st.tufts.forEach(([x, y, h]) => drawTuft(c, t, x, y, h));
-  const items = [];
-  st.reeds.forEach(([x, y, h, cat]) => items.push({ y, fn: () => drawReed(c, t, x, y, h, cat) }));
-  objs.filter(o => o.type !== "pont" && o.type !== "trainee" && !o.flat).forEach(o => { const fo = objFootPx(map, o), y = fo ? fo[1] + fo[3] : (o.y + o.h) * TILE; items.push({ y, fn: () => drawXObj(c, t, o, env) }); });
-  if (opts.actors) opts.actors.forEach(a => items.push({ y: a.y, fn: () => a.draw(c) }));
-  (map.npcs || []).filter(n => whenOk(n.when, ctx)).forEach((n, i) => { const fx = n.x * TILE, fy = n.y * TILE, animal = ANIMALS.has(n.id);
-    if (animal ? opts.animals === false : opts.actors) return;
-    items.push({ y: fy, fn: () => animal ? drawAnimal(c, n, fx, fy, t, i) : drawPerson(c, n, fx, fy, t) }); });
-  items.sort((a, b) => a.y - b.y).forEach(i => i.fn());
-  objs.forEach((o, i) => { const sm = SMOKE[o.type]; if (!sm || o.fumee === false) return; const X = o.x * TILE + sm[0], Y = o.y * TILE + sm[1];   // fumée des cheminées
-    for (let k = 0; k < 4; k++) { const tt = (t / 1600 + k / 4 + i * .3) % 1; c.globalAlpha = (1 - tt) * .55; px(c, night ? "#8890a8" : "#f4f4f4", Math.round(X + Math.sin(tt * 6 + i) * 2 + tt * 6), Math.round(Y - 12 - tt * 22), tt < .5 ? 2 : 3, 2); } c.globalAlpha = 1; });
-  if (!night) {
-    const trees = objs.filter(o => o.type === "arbre" || o.type === "chene").slice(0, 8).map(o => [(o.x + o.w / 2) * TILE, (o.y + o.h) * TILE, o.seed || 1, o.w * TILE / 2]);
-    if (trees.length) drawLeaves(c, t, trees);
-    const perch = objs.find(o => o.type === "chene") || objs.find(o => o.type === "arbre"); if (perch) drawBirds(c, t, [(perch.x + perch.w / 2) * TILE - 6, perch.y * TILE + 14]);
-    const W = map.w * TILE, H = map.h * TILE; drawButterfly(c, t, W * .21, H * .83, 0, "#fff6d8"); drawButterfly(c, t, W * .93, H * .69, 2, T.fy);
-    c.globalAlpha = .07; c.fillStyle = "#0e2a3a";                                                  // ombre des nuages
-    [[0, H * .22, 90, 30], [W * .46, H * .72, 110, 34]].forEach(([ox, oy, rx, ry]) => { const cx = ((ox + t * .007) % (W + rx * 2)) - rx;
-      for (let j = -ry; j <= ry; j++) { const w = Math.round(rx * Math.sqrt(1 - (j / ry) ** 2)); c.fillRect(Math.round(cx - w), Math.round(oy + j), w * 2, 1); } }); c.globalAlpha = 1;
-  } else drawNightOver(c, map, objs, t, ctx, opts);
-}
-function drawXObj(c, t, o, env) {
-  const f = XDRAW[o.type]; if (!f) return; const X = Math.round(o.x * TILE), Y = Math.round(o.y * TILE), W = o.w * TILE, H = o.h * TILE, rot = o.rot || 0;
-  if (!rot && !o.flip) return f(c, t, X, Y, W, H, o, env);
-  c.save(); c.translate(Math.round(X + W / 2), Math.round(Y + H / 2)); c.rotate(rot * Math.PI / 180); if (o.flip) c.scale(-1, 1);
-  c.translate(-Math.round(X + W / 2), -Math.round(Y + H / 2)); f(c, t, X, Y, W, H, o, env); c.restore();
-}
-function glowAt(c, x, y, r, col, a) { c.fillStyle = col; for (let k = r; k > 0; k -= 2) { c.globalAlpha = a * (1 - k / r) * .45;
-  for (let j = -k; j <= k; j++) { const w = Math.round(Math.sqrt(k * k - j * j)); c.fillRect(Math.round(x - w), Math.round(y + j), w * 2, 1); } } c.globalAlpha = 1; }
-function drawNightOver(c, map, objs, t, ctx, opts) {
-  const W = map.w * TILE, H = map.h * TILE;
-  c.globalCompositeOperation = "multiply"; c.fillStyle = "#3c4a8c"; c.fillRect(0, 0, W, H);
-  c.globalCompositeOperation = "source-over"; c.globalAlpha = .25; c.fillStyle = "#0a0e24"; c.fillRect(0, 0, W, H); c.globalAlpha = 1;
-  const flick = .8 + .2 * Math.sin(t / 90) * Math.sin(t / 37);
-  // fenêtres allumées : lit = false les éteint toutes, ou une liste d'index des fenêtres allumées ; bougie = l'index de la fenêtre où vacille une bougie
-  objs.forEach(o => { const ty = XTYPES[o.type]; if (!ty || !ty.windows || o.lit === false) return; const X = o.x * TILE, Y = o.y * TILE;
-    ty.windows.forEach(([dx, dy], i) => { if (Array.isArray(o.lit) && !o.lit.includes(i)) return; const f = o.bougie === i ? flick : 1, ww = o.type === "moulin" ? 8 : 10, wh = o.type === "moulin" ? 7 : 9;
-      glowAt(c, X + dx + ww / 2 + 1, Y + dy + wh / 2 + 1, 14, "#ffd86a", f); px(c, "#ffe08a", X + dx + 1, Y + dy + 1, ww, wh); if (o.type !== "moulin") { px(c, "#c89a3a", X + dx + 5, Y + dy + 1, 2, wh); px(c, "#c89a3a", X + dx + 1, Y + dy + 5, ww, 1); } }); });
-  objs.filter(o => o.type === "puits" && o.chant).forEach(o => { const wx = o.x * TILE + 4, wy = o.y * TILE + 10;     // le puits chante : de petites notes violettes remontent
-    glowAt(c, wx + 18, wy + 22, 18, "#9a6ad8", .6 + .2 * Math.sin(t / 400));
-    for (let k = 0; k < 3; k++) { const tt = (t / 2200 + k / 3) % 1; c.globalAlpha = 1 - tt; px(c, "#c8a8ff", Math.round(wx + 14 + k * 4 + Math.sin(tt * 8 + k) * 3), Math.round(wy + 14 - tt * 26), 1, 2); px(c, "#c8a8ff", Math.round(wx + 15 + k * 4 + Math.sin(tt * 8 + k) * 3), Math.round(wy + 13 - tt * 26)); } c.globalAlpha = 1; });
-  objs.filter(o => o.type === "lanterne").forEach(o => glowAt(c, o.x * TILE + 3, o.y * TILE + 4, 22, "#ffcf6a", .9));
-  if (!opts.actors) (map.npcs || []).filter(n => n.lantern && whenOk(n.when, ctx)).forEach(n => {           // un habitant qui cherche à la lanterne
-    const lx = Math.round(n.x * TILE + 8 + Math.sin(t / 2600) * 3), ly = Math.round(n.y * TILE - 14); glowAt(c, lx, ly, 22, "#ffcf6a", .9); px(c, NV.ro, lx - 2, ly - 3, 5, 6); px(c, "#ffe8a0", lx - 1, ly - 2, 3, 4); });
-  if (map.terrain && map.terrain.river) for (let i = 0; i < 14; i++) {                                        // lucioles près de l'eau
-    const P = map.terrain.river.points, p = P[i % P.length], x = Math.round(p[0] * TILE + (hash(i) - .5) * 120 + Math.sin(t / 900 + i) * 8), y = Math.round(hash(i + 9) * H + Math.cos(t / 700 + i * 2) * 6);
-    const a = .5 + .5 * Math.sin(t / 300 + i * 3); if (a > .3) { c.globalAlpha = a; px(c, "#e8ff8a", x, y); c.globalAlpha = 1; } }
-}
-// n'importe quelle carte : extérieur ou pièce
-function drawAnyMap(c, map, t, opts = {}) { return map.kind === "piece" ? drawRoom(c, map, t, opts) : drawMap(c, map, t, opts); }
-
-// ---------- closeups.js ----------
 // ---------- Plans spéciaux : gros plans et cinématiques, plus détaillés que le jeu ----------
 // Chaque plan est une fonction drawXxx(ctx, t, opts) qui dessine tout l'écran du jeu : 384 × 216 pixels.
 // t est le temps en millisecondes depuis le début du plan ; opts choisit la variante (suite d'un choix, gore atténué…).
@@ -2183,7 +1816,6 @@ function drawWellLook(ctx, t, opts = {}) {
   cuVignette(ctx, .5, "#000", .7);
 }
 
-// ---------- chars.js ----------
 // ---------- Gabarit de personnages : tous les habitants du jeu, en 8 directions ----------
 // Un personnage = une fiche (âge, coiffure, tenue, palette). Le corps, la tête et les cheveux sont faits de formes simples,
 // puis contourés et ombrés automatiquement, comme le héros de dirs.js. Rien n'est propre à l'enfance : on réutilise
@@ -2455,7 +2087,6 @@ const CHAR_SPECS = {
 };
 const CHARS = {}; for (const k in CHAR_SPECS) CHARS[k] = makeChar(CHAR_SPECS[k]);
 
-// ---------- farm.js ----------
 // ---------- Animaux de ferme et objets de la grange ----------
 // Petits sprites faits de formes, contourés et ombrés automatiquement (n'importe quelle taille).
 //   drawHen(ctx, x, y, t, o)   une poule ; (x, y) = entre ses pattes ; o = { kind, face: 1 | -1, state, st, seed }
@@ -2574,7 +2205,6 @@ Object.assign(FURNI, {
     box(g, x + 1, y - 4, 14, 5, IC.woodd); fill(g, "#3a6a9a", x + 3, y - 3, 10, 3); fill(g, "#7ab8e0", x + 4 + (Math.floor(t / 400) % 3), y - 3, 3, 1); },
 });
 
-// ---------- portraits.js ----------
 // ---------- Portraits de dialogue (64 × 64) ----------
 // Un portrait = une fiche (âge, peau, coiffure, yeux, vêtement, détails) + une expression + l'ouverture de la bouche.
 //   drawPortrait(ctx, who, t, o)  dessine PORTRAITS[who] (ou une fiche) en (o.x, o.y) ; o = { expr, open (0..1), x, y, bg: false }
@@ -2741,7 +2371,6 @@ function talkMouth(line, shown, t) {
   return /[aeiouyéèàâêîôû]/i.test(ch) ? .55 + .45 * Math.abs(Math.sin(t / 70)) : /[ .,…!?]/.test(ch) ? 0 : .15 + .2 * Math.abs(Math.sin(t / 50));
 }
 
-// ---------- poses.js ----------
 // ---------- Poses spéciales, pour n'importe quel personnage du gabarit (chars.js) ----------
 //   drawCharWading(ctx, ch, x, y, o)  dans l'eau jusqu'à la taille ; o = { dir, t, moving, splash } ; l'eau bouge et éclabousse quand il marche
 //   drawCharPose(ctx, ch, x, y, pose, o)  pose : "assis_genoux" (assis par terre, bras autour des genoux, vu de face)
@@ -2822,7 +2451,6 @@ function drawCharMark(ctx, ch, x, y, o = {}, mark = "tache_paume") {
     pts.forEach(([a, c]) => ctx.fillRect(X + a, Y + c, 1, 1)); }
 }
 
-// ---------- props.js ----------
 // ---------- Objets et décors du chapitre 1, au format des intérieurs (interiors.js) et de la carte ----------
 // Meubles : FURNI.type(g, x, y, w, h, t, night, st) ; (x, y, w, h) en pixels, comme dans drawRoom. st = état propre à l'objet.
 // Décors d'extérieur : drawXxx(ctx, x, y, t, o), (x, y) = pied de l'objet sauf mention contraire.
@@ -3000,7 +2628,6 @@ const ICONS = {
 };
 function drawIcon(ctx, id, x, y) { ICONS[id](ctx, x, y); }
 
-// ---------- cinematics.js ----------
 // ---------- Plans spéciaux, suite : les scènes de l'enfance (jours 1 à 4) ----------
 // Même format que closeups.js : drawXxx(ctx, t, opts) dessine tout l'écran 384 × 216 ; t en millisecondes depuis le début du plan.
 // Charger après closeups.js, chars.js, portraits.js et props.js. Chaque plan a une durée XXX_LEN ; après, il reste figé sur sa dernière image.
@@ -3411,7 +3038,6 @@ function drawDawnSearch(ctx, t, opts = {}) {
   ciFades(ctx, t, 1e9, 600, 1);
 }
 
-// ---------- fx.js ----------
 // ---------- Effets en jeu, à l'échelle de la carte (nuit 3 au puits, indicateurs) ----------
 // Charger après spirit.js (drawWellFront, N) et props.js. (wx, wy) = coin haut-gauche du puits, comme pour drawWell (36 × 46).
 // t en ms depuis le début de l'effet ; chaque fonction rend true quand l'effet est fini, pour que le jeu passe à la suite.
@@ -3485,4 +3111,81 @@ function drawHairTransfer(ctx, wx, wy, hx, hy, t) {
   return u >= 1;
 }
 
-export { ADULT_L, CHILD_L, pad, build, SHADE, LIGHT, autoshade, set, stepLegs, bob, bobUpper, details, mix, drawSprite, ADULT, CHILD, walkFrames, PAL, CHILD_PAL, VARIANTS, T, px, grassTile, LEAF, tallGrass, flower, treeCache, treeSprite, cottage, cottageOld, sandPath, drawScene, OUTFITS, growHair, backHair, drawLiveHair, beard, makeHero, BLESS_PAL, CURSE_PAL, heroPalette, VEINS, ring, drawHero, FAITHS, hash, auraColors, ellipse, drawAura, labState, labHero, grid, fillR, fillE, dot, outline, rowsOf, flipRows, legsFront, body, HEAD_E, HEAD_NE, HEAD_N, VIEWS, DIRS, dirCache, dirFrames, idleRows, DIR_ORDER, walker, AUTO, dirName, NV, rng, NW, hex, riverX, riverHW, inRiver, STONES, natureBg, natureBackground, waterCv, waterImg, WC, fishT0, drawFish, rock, treeCache2, leafyTree, drawTree, drawBush, TUFTS, wind, drawTuft, drawReed, drawLily, BIRD_UP, drawBirds, drawButterfly, drawDragonfly, LEAVES, drawLeaves, MOTES, drawMotes, drawCloudShadows, NTREES, BUSHES, renderNature, NH, fishAt, REEDS, LILIES, BIRD_DN, N, nightGround, ell, drawWell, drawSpill, drawWellBody, drawWellFront, firefly, renderSpiritCard, CINE_LEN, FRIEND_PAL, CINE_TEXT, friendFrames, spriteCanvas, spriteToCanvas, drawTurned, hairLine, renderCine, cineStart, HORROR_W, horrorImgs, buildHorror, renderHorror, TALK_LINES, talkBase, talkPortrait, renderTalk, HORROR_H, BAYER4, TILE, MAPS, MOMENTS, DIRS8, flagsOk, whenOk, whenExact, resolveObj, visibleObjects, cx_, XTYPES, segDist, riverAtPx, riverHalfPx, inRect, objBoxPx, objFootPx, mapCollision, blankMap, mapForExport, IC, box, fill, hash2, FLOORS, WALLS, FURNI, WALL_TYPES, IC_POULE, drawPoule, drawChat, drawRoom, FLIP_PAD, drawFurni, roomCollision, flipCv, NPC_PAL, CHILD_IDS, ANIMALS, mapSprites, npcSprites, drawPerson, drawAnimal, withRoof, ROOFS, barberPole, barn, mill, millWheel, washhouse, DAY_WELL, dayWell, oakColors, XDRAW, SMOKE, bgCache, seedOf, nearPathPx, inPlazaPx, inFieldPx, mapStatic, riverXAt, WCOL, renderWater, drawMap, drawXObj, glowAt, drawNightOver, drawAnyMap, CU_W, CU_BAYER, cuP, cuR, cuH, cuClamp, cuEase, cuEll, cuTone, cuLine, cuVigCache, cuVignette, cuLayer, cuFade, CUC, cuStrawBed, cuCaps, cuInked, BASKET, basketLayer, cuBasketStatic, cuHandlePt, cuHandle, EGGS, cuEgg, HAND_AT, cuSkin, cuHand, cuSlapHand, cuSpider, cuSquashed, cuBasketSpider, drawBasketCloseup, NIGHT, cuNightGrass, cuHairStrand, cuEyelids, DREAM_LEN, dreamGrass, cuGrassLayer, drawDream, drawWakeText, WL, wellShaft, cuWellShaftLayer, drawWellLook, CU_H, DREAM_CUTS, CH_W, chGrid, chRect, chEll, chDot, chPaste, chInk, chOutline, CH_SHADE, CH_LIGHT, chShade, chRows, chFlip, CH_BODY, chBodyFront, chBodySide, chFace, CH_HAIR, chHairStyle, chHairBack, chHairCap, chHairFront, chHead, chHeroHead, chHeroLocks, CH_VIEW, chBuild, CH_POSES, makeChar, charSize, charFrame, CH_PAL, drawChar, SKIN, HAIR, CHAR_SPECS, CHARS, spGrid, spEll, spDot, spRows, HEN_PAL, HEN_BASE, henCache, henRows, henMotion, drawHen, drawSmallEgg, PT, EXPR, PTC, PORTRAITS, ptHead, ptSkin, ptHairBack, ptHairFront, ptBody, ptFace, ptCache, drawPortrait, talkMouth, POSE_CACHE, poseRows, drawCharPose, drawCharWading, drawCharMark, PR, prR, drawOak, drawHideBush, drawMargotCrate, drawWetHairTrail, drawLantern, drawBall, drawShallows, drawGrave, ICONS, drawIcon, ciCache, ciLayer, ciFill, ciK, ciFades, ciStrand, ciHand, HERO_HAIR, CI_SKY_DAWN, COUNTDOWN_WORDS, COUNTDOWN_LEN, ciLidGlow, ciPeekLayer, drawCountdown, HAIRCUT_LEN, ciTiles, ciChairBase, ciLock, drawHaircut, RIBBON_HAND_LEN, ciRibbon, drawRibbonHand, WAKE_LEN, ciNightRoom, ciHeroHead, drawWakeUp, PACT_MORNING_LEN, drawPactMorning, RESCUE_LEN, ciWellUpLayer, drawWellRescue, FUNERAL_LEN, ciFuneralLayer, drawFuneral, NIGHT_END_LEN, ciWellRimLayer, WELL_HOLE, drawNightEnding, DAWN_SEARCH_LEN, ciDawnLayer, drawDawnSearch, HAIRCUT_CUT, ELIO_SKIN, ELIO_SLEEVE, NROOM, MOON, MERE_SKIN, MERE_SLEEVE, AUBIN_SKIN, AUBIN_SLEEVE, drawInteractHint, drawFallingRibbon, LOCK_X, drawWellLocks, drawHitFx, drawFallingLock, drawHairGrab, drawHairTransfer };
+// Page de présentation des assets de l'enfance : tout est animé avec les fonctions du jeu.
+const still = matchMedia("(prefers-reduced-motion: reduce)").matches, renders = [];
+function el(tag, attrs = {}, kids = []) { const e = document.createElement(tag); Object.assign(e, attrs); kids.forEach(k => e.append(k)); return e; }
+const visible = new Set(), io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? visible.add(e.target) : visible.delete(e.target)));
+function anim(cv, fn) { io.observe(cv); renders.push([cv, fn]); return cv; }
+
+// personnages : chacun tourne et marche
+const DIRS8 = ["S", "SE", "E", "NE", "N", "NW", "W", "SW"], CHAR_NAMES = { heros_long: "Héros, cheveux longs", heros_pointes: "Héros, les pointes", heros_court: "Héros, court", elio: "Élio", elio_rase: "Élio rasé", elio_capuche: "Élio, capuche", margot: "Margot", basile: "Basile", mere: "La mère", ysol: "Grand-mère Ysol", aubin: "Aubin", fauvel: "Maître Fauvel", mere_basile: "La mère de Basile" };
+Object.keys(CHARS).forEach(k => { const cv = el("canvas", { width: 28, height: 38 }), g = cv.getContext("2d");
+  document.getElementById("g-chars").append(el("div", { className: "sprite" }, [cv, el("b", { textContent: CHAR_NAMES[k] || k.replace(/_/g, " ") })]));
+  anim(cv, t => { g.clearRect(0, 0, 28, 38); const d = DIRS8[Math.floor(t / 1600) % 8]; drawChar(g, CHARS[k], 2, 38 - CHARS[k].H - 1, { dir: d, pose: "walk", t }); }); });
+// portraits : la bouche parle, un clic change d'expression
+const EXPRS = Object.keys(EXPR);
+Object.keys(PORTRAITS).forEach(k => { const cv = el("canvas", { width: 64, height: 64 }), g = cv.getContext("2d"); let e = 0; const b = el("span", { textContent: "neutre" });
+  cv.style.cssText = "width:128px;height:128px;cursor:pointer"; cv.onclick = () => { e = (e + 1) % EXPRS.length; b.textContent = EXPRS[e]; };
+  document.getElementById("g-portraits").append(el("div", { className: "sprite" }, [cv, el("b", { textContent: PORTRAITS[k].name + (k.includes("_") ? " (" + k.split("_")[1] + ")" : "") }), b]));
+  anim(cv, t => drawPortrait(g, k, t, { expr: EXPRS[e], open: (t % 3000) < 1600 ? talkMouth("Bonjour à toi", Math.floor((t % 3000) / 120), t) : 0 })); });
+// poses
+{ const cv = document.getElementById("poses"), g = cv.getContext("2d"), P = [["elio", "assis_genoux"], ["elio_capuche", "assis_genoux"], ["aubin", "a_genoux"], ["aubin", "affale"], ["fauvel", "assis_serviette"], ["heros_long", "assis_lit"], ["aubin", "tambourine"], ["heros_court", "bras_ouverts"], ["elio", "allonge"]];
+  anim(cv, t => { g.fillStyle = "#86c070"; g.fillRect(0, 0, 300, 60); g.fillStyle = "#4a8ac0"; g.fillRect(0, 60, 300, 60);
+    P.forEach(([k, p], i) => drawCharPose(g, CHARS[k], 4 + i * 32, 8 + (34 - CHARS[k].H), p, { t }));
+    ["heros_long", "margot", "basile", "elio", "heros_court"].forEach((k, i) => drawCharWading(g, CHARS[k], 8 + i * 30, 70, { dir: ["S", "E", "SE", "W", "N"][i], t: t + i * 200, moving: i % 2 === 0 }));
+    drawChar(g, CHARS.heros_long, 170, 70, { dir: "S" }); drawCharMark(g, CHARS.heros_long, 170, 70, { dir: "S" }); }); }
+// poules : chacune réagit tour à tour quand on la pousse
+{ const cv = document.getElementById("farm"), g = cv.getContext("2d"), K = ["blanche", "rousse", "noire", "grise", "tachetee"], S = ["idle", "walk", "pushed", "pinch", "fly"];
+  anim(cv, t => { g.fillStyle = "#c8a868"; g.fillRect(0, 0, 300, 90); FURNI.nid(g, 236, 30, 24, 16, t, false, { egg: true }); drawSmallEgg(g, 280, 60, "ok"); drawSmallEgg(g, 290, 60, "broken");
+    K.forEach((k, i) => drawHen(g, 22 + i * 44, 56, t, { kind: k, face: i % 2 ? -1 : 1, state: S[(i + Math.floor(t / 2000)) % 5], seed: i })); }); }
+// objets et décors
+{ const cv = document.getElementById("props"), g = cv.getContext("2d");
+  const L = [["clochette", 16, 12, { ring: 300 }], ["flacons", 30, 20], ["rasoirs", 16, 12], ["serviettes", 16, 16], ["canari", 16, 20, { sing: 1 }], ["portrait_prince", 20, 24], ["balai", 12, 28, { tas: 1 }], ["rideau", 20, 30],
+    ["tresses_ail", 16, 20], ["bol_gardien", 16, 12, { etat: "plein", pain: 1 }], ["sabots", 16, 10, { etat: "cires" }], ["seau_cendres", 14, 14, { sabot: 1 }], ["dessins_mur", 32, 20, { guerrier: 3, mage: 2, voleur: 5 }], ["coffre_jouets", 24, 18],
+    ["rouet", 24, 24, { spin: 1 }], ["herbes", 30, 14], ["pot_miel", 10, 10], ["cahier", 14, 10], ["table_nappe", 40, 24], ["bouteilles", 20, 12, { couchee: 1 }], ["poele_tresses", 20, 28], ["petit_miroir", 12, 14], ["dessin_femme", 14, 16], ["lit_vide", 24, 32], ["fenetre_ouverte", 24, 28], ["tresse_paille", 16, 14], ["cercueil", 32, 22, { ouvert: 1, contenu: "corps" }], ["cercueil", 32, 22, { fleurs: 1 }]];
+  anim(cv, t => { g.fillStyle = "#c8b090"; g.fillRect(0, 0, 400, 130); g.fillStyle = "#86c070"; g.fillRect(0, 130, 400, 130);
+    let x = 4, y = 4, rh = 0; L.forEach(([k, w, h, st]) => { if (x + w > 396) { x = 4; y += rh + 6; rh = 0; } FURNI[k](g, x, y, w, h, t, false, st || {}); x += w + 6; rh = Math.max(rh, h); });
+    drawOak(g, 40, 250, t, { margot: 1, glands: 1 }); drawHideBush(g, 100, 250, t, { pieds: 1 }); drawMargotCrate(g, 140, 250); drawWetHairTrail(g, [[160, 240], [190, 245], [210, 235]], t); drawLantern(g, 230, 230, t);
+    drawBall(g, 250, 250, Math.abs(Math.sin(t / 300)) * 8, {}); drawShallows(g, 262, 200, 60, 40, t); drawGrave(g, 340, 250, "croix"); drawGrave(g, 360, 250, "stele"); drawGrave(g, 380, 240, "fraiche", { fosse: 1 });
+    ["ciseaux", "ruban", "baton", "oeuf", "pain"].forEach((k, i) => { g.fillStyle = "#333"; g.fillRect(150 + i * 20, 140, 16, 16); drawIcon(g, k, 150 + i * 20, 140); }); }); }
+// effets au puits
+{ const cv = document.getElementById("fx"), g = cv.getContext("2d");
+  anim(cv, t => { nightGround(g, 320, 80); for (let i = 0; i < 5; i++) drawWell(g, 10 + i * 62, 20, t, { spill: .2 });
+    const c = t % 1200; drawWellLocks(g, 10, 20, t, { hp: [1, 0, 1], hit: { i: 0, t: c } }); drawHitFx(g, 19, 30, c % 250, "ciseaux");
+    drawWellLocks(g, 72, 20, t, { hp: [3, 2, 0] }); drawHitFx(g, 90, 22, c % 250, "baton"); drawFallingLock(g, 110, 50, c, 1);
+    drawWellLocks(g, 134, 20, t, {}); drawHairGrab(g, 152, 42, 172, 64, t, Math.min(1, c / 600)); drawChar(g, CHARS.heros_court, 163, 40, { dir: "W" });
+    drawFallingRibbon(g, 196, 20, t % 1800, { x: 236, y: 30 }, { spill: .2 }); drawChar(g, CHARS.heros_court, 226, 36, { dir: "W" });
+    drawHairTransfer(g, 258, 20, 300, 45, t % 3500); drawChar(g, CHARS.heros_long, 288, 40, { dir: "W" }); drawInteractHint(g, 28, 12, t); }); }
+// plans spéciaux : [id, titre, légende, fonction, durée, variantes, gore]
+const PLANS = [
+  ["UI-02", "Le décompte du cache-cache", "Jour 1, midi. Yeux fermés contre le mur ; « Ouvrir un œil » montre Margot qui grimpe au chêne pendant une seconde.", drawCountdown, COUNTDOWN_LEN, [["Décompte", {}], ["Ouvrir un œil", { peek: 1 }]]],
+  ["PLAN-01", "Le panier et l'araignée", "Jour 1, la grange. L'araignée monte sur la main ; trois issues.", drawBasketCloseup, 12000, [["Choix", {}], ["Écraser", { suite: "ecraser" }], ["Secouer", { suite: "secouer" }], ["Reposer", { suite: "reposer" }]]],
+  ["PLAN-03", "La coupe chez Fauvel", "Jour 2, matin. Les mèches tombent sur le carrelage, puis le héros se regarde dans le miroir piqué.", drawHaircut, HAIRCUT_LEN, [["Les pointes", { coupe: "pointes" }], ["Court", { coupe: "court" }]]],
+  ["PLAN-03b", "Le ruban d'Élio", "Jour 3, matin. Sa main s'ouvre sur un ruban bleu à moitié brûlé.", drawRibbonHand, RIBBON_HAND_LEN, [["Lecture", {}]]],
+  ["PLAN-02", "Au fond du puits, de jour", "Jour 1. L'eau noire, le reflet du héros ; une goutte le fait trembler.", drawWellLook, 5000, [["Reflet", { fond: "reflet" }]]],
+  ["PLAN-04", "Le rêve", "Nuit 3. Cinq plans serrés, jamais la scène entière, puis « Vous vous réveillez en sueur. ».", (c, t) => t < DREAM_LEN ? drawDream(c, t) : drawWakeText(c, t - DREAM_LEN, {}), DREAM_LEN + 3500, [["Lecture", {}]]],
+  ["PLAN-05", "Le réveil", "Nuit 3. Il se redresse, la bougie fume, la lune pose une tache claire sur le rebord de la fenêtre entrouverte.", drawWakeUp, 8000, [["Les pointes", { coupe: "pointes" }], ["Court", { coupe: "court" }]]],
+  ["PLAN-13", "Les fins de la nuit", "Nuit 3, au bord du puits. On ne voit jamais l'Esprit, seulement ses cheveux.", drawNightEnding, NIGHT_END_LEN, [["Apaisement", { fin: "chante" }], ["Victoire", { fin: "fuit" }], ["Incrédulité", { fin: "relache" }]]],
+  ["PLAN-14", "Les fouilles à l'aube", "Aube 4. Aubin devant, les hommes et leurs lanternes dans la brume.", drawDawnSearch, 12000, [["Lecture", {}]]],
+  ["PLAN-08/09", "Le puits au matin", "Aube 4. Le corps d'Élio, ou seulement l'eau rouge. Version atténuée disponible.", drawWellLook, 6000, [["Eau rouge", { fond: "eau_rouge" }], ["Corps", { fond: "corps" }], ["Corps, atténué", { fond: "corps", doux: true }]], true],
+  ["PLAN-06", "La tête au fond du puits", "Nuit 3. Élio a été rasé par son père : la tête n'a plus ses cheveux blonds. L'image arrive à mesure que les yeux s'habituent.", (c, t, o) => { c.fillStyle = "#000"; c.fillRect(0, 0, 384, 216); const [hc, hg] = ciCache.hz || (ciCache.hz = cuLayer(160, 120)); renderHorror(hg, Math.min(1, t / 3000), o.v || 1, o); c.imageSmoothingEnabled = false; c.drawImage(hc, 48, 0, 288, 216); }, 5000, [["Version 1", { v: 1 }], ["Version 2", { v: 2 }], ["Atténuée", { v: 2, doux: true }]], true],
+  ["PLAN-10", "Fin pacte : le matin", "Matin 4. La mère coiffe le héros : ses cheveux ont poussé d'un doigt, quelques mèches sont noires.", drawPactMorning, PACT_MORNING_LEN, [["Les pointes", { coupe: "pointes" }], ["Court", { coupe: "court" }]]],
+  ["PLAN-11", "Fin défaite : repêché", "Aube 4. Au fond du puits, Aubin tend la main et remonte le héros.", drawWellRescue, RESCUE_LEN, [["Lecture", {}]]],
+  ["PLAN-12", "L'enterrement", "Fin de l'acte. Aubin sobre pour la première fois. Le ruban donné ou gardé ; le cercueil vide quand il ne reste que l'eau rouge.", drawFuneral, FUNERAL_LEN, [["Ruban donné", { ruban: "donne" }], ["Ruban gardé", { ruban: "garde" }], ["Cercueil vide", { vide: true }]]],
+];
+PLANS.forEach(([id, title, cap, fn, len, vars, gore]) => {
+  const cv = el("canvas", { width: 384, height: 216, className: "scene" }), g = cv.getContext("2d"); let opts = vars[0][1], t0 = performance.now(), shown = !gore;
+  const bar = el("div", { className: "toolbar" }), btns = vars.map(([label, o], i) => { const b = el("button", { className: "pal", textContent: label, type: "button" }); b.setAttribute("aria-pressed", i === 0);
+    b.onclick = () => { opts = o; t0 = performance.now(); btns.forEach(x => x.setAttribute("aria-pressed", x === b)); }; return b; });
+  bar.append(...btns);
+  const box = el("div", { className: "stage" }, [cv, bar, el("p", { className: "caption", textContent: id + " · " + cap })]);
+  if (gore) { cv.hidden = true; const v = el("div", { className: "veil" }, [el("p", { textContent: "Image choquante : la mort d'un enfant." }), el("button", { className: "pal", textContent: "Afficher", type: "button", onclick: () => { v.remove(); cv.hidden = false; shown = true; t0 = performance.now(); } })]); v.style.aspectRatio = "16/9"; box.prepend(v); }
+  document.getElementById("plans").append(el("div", { style: "display:grid;gap:10px" }, [el("h3", { textContent: title }), box]));
+  anim(cv, now => { if (!shown) return; const t = still ? len * .6 : Math.max(0, now - t0) % (len + 1500), o = { ...opts };
+    if (o.peek) o.peek_t = (t % 3000) - 1500; if (o.suite) o.suite_t = Math.max(0, t - 3000);
+    g.save(); fn(g, t, o); g.restore(); });
+});
+function loop(now) { renders.forEach(([cv, fn]) => { if (visible.has(cv)) fn(still ? 1200 : now); }); if (!still) requestAnimationFrame(loop); }
+requestAnimationFrame(now => { renders.forEach(([cv, fn]) => fn(1200)); loop(now); });            // une première image partout, puis on n'anime que ce qui est à l'écran
+
+</script>

@@ -6,7 +6,7 @@ import { actionExit, active, blocked, footAt, overlap, takesExit, blockedBy, inR
 import { drawActor, dirOf, makeActor, vec, type Actor, type Look } from './actors';
 import { applyEffects, has, state, type Effects } from './state';
 import { ui, uiHandled, wait } from './ui';
-import * as A from '../art/shared.js';
+import * as A from 'virtual:rpg-art';
 
 export const VIEW_W = 384;
 export const VIEW_H = 216;
@@ -333,8 +333,11 @@ export class Game extends Phaser.Scene {
 
   update(time: number, delta: number) {
     const free = !ui.busy && !this.locked && !this.plan;
-    this.moveHero(free, delta);
-    this.moveFollowers(delta);
+    // tant qu'aucune carte n'est chargée (écran titre, décompte), personne ne bouge
+    if (this.map) {
+      this.moveHero(free, delta);
+      this.moveFollowers(delta);
+    }
     if (free) {
       for (const w of [...this.waiters]) if (w.test()) {
         this.waiters.splice(this.waiters.indexOf(w), 1);

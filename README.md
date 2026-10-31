@@ -19,7 +19,12 @@ npm install      # installe les dépendances (une seule fois)
 npm run dev      # l'atelier sur http://localhost:5173, le village sur http://localhost:5173/village.html
 npm test         # lance les tests
 npm run build    # vérifie les types et prépare une version à publier dans dist/
+npm run rpg      # vérifie les liens du contenu (rpg/) et refait les planches
 ```
+
+**Tout est relié** : le jeu, la page des cartes et les planches lisent le même dossier `rpg/`. Changer un sprite,
+une carte ou un personnage les change partout, et une référence cassée est signalée tout de suite.
+Voir [rpg/LIENS.md](rpg/LIENS.md).
 
 ## Comment le projet est organisé
 
@@ -131,12 +136,10 @@ Le code est séparé en deux : un **moteur** qui ne connaît aucune histoire et 
 qui racontent. Un nouveau chapitre réutilise le moteur, les cartes et les dessins sans rien y changer.
 
 ```
-scripts/import-art.mjs  Copie les planches de dessin et les cartes du dossier partagé du projet (rpg/) dans
-                        src/game. À relancer après chaque nouvelle planche ou carte :
-                        `node scripts/import-art.mjs [dossier rpg/art/src]`.
+rpg/                    Le contenu, source unique : dessins, cartes, registre des personnages, scénario.
+                        Le jeu le lit directement (voir rpg/LIENS.md) : rien à copier ni à importer.
+scripts/rpg/            Le branchement : plugin Vite (« virtual:rpg-art »), planches, vérification des liens.
 src/game/
-  art/shared.js    Toutes les planches réunies en un seul module (généré, ne pas modifier à la main).
-  data/maps/       Toutes les cartes du jeu, au format commun (généré). index.json les liste par chapitre.
   engine/
     maps.ts        Le format commun des cartes : sorties, objets, zones, conditions (« jour », « moment », drapeaux).
     world.ts       Charge toutes les cartes d'un chapitre ; une seule fonction (drawAnyMap) les dessine toutes.
@@ -154,7 +157,7 @@ src/game/
 **Changer un texte** : tout est dans `src/game/chapters/enfance/story.ts`. Les effets s'écrivent comme dans
 le scénario : `{ guerrier: 1 }`, `{ rancoeur: -1 }`, `{ 'peurs.araignees': 'peur' }`, `{ trait: 'Conteur' }`.
 
-**Ajouter une carte** : la déposer dans `rpg/data/maps/` du dossier partagé et dans son `index.json`, puis relancer l'import.
+**Ajouter une carte** : la déposer dans `rpg/data/maps/` et dans son `index.json` : le jeu la charge aussitôt.
 Les tests vérifient d'eux-mêmes que ses sorties mènent quelque part et qu'on n'y apparaît pas dans un mur.
 
 Ce qui reste provisoire : la pousse des cheveux n'est visible que par paliers (épaules, pointes, court).

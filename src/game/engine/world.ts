@@ -1,9 +1,9 @@
-// Les cartes du jeu : rpg/data/maps/ (copiées dans src/game/data/maps par scripts/import-art.mjs).
+// Les cartes du jeu : lues directement dans rpg/data/maps/ (la source unique, aussi utilisée par la page des cartes).
 // Une carte = un fichier JSON au format commun ; drawAnyMap de la planche des cartes les dessine toutes.
-import * as A from '../art/shared.js';
+import * as A from 'virtual:rpg-art';
 import { loadMap, type GameMap, type MapFile, type MapObject, type MapPainter, type MapShape, type Rect } from './maps';
 
-const files = import.meta.glob('../data/maps/*.json', { eager: true, import: 'default' }) as Record<string, MapFile & { maps?: unknown }>;
+const files = import.meta.glob('../../../rpg/data/maps/*.json', { eager: true, import: 'default' }) as Record<string, MapFile & { maps?: unknown }>;
 
 export interface WorldIndex {
   start: { map: string; at: string };

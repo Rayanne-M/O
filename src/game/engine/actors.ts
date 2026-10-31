@@ -1,5 +1,5 @@
 // Les personnages : leurs images dans les 8 directions, leur marche, et leur dessin sur la carte.
-import * as A from '../art/shared.js';
+import * as A from 'virtual:rpg-art';
 import { DIRS, type Dir } from './maps';
 
 type Rows = string[];

@@ -1,0 +1,42 @@
+<div class="wrap">
+  <header style="display:grid;gap:12px">
+    <span class="eyebrow">RPG · chapitre 1 · l'enfance</span>
+    <h1>Les assets de l'enfance</h1>
+    <p class="lead">Tout ce qui se dessine pendant les quatre jours de l'enfance : personnages, portraits, poules, objets, effets au puits et plans spéciaux. Chaque image est générée par le code du jeu (dossier <code>src</code>) ; les identifiants renvoient au catalogue des assets.</p>
+  </header>
+  <section>
+    <h2>Personnages</h2>
+    <p>Le héros avec ses trois coupes, Élio et ses variantes, la bande, les adultes et les villageois. Chacun tourne dans les 8 directions et marche (PER-01 à PER-15).</p>
+    <div class="sprites" id="g-chars"></div>
+  </section>
+  <section>
+    <h2>Portraits de dialogue</h2>
+    <p>64 × 64, une bouche qui suit le texte et des expressions (POR-01 à POR-08). Cliquer sur un portrait change d'expression.</p>
+    <div class="sprites" id="g-portraits"></div>
+  </section>
+  <section>
+    <h2>Poses</h2>
+    <p>À genoux, affalé, assis sur le lit, allongé, à la baignade et la tache dans la paume.</p>
+    <div class="stage"><canvas id="poses" class="scene" width="300" height="120" style="aspect-ratio:5/2"></canvas></div>
+  </section>
+  <section>
+    <h2>La grange et les poules</h2>
+    <p>Le mini-jeu : on interagit avec une poule pour qu'elle bouge, une ou plusieurs fois, jusqu'à trouver l'œuf (ANI-01 à ANI-03, OBJ-01 à OBJ-05).</p>
+    <div class="stage"><canvas id="farm" class="scene" width="300" height="90" style="aspect-ratio:10/3"></canvas></div>
+  </section>
+  <section>
+    <h2>Objets et décors</h2>
+    <p>Le salon de Fauvel, la maison du héros, chez Ysol, le moulin, le cercueil ; dehors le chêne de Margot, le buisson de Basile, la baignade, le cimetière et les icônes d'inventaire. Le cache-cache se joue seulement dehors : « pas le droit de se cacher à l'intérieur ! ».</p>
+    <div class="stage"><canvas id="props" class="scene" width="400" height="260" style="aspect-ratio:400/260"></canvas></div>
+  </section>
+  <section>
+    <h2>Au puits, la nuit 3</h2>
+    <p>À l'échelle de la carte : les mèches du combat (ciseaux en un coup, bâton en trois), la saisie par la cheville, le ruban qui tombe dans le puits, le pacte, et l'indicateur d'objet interactif (ANI-22 à ANI-24, UI-07).</p>
+    <div class="stage"><canvas id="fx" class="scene" width="320" height="80" style="aspect-ratio:4/1"></canvas></div>
+  </section>
+  <section>
+    <h2>Plans spéciaux</h2>
+    <p>Gros plans et cinématiques, plein écran à la résolution du jeu (384 × 216). Ils se rejouent en boucle ; les boutons choisissent la variante.</p>
+    <div id="plans" style="display:grid;gap:28px"></div>
+  </section>
+</div>

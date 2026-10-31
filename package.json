@@ -5,10 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "node scripts/rpg/build.mjs && tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "rpg": "node scripts/rpg/build.mjs",
+    "verifier": "node scripts/rpg/verifier.mjs"
   },
   "devDependencies": {
     "typescript": "^7.0.2",
