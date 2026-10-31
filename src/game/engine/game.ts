@@ -5,7 +5,7 @@ import Phaser from 'phaser';
 import { actionExit, active, blocked, footAt, overlap, takesExit, blockedBy, inRect, nearestFree, reachOf, sortLine, sortThings, type PlacedObject, type Dir, type Drawable, type GameMap, type Rect } from './maps';
 import { drawActor, dirOf, makeActor, vec, type Actor, type Look } from './actors';
 import { applyEffects, has, state, type Effects } from './state';
-import { ui, wait } from './ui';
+import { ui, uiHandled, wait } from './ui';
 import * as A from '../art/shared.js';
 
 export const VIEW_W = 384;
@@ -80,7 +80,8 @@ export class Game extends Phaser.Scene {
     const kb = this.input.keyboard!;
     this.keys = kb.addKeys('LEFT,RIGHT,UP,DOWN,Z,Q,S,D,W,A,SPACE,ENTER,E') as Record<string, Phaser.Input.Keyboard.Key>;
     window.addEventListener('keydown', (e) => {
-      if (e.repeat || e.defaultPrevented) return;
+      // (Phaser annule aussi ces touches pour la page : defaultPrevented ne dit donc pas si l'interface les a prises)
+      if (e.repeat || uiHandled(e)) return;
       if ([' ', 'Enter', 'e', 'E'].includes(e.key)) this.action();
     });
     this.maps = this.chapter.maps();
