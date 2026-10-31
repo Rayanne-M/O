@@ -17,5 +17,6 @@ describe('heroFromState', () => {
     expect(build.equipmentIds).toEqual(['ciseaux', 'ruban']);
     expect(ctx.fears).toEqual(['araignees']);
     expect(ctx.levels).toEqual({ hair: 0.6 });
+    expect(heroFromState(s, { child: true }).build.classId).toBe('child');
   });
 });

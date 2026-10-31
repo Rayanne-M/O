@@ -29,4 +29,12 @@ export const classes: CharacterClass[] = [
     attack: { stat: 'agility', element: 'physical' },
     skills: ['twin_strike'],
   },
+  {
+    id: 'child',
+    name: 'Enfant',
+    description: 'Pas encore de voie. C’est la classe du héros pendant l’enfance : ses objets et ses traits font la différence.',
+    tags: [],
+    modifiers: [],
+    attack: { stat: 'strength', element: 'physical' },
+  },
 ];

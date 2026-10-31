@@ -9,8 +9,8 @@ import type { Build } from '../engine/types';
 export const W = 192;
 export const H = 108;
 /** Où se tiennent le héros et l'ennemi (pieds). */
-export const HERO_AT = { x: 46, y: 92 };
-export const FOE_AT = { x: 138, y: 92 };
+export const HERO_AT = { x: 50, y: 80 };
+export const FOE_AT = { x: 140, y: 80 };
 
 const OUTFIT_OF: Record<string, string> = { mage: 'mage', warrior: 'guerrier', rogue: 'voleur' };
 
@@ -18,6 +18,8 @@ export interface HeroLook {
   build: Build;
   hair: number;
   pact: boolean;
+  /** Le héros enfant (tranche de l'enfance). */
+  child?: boolean;
 }
 
 interface HeroSprite {
@@ -34,9 +36,9 @@ function heroSprite(look: HeroLook): HeroSprite {
   const key = JSON.stringify(look);
   if (heroCache?.key === key) return heroCache.sprite;
   const o = {
-    child: false,
+    child: !!look.child,
     hair: look.hair,
-    outfit: OUTFIT_OF[look.build.classId] ?? 'tunique',
+    outfit: look.child ? 'tunique' : (OUTFIT_OF[look.build.classId] ?? 'tunique'),
     pact: look.pact,
     combat: true,
     bless: Math.min(1, look.build.blessingIds.length * 0.3),
@@ -57,7 +59,7 @@ export interface Fx {
 
 export function drawScene(ctx: CanvasRenderingContext2D, t: number, hero: Combatant, foe: Combatant, look: HeroLook, fx: Fx) {
   const night = foe.tags.includes('cheveux') || foe.tags.includes('esprit');
-  drawBackground(ctx, t, night);
+  drawBackground(ctx, t, night ? 'night' : foe.tags.includes('poule') ? 'barn' : 'day');
 
   // ennemi
   const fs = shake(fx.hitAt[foe.id], t) + lunge(fx.lungeAt[foe.id], t, -1);
@@ -65,7 +67,7 @@ export function drawScene(ctx: CanvasRenderingContext2D, t: number, hero: Combat
   ctx.translate(fs, 0);
   // un ennemi vaincu s'efface ; le puits, lui, reste (seules ses mèches tombent)
   const gone = foe.hp <= 0 ? Math.min(1, (t - (fx.hitAt[foe.id] ?? 0)) / 600) : 0;
-  ctx.globalAlpha = foe.id === 'well_spirit' ? 1 : 1 - gone;
+  ctx.globalAlpha = foe.id.startsWith('well_spirit') ? 1 : 1 - gone;
   if (ctx.globalAlpha > 0) drawFoe(ctx, t, foe, fx);
   ctx.globalAlpha = 1;
   ctx.restore();
@@ -89,8 +91,26 @@ export function drawScene(ctx: CanvasRenderingContext2D, t: number, hero: Combat
   drawBurns(ctx, t, hero, HERO_AT.x, y0);
 }
 
-function drawBackground(ctx: CanvasRenderingContext2D, t: number, night: boolean) {
-  if (night) {
+function drawBackground(ctx: CanvasRenderingContext2D, t: number, place: 'night' | 'day' | 'barn') {
+  if (place === 'barn') {
+    // l'intérieur de la grange : planches, paille au sol
+    ctx.fillStyle = '#6a4428';
+    ctx.fillRect(0, 0, W, 50);
+    ctx.fillStyle = '#583820';
+    for (let x = 0; x < W; x += 12) ctx.fillRect(x, 0, 1, 50);
+    ctx.fillStyle = '#3e2614';
+    ctx.fillRect(0, 48, W, 3);
+    ctx.fillStyle = '#c8a050';
+    ctx.fillRect(0, 51, W, H - 51);
+    ctx.fillStyle = '#a88438';
+    for (let y = 54; y < H; y += 5) for (let x = (y * 7) % 9; x < W; x += 11) ctx.fillRect(x, y, 4, 1);
+    ctx.fillStyle = '#ffe6a0';
+    ctx.globalAlpha = 0.25;
+    ctx.fillRect(130, 0, 20, 50);
+    ctx.globalAlpha = 1;
+    return;
+  }
+  if (place === 'night') {
     A.nightGround(ctx, W, H);
     ctx.fillStyle = '#0e1626';
     ctx.fillRect(0, 0, W, 34);
@@ -118,7 +138,8 @@ function drawFoe(ctx: CanvasRenderingContext2D, t: number, foe: Combatant, fx: F
   const { x, y } = FOE_AT;
   const ratio = foe.hp / foe.stats.hp;
   switch (foe.id.split('#')[0]) {
-    case 'well_spirit': {
+    case 'well_spirit':
+    case 'well_spirit_young': {
       const wx = x - 18, wy = y - 44;
       A.drawWell(ctx, wx, wy, t, { spill: 0.3 + 0.5 * ratio, swing: 1 });
       // trois mèches : une tombe à chaque tiers de vie perdu
@@ -126,6 +147,16 @@ function drawFoe(ctx: CanvasRenderingContext2D, t: number, foe: Combatant, fx: F
       const since = t - (fx.hitAt[foe.id] ?? -1e9);
       A.drawWellLocks(ctx, wx, wy, t, { hp: locks, hit: { i: Math.max(0, locks.lastIndexOf(1)), t: since } });
       if (since < 250) A.drawHitFx(ctx, wx + 18, wy + 6, since, 'ciseaux');
+      break;
+    }
+    case 'grosse_rousse': {
+      // la poule, en grand (×2) ; elle pince quand elle attaque
+      const lunging = t - (fx.lungeAt[foe.id] ?? -1e9) < 400;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(2, 2);
+      A.drawHen(ctx, 0, 0, t, { kind: 'rousse', face: -1, state: lunging ? 'pinch' : 'idle', st: t - (fx.lungeAt[foe.id] ?? 0), seed: 3 });
+      ctx.restore();
       break;
     }
     case 'giant_spider':

@@ -5,6 +5,7 @@
 // Positions en tuiles (at), comme dans les cartes.
 import * as A from '../../art/shared.js';
 import type { Game } from '../../engine/game';
+import { fight as startFight } from '../../engine/fight';
 import { Handlers } from '../../engine/handlers';
 import { openArea, type Dir, type Drawable, type MapObject } from '../../engine/maps';
 import type { Actor } from '../../engine/actors';
@@ -234,11 +235,22 @@ async function foundEgg(g: Game, spot: string, text: string) {
   hud(`Trouver les œufs dans la grange (${eggs.found.size}/5)`);
 }
 
-async function day1Eggs(g: Game) {
-  await wakeUp(g, 1);
-  hud('Descendre voir maman, dans la cuisine');
-  g.put('mere', 'maison_cuisine', at(6.8, 3.4));
+async function day1Eggs(g: Game, opts: { barn?: boolean } = {}) {
   let asked = false;
+  if (opts.barn) {
+    // ?scene=poule : commencer dans la grange, maman déjà vue (pour essayer le premier combat)
+    step(g, 1, 'matin');
+    clearCast(g);
+    looks(g);
+    g.goto('grange', at(5.9, 3.5, 'N'));
+    await g.fade(0, 1);
+    asked = true;
+    hud('Trouver les œufs dans la grange (0/5)');
+  } else {
+    await wakeUp(g, 1);
+    hud('Descendre voir maman, dans la cuisine');
+  }
+  g.put('mere', 'maison_cuisine', at(6.8, 3.4));
   const ask = async () => {
     if (asked) return g.say('mere', 'Cinq œufs. Et attention à la grosse rousse.');
     asked = true;
@@ -270,12 +282,34 @@ async function day1Eggs(g: Game) {
     'actor:rousse': async () => {
       if (spot('oeuf_rousse')) return g.say('narr', 'La grosse rousse te regarde de travers.');
       if (!asked) return later();
+      // Premier combat (tutoriel) : la grosse rousse défend son nid.
       if (!pinched) {
-        pinched = true;
         await push(g, 'rousse', 'pinch', -1);
         g.face('hero', 'N');
-        return g.say('heros', 'Aïe ! Elle pince !');
+        await g.say('heros', 'Aïe ! Elle pince !');
       }
+      const end = await startFight(g, 'grosse_rousse', {
+        intro: pinched
+          ? ['La grosse rousse se redresse sur son nid.']
+          : [
+              'La grosse rousse se dresse sur son nid, toutes plumes dehors. Elle ne te laissera pas passer comme ça.',
+              'Chacun joue à son tour. La frise en haut montre qui joue ensuite : plus on est rapide, plus on joue souvent.',
+            ],
+        tip: (b) => {
+          const me = b.alive('hero')[0], hen = b.alive('enemy')[0];
+          if (hen?.buffs.length) return 'Elle se gonfle : son prochain coup fera plus mal. « Se protéger » divise les dégâts par deux.';
+          if (me.turnsTaken === 0) return 'À toi ! Choisis « Attaque » pour la pousser de son nid.';
+          if (me.turnsTaken === 1) return 'Ses PV baissent, en haut à droite. Continue !';
+          return 'À toi !';
+        },
+        endings: { win: 'Elle quitte son nid !', fled: 'Tu recules.', lose: 'Elle te chasse de la grange…' },
+      });
+      pinched = true;
+      if (end !== 'win') {
+        henOf(g.actor('rousse')).state = 'nest';
+        return g.say('narr', 'La grosse rousse se recouche sur son nid, l\'œil mauvais.');
+      }
+      applyEffects({ guerrier: 1 });
       await push(g, 'rousse', 'pushed', -1);
       await foundEgg(g, 'oeuf_rousse', 'La grosse rousse saute de son nid en criant. Dessous : un œuf tout chaud.');
     },
@@ -1118,55 +1152,37 @@ async function pact(g: Game): Promise<Ending | null> {
   return 'pacte';
 }
 
-/** Combattre (ANI-23) : trois mèches sortent du puits. Ciseaux : un coup par mèche ; bâton : trois. Deux saisies, c'est perdu. */
+/**
+ * Combattre : un vrai combat contre l'Esprit du puits, sur l'écran de combat.
+ * Il est plus fort quand sa légende a grandi (force()) ; les ciseaux du barbier coupent ses cheveux deux fois mieux.
+ * Fuir pendant le combat, c'est la fin « Fuite ».
+ */
 async function fight(g: Game): Promise<Ending> {
   g.showPlan(null);
-  const weapon = hasItem('ciseaux') ? 'ciseaux' : 'baton';
-  if (weapon === 'baton' && !hasItem('baton')) {
+  const scissors = hasItem('ciseaux');
+  if (!scissors && !hasItem('baton')) {
     applyEffects({ objet: 'baton' });
     await g.say('narr', 'Tu ramasses un bâton près de la margelle.');
   }
-  const limit = weapon === 'ciseaux' ? 6 : 3, win = force() <= limit;
-  const well = obj(g, 'village', 'puits')!, wx = well.x * T + 4, wy = well.y * T + 10;
-  const hp: number[] = [0, 1, 2].map(() => (weapon === 'ciseaux' ? 1 : 3));
-  const fx = { hit: { i: -1, at: -1e9 }, grab: { at: -1e9, k: 0 } };
-  hooks.decor = (map, t) => (map !== 'village' ? [] : [{
-    y: wy + 30,
-    draw: (c) => {
-      A.drawWellLocks(c, wx, wy, t, { hp, hit: { i: fx.hit.i, t: t - fx.hit.at } });
-      if (t - fx.hit.at < 250) A.drawHitFx(c, wx + 18 + [-9, 0, 9][fx.hit.i], wy + 4, t - fx.hit.at, weapon);
-      if (t - fx.grab.at < 1400) A.drawHairGrab(c, wx + 18, wy + 22, g.hero.x, g.hero.y - 2, t - fx.grab.at, fx.grab.k);
-    },
-  }]);
-  await g.say('narr', `Tu brandis ${weapon === 'ciseaux' ? 'les ciseaux du barbier' : 'ton bâton'}. Appuie sur action pour frapper les mèches.`);
-  let grabs = 0;
-  while (hp.some((h) => h > 0) && grabs < 2) {
-    const i = hp.findIndex((h) => h > 0);
-    await ui.waitAction();
-    hp[i]--;
-    fx.hit = { i, at: g.time.now };
-    await g.wait(300);
-    if (hp[i] > 0) continue;
-    ui.caption(`Une mèche tombe. (${hp.filter((h) => h === 0).length}/3)`);
-    // l'Esprit saisit le héros par la cheville : toujours s'il est trop fort, une fois pour rien s'il est presque trop fort
-    const left = hp.filter((h) => h > 0).length;
-    if (left > 0 && !win) {
-      grabs++;
-      fx.grab = { at: g.time.now, k: grabs };
-      ui.caption(grabs === 1 ? 'Des cheveux t\'attrapent la cheville !' : 'Ils te tirent vers le puits !');
-      await g.wait(1400);
-    } else if (left === 1 && force() >= limit - 1) {
-      fx.grab = { at: g.time.now, k: 1 };
-      ui.caption('Des cheveux t\'attrapent la cheville… tu te dégages !');
-      await g.wait(1400);
-    }
-  }
-  ui.caption('');
-  hooks.decor = null;
-  if (hp.every((h) => h === 0)) {
-    await g.say('narr', 'La troisième mèche tombe. Un cri monte du puits. L\'Esprit, blessé, s\'enfuit.');
+  await g.say('narr', `Tu brandis ${scissors ? 'les ciseaux du barbier' : 'ton bâton'}. Les cheveux se dressent hors du puits.`);
+  const end = await startFight(g, 'well_spirit_young', {
+    power: force(),
+    intro: [
+      scissors
+        ? 'Les ciseaux ! Les cheveux en ont peur : « Couper » leur fait deux fois plus mal.'
+        : 'Avec un bâton, il faudra frapper fort et souvent. « Se protéger » quand il serre.',
+    ],
+    tip: (b) => (b.alive('enemy')[0]?.turnsTaken % 3 === 2 ? 'Les cheveux se resserrent : il va saisir. Te protéger ?' : undefined),
+    endings: { win: 'Les mèches tombent !', lose: 'Les cheveux t\'entraînent…', fled: 'Tu cours !' },
+  });
+  if (end === 'win') {
+    await g.say('narr', 'La dernière mèche tombe. Un cri monte du puits. L\'Esprit, blessé, s\'enfuit.');
     applyEffects({ guerrier: 2, trait: 'Petit brave' });
     return 'victoire';
+  }
+  if (end === 'fled') {
+    await g.say('narr', 'Tu cours. Tu cours jusqu\'à ta fenêtre et tu te glisses sous le drap, le cœur qui cogne.');
+    return 'fuite';
   }
   await g.say('narr', 'Les cheveux t\'entraînent. L\'eau, glacée. Puis plus rien.');
   applyEffects({ 'peurs.eau': 'peur', guerrier: 1 });
@@ -1270,7 +1286,7 @@ export async function playAct(g: Game, from: { day: number; night: boolean; scen
     await bedtime(g);
   } else if (from.day <= 1 && !from.night) {
     // ?scene=cache-cache : commencer au cache-cache (pour essayer une scène sans rejouer ce qui précède)
-    if (from.scene !== 'cache-cache') await day1Eggs(g);
+    if (from.scene !== 'cache-cache') await day1Eggs(g, { barn: from.scene === 'poule' });
     await day1HideAndSeek(g);
     await day1Evening(g);
   }
@@ -1282,10 +1298,20 @@ export async function playAct(g: Game, from: { day: number; night: boolean; scen
     await day2River(g);
   } else if (from.day <= 2 && !(from.day === 2 && from.night)) await day2(g);
   if (from.day <= 3 && !(from.day === 3 && from.night)) await day3(g);
-  const way = await night3(g);
+  // ?nuit=3&scene=puits : commencer devant le puits (pour essayer le combat). ?objet=ciseaux pour avoir les ciseaux.
+  const atWell = from.scene === 'puits';
+  if (atWell) {
+    step(g, 3, 'nuit', true);
+    clearCast(g);
+    looks(g);
+    const item = new URLSearchParams(location.search).get('objet');
+    if (item) applyEffects({ objet: item });
+    await g.fade(0, 1);
+  }
+  const way = atWell ? 'fenetre' : await night3(g);
   let end: Ending = 'rendormi';
   if (way === 'fenetre') {
-    await night3Outside(g);
+    if (!atWell) await night3Outside(g);
     if (!has('rentre_nuit3')) end = await well(g);
     const fin = ({ apaisement: 'chante', victoire: 'fuit', incredulite: 'relache' } as const)[end as 'apaisement'];
     if (fin) {

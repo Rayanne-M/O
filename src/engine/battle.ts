@@ -365,13 +365,18 @@ export function heroFromBuild(result: BuildResult, ctx: HeroContext = {}): Comba
   });
 }
 
-/** Un monstre à partir de sa fiche. Plusieurs exemplaires : passer un id différent. */
-export function monsterCombatant(m: Monster, allPassives: Passive[] = [], id = m.id): Combatant {
+/**
+ * Un monstre à partir de sa fiche. Plusieurs exemplaires : passer un id différent.
+ * power : points de puissance, multipliés par sa croissance (growth). Ex. la force de la légende.
+ */
+export function monsterCombatant(m: Monster, allPassives: Passive[] = [], id = m.id, power = 0): Combatant {
+  const stats = { ...m.stats };
+  for (const [k, v] of Object.entries(m.growth ?? {})) stats[k as StatKey] += Math.round(v * Math.max(0, power));
   return makeCombatant({
     id,
     name: m.name,
     side: 'enemy',
-    stats: { ...m.stats },
+    stats,
     attack: m.attack,
     skills: m.skills,
     passives: (m.passives ?? []).map((p) => {

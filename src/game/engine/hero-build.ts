@@ -4,7 +4,7 @@ import type { Build, GameData } from '../../engine/types';
 import type { Gauge, State } from './state';
 
 // Le pont entre l'histoire et le combat : ce que l'enfance a laissé sur le héros devient un build.
-// - la jauge la plus haute donne la classe (Guerrier, Mage, Voleur) ;
+// - la jauge la plus haute donne la classe (Guerrier, Mage, Voleur), sauf pendant l'enfance (Enfant) ;
 // - un trait de l'histoire qui porte le nom d'un passif devient ce passif (« Cheveux vivants ») ;
 // - un objet de l'histoire qui existe comme équipement est porté (« ciseaux », « baton », « ruban »),
 //   un seul par emplacement ;
@@ -14,9 +14,11 @@ import type { Gauge, State } from './state';
 
 const CLASS_OF: Record<Gauge, string> = { guerrier: 'warrior', mage: 'mage', voleur: 'rogue' };
 
-export function heroFromState(state: State, data: GameData = gameData): { build: Build; ctx: HeroContext } {
+/** child : pendant l'enfance, le héros n'a pas encore de voie (classe Enfant), quelles que soient ses jauges. */
+export function heroFromState(state: State, opts: { child?: boolean } = {}, data: GameData = gameData): { build: Build; ctx: HeroContext } {
   const gauges = Object.entries(state.gauges) as [Gauge, number][];
   const [best] = gauges.reduce((a, b) => (b[1] > a[1] ? b : a));
+  const classId = opts.child ? 'child' : CLASS_OF[best];
 
   const names = new Map(data.passives.map((p) => [p.name.toLowerCase(), p.id]));
   const traitIds = state.traits.flatMap((t) => names.get(t.toLowerCase()) ?? []);
@@ -31,7 +33,7 @@ export function heroFromState(state: State, data: GameData = gameData): { build:
   }
 
   return {
-    build: { classId: CLASS_OF[best], blessingIds: [], curseIds: [], traitIds, equipmentIds },
+    build: { classId, blessingIds: [], curseIds: [], traitIds, equipmentIds },
     ctx: {
       name: 'Héros',
       levels: { hair: state.hair },

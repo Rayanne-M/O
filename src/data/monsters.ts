@@ -54,4 +54,33 @@ export const monsters: Monster[] = [
     passives: ['rainbow_belly'],
     ai: [{ skill: 'rainbow_escape', hpBelow: 0.35 }, { skill: 'coin_toss' }],
   },
+
+  // ---------- Enfance ----------
+  {
+    id: 'grosse_rousse',
+    name: 'La grosse rousse',
+    description: 'La poule qui couve dans la grange. Elle pince. Premier combat : de quoi apprendre.',
+    tags: ['poule'],
+    stats: { hp: 16, mana: 0, strength: 4, agility: 0, intelligence: 0, defense: 0, crit: 0, speed: 9 },
+    attack: { stat: 'strength', element: 'physical' },
+    skills: ['peck', 'flap'],
+    ai: [{ skill: 'flap', every: 3 }, { skill: 'peck' }],
+  },
+  {
+    id: 'well_spirit_young',
+    name: 'Esprit du puits',
+    description:
+      'L’esprit capillaire, la nuit où Élio disparaît. Encore faible, il grandit avec sa légende. Les cheveux craignent les ciseaux.',
+    tags: ['cheveux', 'esprit'],
+    stats: { hp: 26, mana: 0, strength: 5, agility: 0, intelligence: 0, defense: 1, crit: 0, speed: 8 },
+    growth: { hp: 7, strength: 1 },
+    attack: { stat: 'strength', element: 'shadow' },
+    resist: { shadow: 50, fire: -50 },
+    skills: ['hair_lash', 'hair_grab', 'regrow'],
+    ai: [
+      { skill: 'regrow', hpBelow: 0.4, once: true },
+      { skill: 'hair_grab', every: 3 },
+      { skill: 'hair_lash' },
+    ],
+  },
 ];

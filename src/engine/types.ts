@@ -213,6 +213,11 @@ export interface Monster {
   skills: string[];
   ai: AiRule[];
   passives?: string[];
+  /**
+   * Croissance : stats ajoutées pour chaque point de puissance donné au combat
+   * (ex. la force de la légende de l'Esprit du puits). { hp: 8, strength: 1 } = +8 PV et +1 Force par point.
+   */
+  growth?: Partial<Stats>;
 }
 
 /** Le contenu des combats : compétences et monstres. */

@@ -183,6 +183,18 @@ et examiner. Sur mobile, un joystick et un bouton A apparaissent.
 
 Pour tester un moment précis : `village.html?jour=2` commence au jour 2, `village.html?nuit=3` à la nuit 3,
 `village.html?scene=cache-cache` ou `?scene=riviere` saute directement à une scène.
+Les deux combats : `village.html?scene=poule` (dans la grange, devant la grosse rousse) et
+`village.html?nuit=3&scene=puits` (devant le puits ; ajouter `&objet=ciseaux` pour avoir les ciseaux).
+
+**Les combats de l'enfance** passent par le même moteur et le même écran que `combat.html` (`src/engine/fight.ts`
+lance un combat depuis l'histoire avec le héros tel que l'histoire l'a fait) :
+
+- **La grosse rousse** (jour 1, dans la grange) : le tutoriel. Elle pince, se gonfle un tour sur trois ;
+  les conseils expliquent la frise, l'attaque et « Se protéger ». Gagner fait sauter la poule de son nid (un œuf).
+- **L'Esprit du puits** (nuit 3, « Combattre ») : il grandit avec sa légende (`force()`, +7 PV et +1 Force par point).
+  Les ciseaux du barbier donnent « Couper », deux fois plus fort contre les cheveux ; sinon on ramasse un bâton.
+  Fuir pendant le combat mène à la fin « Fuite ».
+- Pendant l'enfance, le héros a la classe **Enfant** (pas encore de voie) : ce sont ses objets et ses traits qui comptent.
 
 Le code est séparé en deux : un **moteur** qui ne connaît aucune histoire et sert à tout le jeu, et des **chapitres**
 qui racontent. Un nouveau chapitre réutilise le moteur, les cartes et les dessins sans rien y changer.

@@ -98,6 +98,20 @@ export const skills: Skill[] = [
     effects: [{ type: 'heal', percent: 20 }],
   },
   {
+    id: 'peck',
+    name: 'Coup de bec',
+    description: 'Elle pince.',
+    target: 'enemy',
+    effects: [{ type: 'damage', percent: 100 }],
+  },
+  {
+    id: 'flap',
+    name: 'Battement d’ailes',
+    description: 'Elle se gonfle et bat des ailes : +50 % de Force pendant 2 tours.',
+    target: 'self',
+    effects: [{ type: 'buff', stat: 'strength', percent: 50, turns: 2 }],
+  },
+  {
     id: 'bite',
     name: 'Morsure',
     description: 'Des crochets qui piquent.',

@@ -19,4 +19,5 @@ export const tagLabels: Record<Tag, string> = {
   eau: 'Eau',
   esprit: 'Esprit',
   fee: 'Féerique',
+  poule: 'Poule',
 };
