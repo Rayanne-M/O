@@ -20,12 +20,12 @@ Une carte :
 | `floor`, `wall` | Pièce seulement : sol (`FLOORS`) et mur du fond (`WALLS`). Les rangées 0 et 1 sont le mur. |
 | `terrain` | Extérieur seulement : `river: { points, half, wobble }`, `paths: [[[x, y], …]]`, `plazas: [{ x, y, r }]`, `fields: [{ x, y, w, h }]`, `shallows: [{ x, y, w, h }]` (eau où l'on peut marcher : la baignade). |
 | `objects` | `{ id, type, x, y, w, h, solid }` : la boîte de dessin. Facultatifs : `interact: { label, text, scene?, flag? }`, `when`, `variants`, `hidden` (pas dessiné tant qu'on ne l'a pas trouvé : les œufs), `secret` (jamais signalé en jeu), `on` (posé sur un autre objet), `above` (dessiné par-dessus tout), `light: [x, y, rayon px]`, `rot` (0, 90, 180, 270), `flip`, et les réglages propres au type (`seed` des arbres, `toit` des maisons, `pts` de la traînée…). |
-| `exits` | `{ id, x, y, w, h, to, at, label }` : zone qu'on traverse pour aller sur la carte `to`, au point d'arrivée `at`. Facultatifs : `locked` (`"nuit"` ou `true`), `when`, `secret`. |
+| `exits` | `{ id, x, y, w, h, to, at, label }` : passage vers la carte `to`, au point d'arrivée `at`. Les sorties ne libèrent pas la collision : une sortie dans un mur se prend en butant contre le mur à cet endroit, une sortie posée au sol en marchant dessus, une sortie sur une fenêtre avec le bouton d'action. Facultatifs : `locked` (`"nuit"` ou `true`), `when`, `secret`. |
 | `spawns` | `{ <id>: { x, y, dir } }` : pieds du personnage ; `dir` parmi N NE E SE S SW W NW. |
 | `zones` | `{ <id>: { x, y, w, h, name?, cachette? } }` : lieux nommés du scénario (place, chêne, rive, fenêtres…). |
 | `npcs` | `{ id, x, y, when?, look?, lantern? }` : habitants par défaut, pieds en (x, y). `look` choisit une autre palette (`elio_capuche`). Les bêtes (`poule`, `poule_rousse`, `poule_blanche`, `chat`, `chat_dort`) sont aussi des npcs. |
 | `scenes` | `{ id, zone?, when, title, who?, line? }` : ce qui se passe ici, pour la visite et pour relier le scénario. |
-| `collision` | Une chaîne par rangée, `1` = bloqué. Recalculée à chaque export (`mapCollision`) : mur du fond, emprise des objets solides, eau sauf hauts-fonds et pont ; les sorties restent ouvertes ; les objets qui ont un `when` ne comptent pas. |
+| `collision` | Une chaîne par rangée, `1` = bloqué. Recalculée à chaque export (`mapCollision`) : mur du fond, emprise des objets solides, eau sauf hauts-fonds et pont ; les objets qui ont un `when` ne comptent pas. |
 
 **Conditions** : `when = { day?: n | [n], moment?: "matin" | […], night?: bool, if?: "drapeau && !autre" }`. Absent = toujours. Moments : aube, matin, fin de matinée, midi, après-midi, fin d'après-midi, soir, veillée, nuit. `variants: [{ when, …champs }]` remplace des champs d'un objet à un moment donné (la roue arrêtée la nuit 3, le lit vide, les sabots cirés si `pain_pose`).
 
