@@ -16,6 +16,7 @@ const fighter = (effects: PassiveEffect[], statOverrides: Partial<Stats> = {}): 
     synergies: [],
     activeSynergies: [],
     passives: [{ passive, sourceName: 'Test' }],
+    skills: [],
     attack: { stat: 'intelligence', element: 'arcane' },
     errors: [],
   };

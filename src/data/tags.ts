@@ -12,4 +12,12 @@ export const tagLabels: Record<Tag, string> = {
   nature: 'Nature',
   blood: 'Sang',
   martial: 'Martial',
+  pact: 'Pacte',
+  // Tags de monstres : les mêmes mots que les peurs de l'enfance
+  araignees: 'Araignées',
+  cheveux: 'Cheveux',
+  eau: 'Eau',
+  esprit: 'Esprit',
+  fee: 'Féerique',
+  poule: 'Poule',
 };

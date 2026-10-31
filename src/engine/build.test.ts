@@ -123,3 +123,23 @@ describe('evaluateBuild', () => {
     expect(evaluateBuild(build({ blessingIds: ['b1', 'b2'], curseIds: ['k1'] }), data).errors).toEqual([]);
   });
 });
+
+describe('équipement', () => {
+  const withGear: GameData = {
+    ...data,
+    equipment: [
+      { id: 'w1', name: 'Épée', description: '', slot: 'weapon', tags: ['fire'], modifiers: [], skills: ['slash'] },
+      { id: 'w2', name: 'Hache', description: '', slot: 'weapon', tags: [], modifiers: [] },
+    ],
+  };
+  it('apporte ses tags et ses compétences', () => {
+    const r = evaluateBuild({ classId: 'c', blessingIds: [], curseIds: [], traitIds: [], equipmentIds: ['w1'] }, withGear);
+    expect(r.tagCounts.get('fire')).toBe(2);
+    expect(r.skills).toEqual(['slash']);
+    expect(r.errors).toEqual([]);
+  });
+  it('refuse deux objets au même emplacement', () => {
+    const r = evaluateBuild({ classId: 'c', blessingIds: [], curseIds: [], traitIds: [], equipmentIds: ['w1', 'w2'] }, withGear);
+    expect(r.errors[0]).toMatch(/Un seul objet par emplacement/);
+  });
+});

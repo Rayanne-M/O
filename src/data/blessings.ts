@@ -8,6 +8,7 @@ export const blessings: Blessing[] = [
     description: 'La lumière du soleil te protège et nourrit ta flamme.',
     tags: ['holy', 'fire'],
     modifiers: [pct('hp', 10), flat('intelligence', 2)],
+    skills: ['sun_prayer'],
   },
   {
     id: 'forest_favor',

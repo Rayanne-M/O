@@ -28,6 +28,8 @@ export interface BuildResult {
   activeSynergies: SynergyStatus[];
   /** Passifs obtenus, avec l'élément du build qui les accorde. */
   passives: PassiveGrant[];
+  /** Compétences de combat accordées par le build (identifiants), sans doublon. */
+  skills: string[];
   /** Attaque de base de la classe (absente si la classe est inconnue). */
   attack: CharacterClass['attack'] | null;
   /** Problèmes qui rendent le build invalide (trop de bénédictions, identifiant inconnu...). */
@@ -59,6 +61,11 @@ export function evaluateBuild(build: Build, data: GameData): BuildResult {
   const characterClass = add(data.classes, build.classId, 'class', 'Classe');
   for (const id of unique(build.blessingIds)) add(data.blessings, id, 'blessing', 'Bénédiction');
   for (const id of unique(build.curseIds)) add(data.curses, id, 'curse', 'Malédiction');
+  const worn = unique(build.equipmentIds ?? []).map((id) => add(data.equipment ?? [], id, 'equipment', 'Objet'));
+  for (const slot of unique(worn.flatMap((e) => (e ? [e.slot] : [])))) {
+    const inSlot = worn.filter((e) => e?.slot === slot);
+    if (inSlot.length > 1) errors.push(`Un seul objet par emplacement : ${inSlot.map((e) => e!.name).join(', ')}.`);
+  }
 
   // Un trait est un passif choisi directement : il apporte ce passif et ses tags.
   for (const id of unique(build.traitIds)) {
@@ -132,6 +139,10 @@ export function evaluateBuild(build: Build, data: GameData): BuildResult {
     synergies,
     activeSynergies,
     passives,
+    skills: unique([
+      ...sources.flatMap(({ source }) => source.skills ?? []),
+      ...activeSynergies.flatMap(({ synergy }) => synergy.skills ?? []),
+    ]),
     attack: characterClass?.attack ?? null,
     errors,
   };
@@ -146,6 +157,7 @@ function nameLookup(data: GameData): (id: string) => string {
     ...data.classes,
     ...data.blessings,
     ...data.curses,
+    ...(data.equipment ?? []),
     ...data.passives,
   ];
   const names = new Map(all.map((s) => [s.id, s.name]));

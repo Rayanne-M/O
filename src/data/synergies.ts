@@ -9,6 +9,7 @@ export const synergies: Synergy[] = [
     requires: { class: ['mage'], tags: { fire: 2 } },
     modifiers: [pct('intelligence', 25), flat('crit', 5)],
     passives: ['ignite'],
+    skills: ['fireball'],
   },
   // Les trois styles du mage de feu
   {
