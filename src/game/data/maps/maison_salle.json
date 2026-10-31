@@ -1,0 +1,233 @@
+{
+ "id": "maison_salle",
+ "name": "Maison du héros — la salle commune",
+ "chapter": "enfance",
+ "kind": "piece",
+ "tile": 16,
+ "w": 12,
+ "h": 9,
+ "floor": "bois",
+ "wall": "platre",
+ "objects": [
+  {
+   "id": "cheminee",
+   "type": "cheminee",
+   "x": 1,
+   "y": 0,
+   "w": 3,
+   "h": 3,
+   "solid": true,
+   "light": [
+    2.5,
+    2.4,
+    40
+   ],
+   "interact": {
+    "label": "La cheminée",
+    "text": "Jour 1, veillée : Ysol chante la comptine de l'enfant des deux lumières, au coin du feu."
+   }
+  },
+  {
+   "id": "etagere",
+   "type": "etagere",
+   "x": 5,
+   "y": 0,
+   "w": 2,
+   "h": 2,
+   "solid": false
+  },
+  {
+   "id": "fenetre",
+   "type": "fenetre",
+   "x": 8,
+   "y": 0,
+   "w": 2,
+   "h": 2,
+   "solid": false
+  },
+  {
+   "id": "porte_chambre",
+   "type": "porte",
+   "x": 10,
+   "y": 0,
+   "w": 1,
+   "h": 2,
+   "solid": false
+  },
+  {
+   "id": "fauteuil_ysol",
+   "type": "fauteuil",
+   "x": 1,
+   "y": 3,
+   "w": 2,
+   "h": 2,
+   "solid": true,
+   "interact": {
+    "label": "Le fauteuil d'Ysol",
+    "text": "Ysol s'y berce pendant la veillée. « Beaucoup d'enfants sont nés cette nuit-là. »"
+   }
+  },
+  {
+   "id": "tapis",
+   "type": "tapis",
+   "x": 4,
+   "y": 4,
+   "w": 4,
+   "h": 3,
+   "solid": false
+  },
+  {
+   "id": "table",
+   "type": "table",
+   "x": 5,
+   "y": 4,
+   "w": 3,
+   "h": 2,
+   "solid": true
+  },
+  {
+   "id": "chaise_g",
+   "type": "chaise",
+   "x": 4,
+   "y": 5,
+   "w": 1,
+   "h": 1,
+   "solid": true
+  },
+  {
+   "id": "chaise_d",
+   "type": "chaise",
+   "x": 8,
+   "y": 5,
+   "w": 1,
+   "h": 1,
+   "solid": true
+  },
+  {
+   "id": "tonneau",
+   "type": "tonneau",
+   "x": 1,
+   "y": 6,
+   "w": 1,
+   "h": 1,
+   "solid": true
+  },
+  {
+   "id": "plante",
+   "type": "plante",
+   "x": 10,
+   "y": 6,
+   "w": 1,
+   "h": 1,
+   "solid": true
+  },
+  {
+   "id": "rouet_ysol",
+   "type": "rouet",
+   "x": 9.4,
+   "y": 3,
+   "w": 1,
+   "h": 2,
+   "solid": true,
+   "when": {
+    "day": 1,
+    "moment": "veillée"
+   },
+   "interact": {
+    "label": "Le rouet d'Ysol",
+    "text": "Grand-mère Ysol est venue filer au coin du feu, le soir du jour 1."
+   }
+  },
+  {
+   "id": "coffre_linge",
+   "type": "coffre",
+   "x": 9.4,
+   "y": 6.4,
+   "w": 2,
+   "h": 1,
+   "solid": true,
+   "interact": {
+    "label": "Le coffre à linge",
+    "text": "Les draps propres, qui sentent la lavande."
+   }
+  }
+ ],
+ "exits": [
+  {
+   "id": "vers_cuisine",
+   "x": 5,
+   "y": 8,
+   "w": 2,
+   "h": 1,
+   "to": "maison_cuisine",
+   "at": "depuis_salle",
+   "label": "La cuisine"
+  },
+  {
+   "id": "vers_chambre",
+   "x": 10,
+   "y": 1,
+   "w": 1,
+   "h": 1,
+   "to": "maison_chambre",
+   "at": "entree",
+   "label": "La chambre",
+   "locked": "nuit"
+  }
+ ],
+ "spawns": {
+  "depuis_cuisine": {
+   "x": 6,
+   "y": 7.4,
+   "dir": "N"
+  },
+  "depuis_chambre": {
+   "x": 10.5,
+   "y": 2.7,
+   "dir": "S"
+  }
+ },
+ "zones": {},
+ "npcs": [
+  {
+   "id": "mere",
+   "x": 7.5,
+   "y": 4.6,
+   "when": {
+    "night": false
+   }
+  },
+  {
+   "id": "ysol",
+   "x": 2.2,
+   "y": 5.2,
+   "when": {
+    "day": 1,
+    "moment": "veillée"
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "s4_comptine",
+   "when": {
+    "day": 1,
+    "moment": "veillée"
+   },
+   "title": "La comptine",
+   "who": "Ysol, la mère",
+   "line": "« Quand le jour avalera la nuit, naîtra l'enfant des deux lumières… »"
+  }
+ ],
+ "collision": [
+  "111111111111",
+  "111111111101",
+  "011100000000",
+  "011000000000",
+  "011001110000",
+  "000011111000",
+  "010000000110",
+  "000000000000",
+  "000000000000"
+ ]
+}

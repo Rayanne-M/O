@@ -1,0 +1,168 @@
+{
+ "id": "maison_basile",
+ "name": "Maison de Basile — la cuisine",
+ "chapter": "enfance",
+ "kind": "piece",
+ "tile": 16,
+ "w": 9,
+ "h": 7,
+ "floor": "bois",
+ "wall": "platre",
+ "objects": [
+  {
+   "id": "poele",
+   "type": "poele",
+   "x": 0.6,
+   "y": 0,
+   "w": 2,
+   "h": 2,
+   "solid": true,
+   "light": [
+    1.6,
+    1.6,
+    30
+   ]
+  },
+  {
+   "id": "etagere",
+   "type": "etagere",
+   "x": 3,
+   "y": 0,
+   "w": 2,
+   "h": 2,
+   "solid": false
+  },
+  {
+   "id": "porte_ch",
+   "type": "porte",
+   "x": 6.4,
+   "y": 0,
+   "w": 1,
+   "h": 2,
+   "solid": false
+  },
+  {
+   "id": "tresse_paille",
+   "type": "tresse_paille",
+   "x": 6.4,
+   "y": 0,
+   "w": 1,
+   "h": 1,
+   "solid": false,
+   "interact": {
+    "label": "La tresse de paille",
+    "text": "Clouée au-dessus de la porte, contre la Rancunière. Le village y croit un peu."
+   }
+  },
+  {
+   "id": "table",
+   "type": "table",
+   "x": 3,
+   "y": 3.2,
+   "w": 3,
+   "h": 2,
+   "solid": true
+  },
+  {
+   "id": "banc",
+   "type": "banc",
+   "x": 3,
+   "y": 5.2,
+   "w": 3,
+   "h": 1,
+   "solid": true
+  },
+  {
+   "id": "marmite",
+   "type": "marmite",
+   "x": 1.6,
+   "y": 2.6,
+   "w": 1,
+   "h": 1,
+   "solid": true
+  },
+  {
+   "id": "tapis",
+   "type": "tapis",
+   "x": 6,
+   "y": 4,
+   "w": 2.6,
+   "h": 2,
+   "solid": false
+  }
+ ],
+ "exits": [
+  {
+   "id": "sortie",
+   "x": 4,
+   "y": 6,
+   "w": 1.4,
+   "h": 1,
+   "to": "village",
+   "at": "porte_basile",
+   "label": "Sortir",
+   "locked": "nuit"
+  }
+ ],
+ "spawns": {
+  "entree": {
+   "x": 4.7,
+   "y": 6.4,
+   "dir": "N"
+  }
+ },
+ "zones": {},
+ "npcs": [
+  {
+   "id": "mere_basile",
+   "x": 2.2,
+   "y": 5,
+   "when": {
+    "night": false
+   }
+  },
+  {
+   "id": "enfant_a",
+   "x": 6.4,
+   "y": 5.4,
+   "when": {
+    "night": false
+   }
+  },
+  {
+   "id": "enfant_c",
+   "x": 7.6,
+   "y": 4.6,
+   "when": {
+    "night": false
+   }
+  },
+  {
+   "id": "enfant_b",
+   "x": 5.6,
+   "y": 3.4,
+   "when": {
+    "night": false
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "basile_verrou",
+   "when": {
+    "night": true
+   },
+   "title": "Le verrou",
+   "line": "La porte se verrouille à double tour le soir, rapport à la Rancunière."
+  }
+ ],
+ "collision": [
+  "111111111",
+  "111111111",
+  "000000000",
+  "001111000",
+  "000111000",
+  "000111000",
+  "000000000"
+ ]
+}

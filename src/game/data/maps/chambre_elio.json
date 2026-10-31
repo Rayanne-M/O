@@ -1,0 +1,179 @@
+{
+ "id": "chambre_elio",
+ "name": "Le moulin — la chambre d'Élio",
+ "chapter": "enfance",
+ "kind": "piece",
+ "tile": 16,
+ "w": 7,
+ "h": 6,
+ "floor": "bois",
+ "wall": "planches",
+ "objects": [
+  {
+   "id": "fenetre_elio",
+   "type": "fenetre",
+   "x": 4,
+   "y": 0,
+   "w": 2,
+   "h": 2,
+   "solid": false,
+   "interact": {
+    "label": "La fenêtre d'Élio",
+    "text": "Nuit 3 : grande ouverte, le rideau bat. Sur le rebord, de longs cheveux noirs, mouillés. Élio n'en a plus.",
+    "scene": "n2_elio"
+   },
+   "variants": [
+    {
+     "when": {
+      "day": 3,
+      "night": true
+     },
+     "ouverte": true,
+     "cheveux": true
+    }
+   ]
+  },
+  {
+   "id": "lit_elio",
+   "type": "lit",
+   "x": 1,
+   "y": 2,
+   "w": 2,
+   "h": 3,
+   "solid": true,
+   "variants": [
+    {
+     "when": {
+      "day": 3,
+      "night": true
+     },
+     "vide": true
+    }
+   ],
+   "interact": {
+    "label": "Le lit d'Élio",
+    "text": "Nuit 3 : vide, le drap traîné jusqu'au sol."
+   }
+  },
+  {
+   "id": "epee",
+   "type": "epee_bois",
+   "x": 4,
+   "y": 3,
+   "w": 1,
+   "h": 1,
+   "solid": false,
+   "interact": {
+    "label": "L'épée en bois",
+    "text": "Son épée de bois."
+   }
+  },
+  {
+   "id": "trappe",
+   "type": "trappe",
+   "x": 5,
+   "y": 4,
+   "w": 1,
+   "h": 1,
+   "solid": false
+  },
+  {
+   "id": "petit_miroir",
+   "type": "petit_miroir",
+   "x": 0.4,
+   "y": 0.3,
+   "w": 1,
+   "h": 1,
+   "solid": false
+  },
+  {
+   "id": "dessin_femme",
+   "type": "dessin_femme",
+   "x": 1.5,
+   "y": 0.3,
+   "w": 1,
+   "h": 1,
+   "solid": false,
+   "interact": {
+    "label": "Le dessin",
+    "text": "Une femme aux longues tresses, punaisé au mur."
+   }
+  },
+  {
+   "id": "image_pieuse",
+   "type": "image_pieuse",
+   "x": 2.6,
+   "y": 0.3,
+   "w": 1,
+   "h": 1,
+   "solid": false,
+   "interact": {
+    "label": "L'image pieuse",
+    "text": "Le prince Élu. Sa mère la lui a laissée en partant prier à la capitale."
+   }
+  },
+  {
+   "id": "ruban_rebord",
+   "type": "ruban",
+   "x": 4.5,
+   "y": 1.2,
+   "w": 1,
+   "h": 1,
+   "solid": false,
+   "above": true,
+   "when": {
+    "day": 3,
+    "night": true,
+    "if": "!a_ruban"
+   },
+   "interact": {
+    "label": "Le ruban d'Élio",
+    "text": "Si le héros l'avait refusé, il est tombé sur le rebord : on peut le prendre.",
+    "flag": "a_ruban"
+   }
+  }
+ ],
+ "exits": [
+  {
+   "id": "vers_meule",
+   "x": 5,
+   "y": 4,
+   "w": 1,
+   "h": 1,
+   "to": "moulin_meule",
+   "at": "depuis_chambre",
+   "label": "Descendre"
+  }
+ ],
+ "spawns": {
+  "entree": {
+   "x": 4.5,
+   "y": 5.4,
+   "dir": "N"
+  }
+ },
+ "zones": {},
+ "npcs": [
+  {
+   "id": "elio",
+   "x": 3.4,
+   "y": 4.2,
+   "when": {
+    "night": false,
+    "day": [
+     1,
+     2
+    ]
+   }
+  }
+ ],
+ "scenes": [],
+ "collision": [
+  "1111111",
+  "1111111",
+  "0110000",
+  "0110000",
+  "0110000",
+  "0000000"
+ ]
+}

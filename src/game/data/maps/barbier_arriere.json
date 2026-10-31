@@ -1,0 +1,106 @@
+{
+ "id": "barbier_arriere",
+ "name": "Salon de Fauvel — l'arrière-boutique",
+ "chapter": "enfance",
+ "kind": "piece",
+ "tile": 16,
+ "w": 6,
+ "h": 5,
+ "floor": "bois",
+ "wall": "platre",
+ "objects": [
+  {
+   "id": "rideau",
+   "type": "rideau",
+   "x": 2.4,
+   "y": 0,
+   "w": 1,
+   "h": 2,
+   "solid": false
+  },
+  {
+   "id": "etagere",
+   "type": "etagere",
+   "x": 0.4,
+   "y": 0,
+   "w": 2,
+   "h": 2,
+   "solid": false
+  },
+  {
+   "id": "table",
+   "type": "table",
+   "x": 3,
+   "y": 2.6,
+   "w": 2.6,
+   "h": 2,
+   "solid": true
+  },
+  {
+   "id": "serviettes",
+   "type": "serviettes",
+   "x": 3.2,
+   "y": 2.6,
+   "w": 1,
+   "h": 1,
+   "solid": false,
+   "on": "table",
+   "interact": {
+    "label": "Les serviettes chaudes",
+    "text": "Elles fument encore."
+   }
+  },
+  {
+   "id": "pierre",
+   "type": "pierre_affuter",
+   "x": 4.4,
+   "y": 2.6,
+   "w": 1,
+   "h": 1,
+   "solid": false,
+   "on": "table",
+   "interact": {
+    "label": "La pierre à affûter",
+    "text": "Aubin vient y faire affûter son rasoir."
+   }
+  },
+  {
+   "id": "marmite",
+   "type": "marmite",
+   "x": 0.6,
+   "y": 2.8,
+   "w": 1,
+   "h": 1,
+   "solid": true
+  }
+ ],
+ "exits": [
+  {
+   "id": "vers_salon",
+   "x": 2.4,
+   "y": 1,
+   "w": 1,
+   "h": 1,
+   "to": "barbier",
+   "at": "depuis_arriere",
+   "label": "Le salon"
+  }
+ ],
+ "spawns": {
+  "entree": {
+   "x": 2.9,
+   "y": 2.8,
+   "dir": "S"
+  }
+ },
+ "zones": {},
+ "npcs": [],
+ "scenes": [],
+ "collision": [
+  "111111",
+  "110011",
+  "000000",
+  "010111",
+  "000111"
+ ]
+}

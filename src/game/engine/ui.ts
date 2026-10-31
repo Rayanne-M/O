@@ -130,6 +130,24 @@ class Ui {
     el.hidden = !text;
   }
 
+  /** Attend un appui sur action (ou un toucher), sans boîte. */
+  waitAction(): Promise<void> {
+    return new Promise((resolve) => {
+      this.busy = true;
+      this.listener = (k) => {
+        if (!ACTION.has(k)) return;
+        this.listener = null;
+        this.busy = false;
+        resolve();
+      };
+    });
+  }
+
+  /** Écoute les touches pendant une séquence (décompte, combat) ; null pour arrêter. */
+  listen(fn: ((key: string) => void) | null) {
+    this.listener = fn ? (k) => fn(ACTION.has(k) ? 'action' : k) : null;
+  }
+
   /** Grand titre au centre, par exemple « Jour 2 ». */
   async banner(text: string, ms = 1800) {
     const el = $('banner');
@@ -166,6 +184,16 @@ class Ui {
     });
   }
 
+  /** Écran titre : un titre, une phrase, des boutons. */
+  title(title: string, subtitle: string, buttons: string[]) {
+    return this.screen(`<h1>${esc(title)}</h1><p>${esc(subtitle)}</p>`, buttons);
+  }
+
+  /** Écran de fin : un bilan ligne par ligne, puis rejouer. */
+  async summary(s: { title: string; lines: string[] }) {
+    await this.screen(`<h1>${esc(s.title)}</h1><ul class="summary">${s.lines.map((l) => `<li>${esc(l)}</li>`).join('')}</ul>`, ['Rejouer']);
+  }
+
   private open(speaker: string) {
     const d = $('dialog');
     d.hidden = false;
@@ -182,6 +210,8 @@ class Ui {
     this.typing = false;
   }
 }
+
+const esc = (t: string) => t.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]!);
 
 export const wait = (ms: number) => new Promise<void>((r) => window.setTimeout(r, ms));
 
