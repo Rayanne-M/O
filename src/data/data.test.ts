@@ -2,11 +2,11 @@ import { describe, expect, it } from 'vitest';
 import { evaluateBuild } from '../engine/build';
 import { simulateCombat } from '../engine/combat';
 import { STAT_KEYS, type Build } from '../engine/types';
-import { gameData } from './index';
+import { battleData, gameData } from './index';
 import { STAT_DESCRIPTIONS } from './stats';
 
 const { classes, blessings, curses, synergies, passives, tagLabels } = gameData;
-const sources = [...classes, ...blessings, ...curses];
+const sources = [...classes, ...blessings, ...curses, ...(gameData.equipment ?? [])];
 
 // Ces tests vérifient que le contenu est cohérent. Ils attrapent les fautes de frappe
 // quand on ajoute une classe, un passif ou une synergie.
@@ -42,6 +42,20 @@ describe('contenu du jeu', () => {
       ...synergies.flatMap((s) => [...(s.passives ?? []), ...(s.requires.passives ?? [])]),
     ];
     expect(refs.filter((id) => !ids.includes(id))).toEqual([]);
+  });
+
+  it('a des compétences et des monstres qui pointent vers du contenu existant', () => {
+    const skillIds = battleData.skills.map((s) => s.id);
+    expect(new Set(skillIds).size).toBe(skillIds.length);
+    const refs = [...sources, ...synergies].flatMap((s) => s.skills ?? []);
+    expect(refs.filter((id) => !skillIds.includes(id))).toEqual([]);
+    const passiveIds = passives.map((p) => p.id);
+    for (const m of battleData.monsters) {
+      for (const id of [...m.skills, ...m.ai.map((r) => r.skill)]) expect(skillIds, `${m.id} → ${id}`).toContain(id);
+      for (const id of m.passives ?? []) expect(passiveIds, `${m.id} → ${id}`).toContain(id);
+      for (const tag of m.tags) expect(tagLabels[tag], `${m.id} → tag ${tag}`).toBeTruthy();
+      expect(m.ai.length, `${m.id} doit avoir au moins une règle d’IA`).toBeGreaterThan(0);
+    }
   });
 
   it('n’utilise que des stats connues, toutes décrites', () => {

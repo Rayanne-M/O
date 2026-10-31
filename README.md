@@ -3,10 +3,12 @@
 Un RPG jouable dans le navigateur, centré sur la construction de personnage :
 classe, bénédictions, malédictions et passifs se combinent pour déclencher des **synergies**.
 
-Le projet contient deux pages :
+Le projet contient trois pages :
 
 - l'**atelier de personnage** (`index.html`) : un outil de développement et d'équilibrage
   où tout est accessible librement, pour tester des combinaisons et comparer leurs dégâts ;
+- l'**écran de combat** (`combat.html`) : un prototype du système de combat, où l'on teste un build contre
+  un monstre. Voir [plus bas](#le-système-de-combat) ;
 - la **tranche jouable de l'enfance** (`village.html`) : le village natal en vue de dessus, trois jours
   et trois nuits, la fenêtre de la chambre et la nuit au puits. Voir [plus bas](#la-tranche-jouable-de-lenfance).
 
@@ -45,8 +47,9 @@ Les trois parties sont séparées volontairement :
 - `synergy.ts` : vérifie si une synergie est active, et sinon ce qui manque.
 - `build.ts` : assemble le tout à partir des choix du joueur, et vérifie les règles
   (nombre de bénédictions, identifiants inconnus...). Rassemble aussi les passifs.
+- `battle.ts` : le moteur de combat (voir [plus bas](#le-système-de-combat)).
 - `combat.ts` : un combat d'entraînement de 10 tours contre un mannequin, sans hasard,
-  pour mesurer ce que les passifs apportent vraiment.
+  pour mesurer ce que les passifs apportent vraiment. Il passe par le vrai moteur de combat.
 
 ### Les règles actuelles
 
@@ -55,7 +58,9 @@ Les trois parties sont séparées volontairement :
   Les malédictions sont donc un choix : un défaut contre une bénédiction de plus et parfois une synergie.
 - Chaque élément porte des **tags** (Feu, Ombre, Sacré...). Une synergie s'active quand le build
   réunit assez d'éléments d'un tag, un élément précis ou des passifs précis.
-- Races et objets ont été retirés pour l'instant ; les objets reviendront plus tard.
+- **Équipement** : un objet par emplacement (arme, armure, bijou). Comme le reste, un objet donne des stats,
+  des tags, des passifs et des **compétences** : c'est souvent l'arme qui ouvre une action en combat.
+- Les races ont été retirées pour l'instant.
 
 ### Les passifs et les traits
 
@@ -114,6 +119,58 @@ Les conditions possibles : `class`, `tags` (nombre minimum par tag), `ids` (él�
 
 Lance `npm test` après chaque ajout : les tests de `src/data/data.test.ts` vérifient que le contenu est cohérent
 (identifiants uniques, tags nommés, synergies et passifs qui pointent vers des éléments existants).
+
+## Le système de combat
+
+Le héros combat seul, sur un écran à part, au tour par tour. Tout est déterministe : c'est le build qui gagne.
+
+- **L'ordre des tours vient de la Vitesse.** Chaque combattant a une heure de prochaine action et avance de
+  `1000 / Vitesse` après chaque tour : deux fois plus rapide, deux fois plus de tours. La frise montre les 8 prochains tours.
+- **Les actions viennent du build.** Tout le monde a Attaque, Se protéger (dégâts reçus divisés par deux, +20 % de mana)
+  et Fuir. Le reste vient de la classe, de l'équipement, des bénédictions, des malédictions et des synergies (champ `skills`).
+  Exemple : Pyromancien donne Boule de feu, les ciseaux donnent Couper (deux fois plus fort contre les cheveux).
+- **Les passifs jouent en combat** : brûlures, explosions, critiques, conversion d'élément, et aussi les pactes
+  (Cheveux vivants frappe après chaque attaque, plus fort si les cheveux sont longs ; Ventre d'arc-en-ciel esquive un coup).
+- **Les monstres** ont des tags, des résistances et faiblesses par élément (l'Esprit du puits brûle très bien),
+  et une petite IA en règles : « sous 40 % de vie, une fois : Repousse », « un tour sur 3 : Saisie », sinon « Coup de mèche ».
+- **Les peurs de l'enfance comptent** : une créature dont le héros a peur (même mot que dans l'histoire : `araignees`,
+  `cheveux`, `eau`) lui fait +25 % de dégâts. Le trait Prudent en retire 25.
+
+```
+src/engine/battle.ts         Le moteur : tours, compétences, dégâts, statuts, IA. Aucun affichage.
+src/data/skills.ts           Les compétences (héros, objets, monstres).
+src/data/monsters.ts         Les monstres : stats, tags, résistances, compétences, IA.
+src/data/equipment.ts        Les objets.
+src/game/engine/hero-build.ts Le pont avec l'histoire : jauges → classe, traits → passifs (même nom),
+                             objets → équipement (même identifiant), peurs, longueur des cheveux.
+src/combat/                  L'écran de combat (combat.html) : il choisit, affiche et anime, sans aucune règle.
+```
+
+**Ajouter une compétence** : une entrée dans `src/data/skills.ts`, puis son identifiant dans le `skills` de ce qui
+l'accorde (classe, objet, synergie...). Les effets possibles sont listés dans `SkillEffect` (`src/engine/types.ts`).
+
+```ts
+{
+  id: 'frost_nova',
+  name: 'Nova de givre',
+  description: '120 % de dégâts et -30 % de Vitesse pendant 2 tours.',
+  cost: 10,
+  target: 'enemy',
+  effects: [
+    { type: 'damage', percent: 120 },
+    { type: 'buff', stat: 'speed', percent: -30, turns: 2 },   // sur la cible : un malus
+  ],
+},
+```
+
+**Ajouter un monstre** : une entrée dans `src/data/monsters.ts`. Il apparaît aussitôt dans l'écran de combat.
+Les tests vérifient que ses compétences, passifs et tags existent.
+
+**Tout est relié** : changer un nombre dans `src/data` change à la fois l'atelier, l'écran de combat et le jeu.
+Un trait gagné dans l'histoire qui porte le nom d'un passif (« Cheveux vivants ») devient ce passif en combat ;
+un objet ramassé (« ciseaux », « baton », « ruban ») devient l'équipement du même identifiant.
+
+Depuis l'atelier, le bouton « Tester ce build en combat » ouvre l'écran de combat avec le build en cours.
 
 ## La tranche jouable de l'enfance
 

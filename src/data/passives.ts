@@ -125,4 +125,26 @@ export const passives: Passive[] = [
       { type: 'pierce', percent: 50 },
     ],
   },
+  // Pactes et traits venus de l'histoire (même nom que dans l'enfance, pour les relier)
+  {
+    id: 'living_hair',
+    name: 'Cheveux vivants',
+    description:
+      'Pacte de l’Esprit du puits : après chaque attaque, tes cheveux frappent aussi (jusqu’à 60 % de dégâts d’ombre). Plus ils sont longs, plus ils frappent fort ; rasés, le pacte dort.',
+    tags: ['pact', 'shadow'],
+    effects: [{ type: 'extraStrike', name: 'Coup de cheveux', percent: 60, element: 'shadow', scaleWith: 'hair' }],
+  },
+  {
+    id: 'rainbow_belly',
+    name: 'Ventre d’arc-en-ciel',
+    description: 'Pacte de Giorgio : une fois par combat, tu glisses sur un arc-en-ciel hors d’une attaque.',
+    tags: ['pact'],
+    effects: [{ type: 'evade', charges: 1, name: 'Arc-en-ciel' }],
+  },
+  {
+    id: 'cautious',
+    name: 'Prudent',
+    description: 'La peur rend attentif : -25 % de dégâts reçus des créatures dont tu as peur.',
+    effects: [{ type: 'fearGuard', percent: 25 }],
+  },
 ];

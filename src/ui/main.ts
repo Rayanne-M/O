@@ -2,7 +2,7 @@
 // puis affiche le résultat. Aucune règle de jeu n'est écrite ici.
 // L'atelier sert au développement et à l'équilibrage : tout est accessible librement.
 import './style.css';
-import { STAT_DESCRIPTIONS, STAT_LABELS, gameData, tagLabels } from '../data';
+import { STAT_DESCRIPTIONS, STAT_LABELS, battleData, gameData, tagLabels } from '../data';
 import { maxBlessings, MAX_CURSES, evaluateBuild, type BuildResult } from '../engine/build';
 import { DEFAULT_COMBAT, simulateCombat, type DamageKind } from '../engine/combat';
 import { STAT_KEYS, type Build, type Element, type Modifier, type Source, type Synergy } from '../engine/types';
@@ -26,6 +26,7 @@ const emptyBuild = (): Build => ({
   blessingIds: [],
   curseIds: [],
   traitIds: [],
+  equipmentIds: [],
 });
 
 let build = emptyBuild();
@@ -67,6 +68,9 @@ function renderChoices(result: BuildResult): void {
     ${checkboxGroup('blessing', gameData.blessings, build.blessingIds)}
     <h2>Malédictions <small>${curses}/${MAX_CURSES}</small></h2>
     ${checkboxGroup('curse', gameData.curses, build.curseIds)}
+    <h2>Équipement <small>${build.equipmentIds?.length ?? 0}/3</small></h2>
+    <p class="hint">Un objet par emplacement : arme, armure, bijou. Une arme ouvre souvent une action en combat.</p>
+    ${checkboxGroup('equipment', gameData.equipment ?? [], build.equipmentIds ?? [])}
     <h2>Traits <small>${build.traitIds.length}/${gameData.passives.length}</small></h2>
     <p class="hint">Tous les passifs du jeu, à cocher librement pour tester une idée avant de l’attribuer à une classe, une compétence, une bénédiction ou une malédiction.</p>
     <div class="options">${gameData.passives
@@ -114,11 +118,16 @@ function optionBody(s: Source): string {
     <span class="mods">${s.modifiers.map(formatModifier).join(', ')}</span>
     <span class="tags">${tagChips(s.tags)}</span>
     ${(s.passives ?? []).map((id) => `<span class="passive-chip">✦ ${passiveName(id)}</span>`).join('')}
+    ${(s.skills ?? []).map((id) => `<span class="passive-chip">⚔ ${skillName(id)}</span>`).join('')}
   </span>`;
 }
 
 function passiveName(id: string): string {
   return gameData.passives.find((p) => p.id === id)?.name ?? id;
+}
+
+function skillName(id: string): string {
+  return battleData.skills.find((s) => s.id === id)?.name ?? id;
 }
 
 function tagChips(tags: string[]): string {
@@ -165,6 +174,12 @@ function renderResult(result: BuildResult): void {
     </details>
     <h2>Passifs (${result.passives.length})</h2>
     ${result.passives.length ? result.passives.map(({ passive, sourceName }) => `<div class="passive"><strong>✦ ${passive.name}</strong> <span class="mods">via ${sourceName}</span><p>${passive.description}</p></div>`).join('') : '<p class="hint">Aucun passif. Coche un trait, ou active une synergie qui en donne.</p>'}
+    <h2>Compétences de combat (${result.skills.length})</h2>
+    ${result.skills.length ? result.skills.map((id) => {
+      const sk = battleData.skills.find((s) => s.id === id);
+      return `<div class="passive"><strong>⚔ ${sk?.name ?? id}</strong>${sk?.cost ? ` <span class="mods">${sk.cost} mana</span>` : ''}<p>${sk?.description ?? ''}</p></div>`;
+    }).join('') : '<p class="hint">Seulement Attaque, Se protéger et Fuir.</p>'}
+    <p><a class="fight-link" href="combat.html#${encodeURIComponent(JSON.stringify(build))}">⚔ Tester ce build en combat →</a></p>
     ${combatSection(result)}
   `;
 }
@@ -218,7 +233,13 @@ choicesEl.addEventListener('change', (event) => {
   if (input.name === 'class') {
     build.classId = input.value;
   } else {
-    const lists: Record<string, string[]> = { blessing: build.blessingIds, curse: build.curseIds, trait: build.traitIds };
+    build.equipmentIds ??= [];
+    const lists: Record<string, string[]> = {
+      blessing: build.blessingIds,
+      curse: build.curseIds,
+      trait: build.traitIds,
+      equipment: build.equipmentIds,
+    };
     const list = lists[input.name];
     if (!list) return;
     if (input.checked) list.push(input.value);

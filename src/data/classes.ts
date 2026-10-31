@@ -9,6 +9,7 @@ export const classes: CharacterClass[] = [
     tags: ['mage', 'arcane'],
     modifiers: [flat('mana', 30), flat('intelligence', 12), flat('hp', -10)],
     attack: { stat: 'intelligence', element: 'arcane' },
+    skills: ['arcane_bolt'],
   },
   {
     id: 'warrior',
@@ -17,6 +18,7 @@ export const classes: CharacterClass[] = [
     tags: ['warrior', 'martial'],
     modifiers: [flat('hp', 30), flat('strength', 11), flat('defense', 3)],
     attack: { stat: 'strength', element: 'physical' },
+    skills: ['heavy_strike', 'war_cry'],
   },
   {
     id: 'rogue',
@@ -25,5 +27,6 @@ export const classes: CharacterClass[] = [
     tags: ['rogue', 'shadow'],
     modifiers: [flat('agility', 10), flat('crit', 15), flat('speed', 3)],
     attack: { stat: 'agility', element: 'physical' },
+    skills: ['twin_strike'],
   },
 ];

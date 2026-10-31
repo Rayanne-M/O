@@ -329,3 +329,17 @@ button:hover {
   line-height: 1.35;
   color: var(--text);
 }
+
+.fight-link {
+  display: inline-block;
+  padding: 8px 14px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.fight-link:hover {
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+}
