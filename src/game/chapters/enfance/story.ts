@@ -201,8 +201,9 @@ export const eggs = { found: new Set<string>(), shown: new Set<string>() };
 interface Hen { kind: string; state: string; since: number; face: number; seed: number }
 function hen(g: Game, id: string, x: number, y: number, kind: string, init: Partial<Actor> = {}): Actor {
   const h: Hen = { kind, state: 'idle', since: 0, face: 1, seed: id.length * 7 };
+  // les poules ne bloquent pas : elles sautent partout, elles ne doivent jamais enfermer le héros
   return g.put(id, 'grange', at(x, y), {
-    solid: true,
+    solid: false,
     ...init,
     draw: (ctx, a, t) => A.drawHen(ctx, Math.round(a.x), Math.round(a.y - (a.hop ?? 0)), t, { kind: h.kind, face: h.face, state: h.state, st: t - h.since, seed: h.seed }),
     ...({ hen: h } as object),

@@ -66,6 +66,8 @@ export interface MapShape {
   foot(file: MapFile, o: MapObject): Rect | null;
   /** Ce pixel est-il de l'eau où l'on ne peut pas marcher ? */
   water?(file: MapFile, x: number, y: number): boolean;
+  /** Le dessin exact d'un objet (1 = bloque), plus fin que son emprise rectangulaire. */
+  pixels?(file: MapFile, o: MapObject): { x: number; y: number; w: number; data: Uint8Array } | null;
   /** Les objets dessinés à plat (tapis, pont…) ou contre le mur : jamais devant un personnage. */
   flat?(file: MapFile, o: MapObject): boolean;
 }
@@ -139,7 +141,20 @@ function buildMask(map: GameMap) {
   }
   if (shape.water)
     for (let y = 0; y < map.h; y++) for (let x = 0; x < map.w; x++) if (shape.water(file, x + 0.5, y + 0.5)) map.mask[y * map.w + x] = 1;
-  for (const o of map.objects) if (o.solid && !o.when && !o.on && o.foot) fillMask(map, o.foot, 1);
+  for (const o of map.objects) {
+    if (!o.solid || o.when || o.on || !o.foot) continue;
+    const p = shape.pixels?.(file, o);
+    if (!p) {
+      fillMask(map, o.foot, 1);
+      continue;
+    }
+    const ox = Math.round(p.x), oy = Math.round(p.y);
+    for (let i = 0; i < p.data.length; i++) {
+      if (!p.data[i]) continue;
+      const x = ox + (i % p.w), y = oy + Math.floor(i / p.w);
+      if (x >= 0 && y >= 0 && x < map.w && y < map.h) map.mask[y * map.w + x] = 1;
+    }
+  }
   for (const e of map.exits) fillMask(map, e.px, 0);
 }
 

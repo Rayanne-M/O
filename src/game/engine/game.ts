@@ -351,7 +351,9 @@ export class Game extends Phaser.Scene {
     const step = (h.speed * (h.wading ? 0.6 : 1) * delta) / 1000 / Math.hypot(dx, dy);
     const nx = h.x + dx * step, ny = h.y + dy * step;
     const solids = this.objectsHere();
-    const hit = (x: number, y: number) => blocked(this.map, x, y) || blockedBy(solids, x, y) || this.actorAt(x, y);
+    // un personnage qui s'est posé sur le héros ne le retient pas : on peut toujours s'en dégager
+    const stuck = new Set(this.actorsAt(h.x, h.y));
+    const hit = (x: number, y: number) => blocked(this.map, x, y) || blockedBy(solids, x, y) || this.actorsAt(x, y).some((a) => !stuck.has(a));
     const ox = h.x, oy = h.y;
     if (!hit(nx, h.y)) h.x = nx;
     if (!hit(h.x, ny)) h.y = ny;
@@ -376,9 +378,9 @@ export class Game extends Phaser.Scene {
     this.zonesIn = now;
   }
 
-  private actorAt(x: number, y: number) {
+  private actorsAt(x: number, y: number) {
     const foot = { x: x - 5, y: y - 4, w: 10, h: 4 };
-    return [...this.cast.values()].some((a) => a !== this.hero && a.map === this.map.id && a.visible && a.solid && !a.follows &&
+    return [...this.cast.values()].filter((a) => a !== this.hero && a.map === this.map.id && a.visible && a.solid && !a.follows &&
       foot.x < a.x + 6 && a.x - 6 < foot.x + foot.w && foot.y < a.y && a.y - 5 < foot.y + foot.h);
   }
 
