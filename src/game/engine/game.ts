@@ -332,8 +332,11 @@ export class Game extends Phaser.Scene {
 
   update(time: number, delta: number) {
     const free = !ui.busy && !this.locked && !this.plan;
-    this.moveHero(free, delta);
-    this.moveFollowers(delta);
+    // tant qu'aucune carte n'est chargée (écran titre, décompte), personne ne bouge
+    if (this.map) {
+      this.moveHero(free, delta);
+      this.moveFollowers(delta);
+    }
     if (free) {
       for (const w of [...this.waiters]) if (w.test()) {
         this.waiters.splice(this.waiters.indexOf(w), 1);
