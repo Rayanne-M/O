@@ -1314,7 +1314,7 @@ function objFootPx(map, o) {
 
 // ---- grille de collision : une chaîne par rangée, 1 = bloqué ----
 // pièce : les deux rangées du mur du fond ; partout : les meubles et bâtiments solides (tuile couverte à plus de moitié) ;
-// extérieur : l'eau, sauf les hauts-fonds (terrain.shallows) et sous un pont. Les sorties restent toujours ouvertes.
+// extérieur : l'eau, sauf les hauts-fonds (terrain.shallows) et sous un pont. Les sorties ne libèrent rien (on bute contre une porte pour la prendre).
 // Les objets qui ont un when ne comptent pas : le jeu les gère selon le moment.
 function mapCollision(map) {
   const g = Array.from({ length: Math.ceil(map.h) }, (_, y) => Array.from({ length: Math.ceil(map.w) }, () => map.kind === "piece" && y < 2));
@@ -1328,7 +1328,6 @@ function mapCollision(map) {
       if (d >= riverHalfPx(ter.river, s) + 2) continue;
       if ((ter.shallows || []).some(r => inRect(r, x + .5, y + .5)) || bridges.some(b => inRect(b, x + .5, y + .5))) continue;
       g[y][x] = true; } }
-  (map.exits || []).forEach(e => { for (let y = Math.floor(e.y); y < Math.ceil(e.y + (e.h || 1)); y++) for (let x = Math.floor(e.x); x < Math.ceil(e.x + e.w); x++) if (g[y] && x < g[y].length) g[y][x] = false; });
   return g.map(r => r.map(b => b ? 1 : 0).join(""));
 }
 

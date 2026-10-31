@@ -178,13 +178,7 @@ export function dressMaps(g: Game) {
   v.file.objects = v.file.objects.filter((o) => o.id !== 'balle');
   v.objects = v.objects.filter((o) => o.id !== 'balle');
   v.zones.baton = { x: 20.6 * T, y: 12.6 * T, w: 1.6 * T, h: 1.2 * T };
-  // le puits ne chante pas le soir : seulement quelques mèches qui dépassent de la margelle
-  for (const o of [...v.file.objects, ...v.objects].filter((q) => q.type === 'puits')) {
-    const vs = (o.variants ?? []) as { when?: unknown; chant?: boolean; cheveux?: number }[];
-    o.variants = vs.map((x) => (x.chant ? { when: x.when, cheveux: WELL_STRANDS } : x));
-  }
 }
-const WELL_STRANDS = 0.12;
 
 /** Ce que l'histoire change au dessin des cartes : état des objets par id, bêtes dessinées ou non. */
 export function mapOptions(_g: Game, map: string): { state?: Record<string, unknown>; animals?: boolean } {
