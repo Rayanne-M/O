@@ -33,6 +33,7 @@ export const equipment: Equipment[] = [
     tags: ['esprit'],
     modifiers: [pct('hp', 10), flat('speed', 1)],
     passives: ['cautious'],
+    skills: ['show_ribbon'],
   },
   {
     id: 'ember_staff',

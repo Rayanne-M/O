@@ -11,6 +11,11 @@ const skills: Skill[] = [
   ...BASIC_SKILLS,
   { id: 'big', name: 'Gros coup', description: '', cost: 5, target: 'enemy', effects: [{ type: 'damage', percent: 200 }] },
   { id: 'snip', name: 'Couper', description: '', target: 'enemy', effects: [{ type: 'damage', percent: 100, vsTags: { cheveux: 100 } }] },
+  { id: 'grab', name: 'Saisir', description: '', target: 'enemy', effects: [{ type: 'bind', turns: 2 }] },
+  { id: 'cut', name: 'Trancher', description: '', target: 'enemy', whileBound: true, effects: [{ type: 'free' }, { type: 'damage', percent: 100 }, { type: 'wound', turns: 2 }] },
+  { id: 'scare', name: 'Effrayer', description: '', target: 'enemy', once: true, effects: [{ type: 'stun', turns: 1 }] },
+  { id: 'prepare', name: 'Préparer', description: '', target: 'self', effects: [{ type: 'charge', skill: 'slam', breakPercent: 15 }] },
+  { id: 'slam', name: 'Écraser', description: '', target: 'enemy', effects: [{ type: 'damage', percent: 300 }] },
   { id: 'heal', name: 'Soin', description: '', target: 'self', effects: [{ type: 'heal', percent: 50 }] },
 ];
 
@@ -19,7 +24,7 @@ function fighter(o: Partial<Combatant> & { id: string; side: 'hero' | 'enemy' })
     name: o.id,
     stats: stats(),
     attack: { stat: 'strength', element: 'physical' },
-    skills: ['attack', 'guard', 'flee', 'wait', 'big', 'snip', 'heal'],
+    skills: ['attack', 'guard', 'flee', 'wait', 'struggle', 'big', 'snip', 'heal', 'grab', 'cut', 'scare', 'prepare', 'slam'],
     passives: [],
     tags: [],
     fears: [],
@@ -107,6 +112,56 @@ describe('Battle', () => {
     m.hp = 30;
     expect(b.playAi().some((e) => e.kind === 'heal')).toBe(false);
   });
+
+  it('entrave : seules les actions « malgré l’entrave » restent, et se débattre libère', () => {
+    const b = new Battle([fighter({ id: 'h', side: 'hero' })], [fighter({ id: 'm', side: 'enemy' })], { skills });
+    b.act('wait');
+    b.act('grab', 'h');
+    const h = b.get('h');
+    expect(h.bound).toBe(2);
+    expect(b.usable(h).map((s) => s.id)).toEqual(expect.arrayContaining(['struggle', 'cut']));
+    expect(b.usable(h).map((s) => s.id)).not.toContain('attack');
+    b.act('struggle');
+    expect(h.bound).toBe(0);
+  });
+
+  it('coupé net, ça ne repousse plus le temps de la coupure', () => {
+    const regen = passive([{ type: 'regen', percent: 10 }]);
+    const b = new Battle([fighter({ id: 'h', side: 'hero' })], [fighter({ id: 'm', side: 'enemy', passives: [regen] })], { skills });
+    const m = b.get('m');
+    b.act('attack', 'm');
+    b.act('wait'); // le monstre repousse en fin de tour
+    expect(m.hp).toBe(100);
+    b.act('cut', 'm');
+    b.act('wait');
+    expect(m.hp).toBe(90);
+  });
+
+  it('une attaque préparée part au tour suivant, sauf si on l’interrompt', () => {
+    const hit = new Battle([fighter({ id: 'h', side: 'hero' })], [fighter({ id: 'm', side: 'enemy' })], { skills });
+    hit.act('wait');
+    hit.act('prepare');
+    expect(hit.get('m').charging).toMatchObject({ skill: 'slam', breakAt: 15 });
+    hit.act('wait');
+    expect(hit.autoTurn()?.some((e) => e.kind === 'damage' && e.amount === 30)).toBe(true);
+
+    const broken = new Battle([fighter({ id: 'h', side: 'hero' })], [fighter({ id: 'm', side: 'enemy' })], { skills });
+    broken.act('wait');
+    broken.act('prepare');
+    broken.act('big', 'm'); // 20 dégâts ≥ 15 : interrompu
+    expect(broken.get('m').charging).toBeNull();
+    expect(broken.get('m').stunned).toBe(1);
+    expect(broken.autoTurn()?.some((e) => e.kind === 'damage')).toBe(false);
+  });
+
+  it('une compétence « une fois » ne sert qu’une fois par combat', () => {
+    const b = new Battle([fighter({ id: 'h', side: 'hero' })], [fighter({ id: 'm', side: 'enemy' })], { skills });
+    b.act('scare', 'm');
+    expect(b.get('m').stunned).toBe(1);
+    expect(b.autoTurn()).not.toBeNull();
+    expect(b.usable(b.get('h')).map((s) => s.id)).not.toContain('scare');
+  });
+
 
   it('se termine par une victoire, une défaite ou une fuite', () => {
     const win = new Battle([fighter({ id: 'h', side: 'hero' })], [fighter({ id: 'm', side: 'enemy', stats: stats({ hp: 5 }) })], { skills });

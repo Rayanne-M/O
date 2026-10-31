@@ -36,6 +36,8 @@ export function simulateCombat(result: BuildResult, options: CombatOptions = DEF
   if (!result.attack) return null;
 
   const hero = heroFromBuild(result);
+  // l'entraînement ne mesure que l'attaque de base
+  hero.skills = ['attack'];
   const dummy = makeCombatant({
     id: 'dummy',
     name: 'Mannequin',

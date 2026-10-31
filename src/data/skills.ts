@@ -62,17 +62,33 @@ export const skills: Skill[] = [
   {
     id: 'snip',
     name: 'Couper',
-    description: 'Un coup de ciseaux : 110 % de dégâts, deux fois plus contre les cheveux.',
+    cost: 4,
+    description:
+      'Un coup de ciseaux : 110 % de dégâts, deux fois plus contre les cheveux. Coupe net (ça ne repousse pas pendant 2 tours) et libère des entraves. Les lames s’émoussent : 4 mana.',
     target: 'enemy',
-    effects: [{ type: 'damage', percent: 110, element: 'physical', vsTags: { cheveux: 100 } }],
+    whileBound: true,
+    effects: [
+      { type: 'free' },
+      { type: 'damage', percent: 110, element: 'physical', vsTags: { cheveux: 100 } },
+      { type: 'wound', turns: 2 },
+    ],
   },
   {
     id: 'stick_swing',
     name: 'Coup de bâton',
-    description: 'Un grand coup de bâton : 130 % de dégâts.',
-    cost: 3,
+    description: 'Un grand coup de bâton : 170 % de dégâts.',
+    cost: 2,
     target: 'enemy',
-    effects: [{ type: 'damage', percent: 130, element: 'physical' }],
+    effects: [{ type: 'damage', percent: 170, element: 'physical' }],
+  },
+
+  {
+    id: 'show_ribbon',
+    name: 'Montrer le ruban',
+    description: 'Le ruban d’Élio. Une fois par combat : l’esprit hésite et perd son prochain tour (et ce qu’il préparait).',
+    target: 'enemy',
+    once: true,
+    effects: [{ type: 'stun', turns: 1 }],
   },
 
   // ---------- Monstres ----------
@@ -89,6 +105,44 @@ export const skills: Skill[] = [
     description: 'Les cheveux s’enroulent et serrent : 150 % de dégâts.',
     target: 'enemy',
     effects: [{ type: 'damage', percent: 150 }],
+  },
+  {
+    id: 'hair_bind',
+    name: 'Saisie',
+    description: 'Les cheveux s’enroulent autour de tes chevilles : 70 % de dégâts et entravé un tour.',
+    target: 'enemy',
+    effects: [{ type: 'damage', percent: 70 }, { type: 'bind', turns: 1 }],
+  },
+  {
+    id: 'drown_charge',
+    name: 'Les cheveux montent',
+    description: 'Elle prépare une noyade. Lui faire perdre 15 % de sa vie avant son tour l’interrompt.',
+    target: 'self',
+    effects: [{ type: 'charge', skill: 'drown', breakPercent: 15 }],
+  },
+  {
+    id: 'drown',
+    name: 'Noyade',
+    description: 'Elle t’attire vers l’eau noire : 230 % de dégâts.',
+    target: 'enemy',
+    effects: [{ type: 'damage', percent: 230 }],
+  },
+  {
+    id: 'whisper',
+    name: 'Murmure rancunier',
+    description: 'Sa voix te glace : -25 % de Vitesse pendant 3 tours.',
+    target: 'enemy',
+    effects: [{ type: 'buff', stat: 'speed', percent: -25, turns: 3 }],
+  },
+  {
+    id: 'emerge',
+    name: 'Elle sort du puits',
+    description: 'Blessée, elle se hisse hors du puits : +30 % de Force et +25 % de Vitesse jusqu’à la fin du combat.',
+    target: 'self',
+    effects: [
+      { type: 'buff', stat: 'strength', percent: 30, turns: 99 },
+      { type: 'buff', stat: 'speed', percent: 25, turns: 99 },
+    ],
   },
   {
     id: 'regrow',

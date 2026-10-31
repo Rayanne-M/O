@@ -64,6 +64,7 @@ export type Element = 'physical' | 'arcane' | 'fire' | 'shadow' | 'holy';
  *   Avec scaleWith, la force dépend d'un niveau du héros entre 0 et 1 (ex. la longueur des cheveux).
  * - evade : esquive complètement les N premiers coups reçus pendant le combat.
  * - fearGuard : -X % de dégâts reçus des créatures dont le héros a peur.
+ * - regen : à la fin de chacun de ses tours, rend X % de la vie maximum, sauf s'il est « coupé » (voir wound).
  */
 export type PassiveEffect =
   | { type: 'convert'; element: Element }
@@ -76,7 +77,8 @@ export type PassiveEffect =
   | { type: 'afterDetonate'; burnStacks: number }
   | { type: 'extraStrike'; name: string; percent: number; element?: Element; scaleWith?: string }
   | { type: 'evade'; charges: number; name: string }
-  | { type: 'fearGuard'; percent: number };
+  | { type: 'fearGuard'; percent: number }
+  | { type: 'regen'; percent: number };
 
 /**
  * Un passif : un effet de jeu qui change la façon de combattre, et pas seulement les stats.
@@ -167,6 +169,12 @@ export interface GameData {
  * - buff : +X % (ou -X %) à une stat de la cible pendant N de ses tours (la cible est soi-même si target vaut 'self').
  * - guard : réduit de moitié les dégâts reçus jusqu'au prochain tour, et rend X % du mana.
  * - flee : quitter le combat.
+ * - bind : la cible est entravée pendant N de ses tours : elle ne peut lancer que les compétences « whileBound ».
+ * - free : le lanceur se libère de ses entraves.
+ * - wound : la cible est « coupée » pendant N de ses tours : sa repousse (regen) ne marche plus.
+ * - stun : la cible perd ses N prochains tours.
+ * - charge : le lanceur se prépare ; à son prochain tour il lance `skill`. S'il perd breakPercent % de sa vie
+ *   maximum d'ici là, il est interrompu et perd ce tour.
  */
 export type SkillEffect =
   | { type: 'damage'; percent: number; element?: Element; hits?: number; vsTags?: Record<Tag, number> }
@@ -174,7 +182,12 @@ export type SkillEffect =
   | { type: 'burn'; stacks: number }
   | { type: 'buff'; stat: StatKey; percent: number; turns: number }
   | { type: 'guard'; manaPercent: number }
-  | { type: 'flee' };
+  | { type: 'flee' }
+  | { type: 'bind'; turns: number }
+  | { type: 'free' }
+  | { type: 'wound'; turns: number }
+  | { type: 'stun'; turns: number }
+  | { type: 'charge'; skill: string; breakPercent: number };
 
 export interface Skill {
   id: string;
@@ -185,6 +198,10 @@ export interface Skill {
   /** Qui est visé : un ennemi au choix, ou soi-même. */
   target: 'enemy' | 'self';
   effects: SkillEffect[];
+  /** Utilisable même entravé (se débattre, couper ses liens...). */
+  whileBound?: boolean;
+  /** Une seule fois par combat. */
+  once?: boolean;
 }
 
 /**

@@ -147,4 +147,11 @@ export const passives: Passive[] = [
     description: 'La peur rend attentif : -25 % de dégâts reçus des créatures dont tu as peur.',
     effects: [{ type: 'fearGuard', percent: 25 }],
   },
+  // Monstres
+  {
+    id: 'hair_regrowth',
+    name: 'Repousse',
+    description: 'À la fin de chacun de ses tours, rend 5 % de sa vie, sauf si on vient de la couper net.',
+    effects: [{ type: 'regen', percent: 5 }],
+  },
 ];

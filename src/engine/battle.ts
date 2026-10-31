@@ -75,6 +75,12 @@ export interface Combatant {
   /** Esquives restantes, par passif. */
   evades: Record<string, number>;
   usedOnce: string[];
+  /** Tours restants entravé, coupé (repousse bloquée), étourdi. */
+  bound: number;
+  wounded: number;
+  stunned: number;
+  /** Une attaque en préparation, interrompue s'il perd assez de vie d'ici son prochain tour. */
+  charging: { skill: string; breakAt: number; taken: number } | null;
 }
 
 export type BattleEvent =
@@ -144,19 +150,47 @@ export class Battle {
     return order;
   }
 
-  /** Les compétences que ce combattant peut lancer maintenant (assez de mana). */
+  /** Les compétences que ce combattant peut lancer maintenant : assez de mana, pas déjà utilisée (once), et whileBound s'il est entravé. */
   usable(f: Combatant): Skill[] {
-    return f.skills.map((id) => this.skill(id)).filter((s) => (s.cost ?? 0) <= f.mana);
+    return f.skills
+      .map((id) => this.skill(id))
+      .filter((s) => (s.cost ?? 0) <= f.mana && !(s.once && f.usedOnce.includes(`skill:${s.id}`)) && (!f.bound || s.whileBound));
+  }
+
+  /**
+   * Un tour qui se joue tout seul : étourdi (il passe), ou attaque préparée (elle part).
+   * À appeler avant de demander une action ; renvoie null si le combattant choisit lui-même.
+   */
+  autoTurn(): BattleEvent[] | null {
+    if (this.outcome !== 'ongoing') return null;
+    const actor = this.current();
+    if (actor.stunned > 0) {
+      const start = this.log.length;
+      actor.stunned--;
+      actor.charging = null;
+      this.emit({ kind: 'status', target: actor.id, text: `${actor.name} est étourdi et perd son tour.` });
+      this.endTurn(actor);
+      return this.log.slice(start);
+    }
+    if (actor.charging) {
+      const skill = actor.charging.skill;
+      actor.charging = null;
+      return this.act(skill, undefined, true);
+    }
+    return null;
   }
 
   /** Le combattant qui doit jouer lance une compétence. Renvoie les événements de ce tour. */
-  act(skillId: string, targetId?: string): BattleEvent[] {
+  act(skillId: string, targetId?: string, forced = false): BattleEvent[] {
     if (this.outcome !== 'ongoing') return [];
     const start = this.log.length;
     const actor = this.current();
     const skill = this.skill(skillId);
-    if (!actor.skills.includes(skillId)) throw new Error(`${actor.name} ne connaît pas ${skill.name}`);
-    if ((skill.cost ?? 0) > actor.mana) throw new Error(`Pas assez de mana pour ${skill.name}`);
+    if (!forced) {
+      if (!actor.skills.includes(skillId)) throw new Error(`${actor.name} ne connaît pas ${skill.name}`);
+      if (!this.usable(actor).includes(skill)) throw new Error(`${actor.name} ne peut pas lancer ${skill.name} maintenant`);
+    }
+    if (skill.once) actor.usedOnce.push(`skill:${skill.id}`);
 
     actor.guarding = false;
     actor.mana -= skill.cost ?? 0;
@@ -194,6 +228,35 @@ export class Battle {
         case 'flee':
           this.finish(actor.side === 'hero' ? 'fled' : 'enemyFled', `${actor.name} s'enfuit !`);
           break;
+        case 'bind':
+          if (target.hp > 0) {
+            target.bound = Math.max(target.bound, effect.turns);
+            this.emit({ kind: 'status', target: target.id, text: `${target.name} est entravé !` });
+          }
+          break;
+        case 'free':
+          if (actor.bound) {
+            actor.bound = 0;
+            this.emit({ kind: 'status', target: actor.id, text: `${actor.name} se libère.` });
+          }
+          break;
+        case 'wound':
+          if (target.hp > 0 && effectsOf(target, 'regen').length) {
+            target.wounded = Math.max(target.wounded, effect.turns);
+            this.emit({ kind: 'status', target: target.id, text: `Coupé net : ça ne repoussera pas tout de suite.` });
+          }
+          break;
+        case 'stun':
+          if (target.hp > 0) {
+            target.stunned = Math.max(target.stunned, effect.turns);
+            target.charging = null;
+            this.emit({ kind: 'status', target: target.id, text: `${target.name} hésite…` });
+          }
+          break;
+        case 'charge':
+          actor.charging = { skill: effect.skill, breakAt: Math.round((actor.stats.hp * effect.breakPercent) / 100), taken: 0 };
+          this.emit({ kind: 'status', target: actor.id, text: `${actor.name} prépare : ${this.skill(effect.skill).name} !` });
+          break;
       }
     }
 
@@ -212,8 +275,10 @@ export class Battle {
 
   /** Fait jouer un monstre selon ses règles. */
   playAi(): BattleEvent[] {
+    const auto = this.autoTurn();
+    if (auto) return auto;
     const actor = this.current();
-    return this.act(chooseAiSkill(actor, (id) => this.skill(id)));
+    return this.act(chooseAiSkill(actor, (id) => this.skill(id), this.usable(actor)));
   }
 
   /** Un coup : dégâts, critique, résistance, peur, esquive, puis brûlures et explosion. */
@@ -279,6 +344,14 @@ export class Battle {
     const amount = Math.round(raw);
     target.hp = Math.max(0, target.hp - amount);
     this.emit({ kind: 'damage', source: source.id, target: target.id, amount, element, hit, text: `${label} : ${amount}` });
+    if (target.charging && target.hp > 0) {
+      target.charging.taken += amount;
+      if (target.charging.taken >= target.charging.breakAt) {
+        target.charging = null;
+        target.stunned = 1;
+        this.emit({ kind: 'status', target: target.id, text: `${target.name} est interrompu !` });
+      }
+    }
     if (target.hp === 0) {
       this.emit({ kind: 'ko', target: target.id, text: `${target.name} tombe.` });
       if (!this.alive('enemy').length) this.finish('win', 'Victoire !');
@@ -299,6 +372,20 @@ export class Battle {
       }
       actor.burns = actor.burns.map((b) => ({ ...b, turns: b.turns - 1 })).filter((b) => b.turns > 0);
     }
+    // La repousse, sauf si on vient de le couper.
+    const regen = sum(effectsOf(actor, 'regen').map((e) => e.percent));
+    if (regen && actor.hp > 0 && this.outcome === 'ongoing') {
+      if (actor.wounded) this.emit({ kind: 'status', target: actor.id, text: `Les coupures empêchent ${actor.name} de repousser.` });
+      else {
+        const amount = Math.min(actor.stats.hp - actor.hp, Math.round((actor.stats.hp * regen) / 100));
+        if (amount > 0) {
+          actor.hp += amount;
+          this.emit({ kind: 'heal', target: actor.id, amount, text: `${actor.name} repousse : +${amount} PV` });
+        }
+      }
+    }
+    actor.wounded = Math.max(0, actor.wounded - 1);
+    actor.bound = Math.max(0, actor.bound - 1);
     actor.buffs = actor.buffs.map((b) => ({ ...b, turns: b.turns - 1 })).filter((b) => b.turns > 0);
     actor.time += TIME_SCALE / speedOf(actor);
   }
@@ -340,11 +427,19 @@ export const BASIC_SKILLS: Skill[] = [
     effects: [{ type: 'guard', manaPercent: 20 }],
   },
   { id: 'flee', name: 'Fuir', description: 'Quitter le combat.', target: 'self', effects: [{ type: 'flee' }] },
-  { id: 'wait', name: 'Attendre', description: 'Ne rien faire.', target: 'self', effects: [] },
+  { id: 'wait', name: 'Attendre', description: 'Ne rien faire.', target: 'self', effects: [], whileBound: true },
+  {
+    id: 'struggle',
+    name: 'Se débattre',
+    description: 'Se libérer quand on est entravé.',
+    target: 'self',
+    effects: [{ type: 'free' }],
+    whileBound: true,
+  },
 ];
 
 /** Compétences connues de tous les héros. */
-export const COMMON_SKILLS = ['attack', 'guard', 'flee'];
+export const COMMON_SKILLS = ['attack', 'guard', 'struggle', 'flee'];
 
 /** Un héros à partir de son build : stats, passifs, compétences. */
 export function heroFromBuild(result: BuildResult, ctx: HeroContext = {}): Combatant {
@@ -412,13 +507,17 @@ export function makeCombatant(base: CombatantBase): Combatant {
     guarding: false,
     evades,
     usedOnce: [],
+    bound: 0,
+    wounded: 0,
+    stunned: 0,
+    charging: null,
   };
 }
 
 // ---------- Outils ----------
 
 /** La première règle de l'IA dont la condition est remplie (et la mana suffisante). */
-export function chooseAiSkill(actor: Combatant, skillOf: (id: string) => Skill): string {
+export function chooseAiSkill(actor: Combatant, skillOf: (id: string) => Skill, usable?: Skill[]): string {
   const turn = actor.turnsTaken + 1;
   for (const [i, rule] of (actor.ai ?? []).entries()) {
     const key = `ai${i}`;
@@ -426,10 +525,11 @@ export function chooseAiSkill(actor: Combatant, skillOf: (id: string) => Skill):
     if (rule.every !== undefined && turn % rule.every !== 0) continue;
     if (rule.once && actor.usedOnce.includes(key)) continue;
     if ((skillOf(rule.skill).cost ?? 0) > actor.mana) continue;
+    if (usable && !usable.some((s) => s.id === rule.skill)) continue;
     if (rule.once) actor.usedOnce.push(key);
     return rule.skill;
   }
-  return actor.skills[0];
+  return usable?.[0]?.id ?? actor.skills[0];
 }
 
 export function effectsOf<T extends PassiveEffect['type']>(f: Combatant, type: T) {

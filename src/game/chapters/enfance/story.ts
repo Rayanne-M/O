@@ -1168,11 +1168,29 @@ async function fight(g: Game): Promise<Ending> {
   const end = await startFight(g, 'well_spirit_young', {
     power: force(),
     intro: [
+      'La Rancunière ne frappe pas seulement : elle t\'entrave, elle murmure, et ses cheveux repoussent tant qu\'on ne les coupe pas net.',
       scissors
-        ? 'Les ciseaux ! Les cheveux en ont peur : « Couper » leur fait deux fois plus mal.'
-        : 'Avec un bâton, il faudra frapper fort et souvent. « Se protéger » quand il serre.',
+        ? 'Les ciseaux ! « Couper » fait deux fois plus mal aux cheveux, te libère s\'ils te tiennent, et les empêche de repousser. Mais ça fatigue : garde de la mana.'
+        : 'Avec un bâton, frappe fort. Si les cheveux t\'attrapent, « Se débattre ». Et quand elle prépare la noyade, cogne pour l\'interrompre, ou protège-toi.',
+      ...(hasItem('ruban')
+        ? ['Le ruban d\'Élio est dans ta poche. Le montrer une fois peut la figer un instant.']
+        : []),
     ],
-    tip: (b) => (b.alive('enemy')[0]?.turnsTaken % 3 === 2 ? 'Les cheveux se resserrent : il va saisir. Te protéger ?' : undefined),
+    tip: (b) => {
+      const foe = b.alive('enemy')[0];
+      const me = b.alive('hero')[0];
+      if (!foe || !me) return undefined;
+      if (foe.charging) {
+        const left = foe.charging.breakAt - foe.charging.taken;
+        return `Elle prépare la noyade ! Encore ${left} dégâts pour l'interrompre, sinon protège-toi.`;
+      }
+      if (me.bound) return scissors ? 'Les cheveux te tiennent. « Couper » tranche et te libère.' : 'Les cheveux te tiennent. « Se débattre » !';
+      const next = foe.turnsTaken + 1;
+      if (next % 4 === 0) return 'Les mèches plongent dans l\'eau du puits… elle va préparer quelque chose.';
+      if (next % 3 === 0) return 'Les cheveux se tendent vers tes chevilles : elle va t\'entraver. Te protéger ?';
+      if (foe.hp < foe.stats.hp * 0.6 && !foe.wounded && !scissors) return 'Ses cheveux repoussent à chaque tour. Ne la laisse pas souffler !';
+      return undefined;
+    },
     endings: { win: 'Les mèches tombent !', lose: 'Les cheveux t\'entraînent…', fled: 'Tu cours !' },
   });
   if (end === 'win') {

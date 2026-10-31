@@ -132,7 +132,11 @@ Le héros combat seul, sur un écran à part, au tour par tour. Tout est déterm
 - **Les passifs jouent en combat** : brûlures, explosions, critiques, conversion d'élément, et aussi les pactes
   (Cheveux vivants frappe après chaque attaque, plus fort si les cheveux sont longs ; Ventre d'arc-en-ciel esquive un coup).
 - **Les monstres** ont des tags, des résistances et faiblesses par élément (l'Esprit du puits brûle très bien),
-  et une petite IA en règles : « sous 40 % de vie, une fois : Repousse », « un tour sur 3 : Saisie », sinon « Coup de mèche ».
+  et une petite IA en règles : « sous 50 % de vie, une fois : Émerger », « un tour sur 3 : Saisie », sinon « Coup de mèche ».
+- **Les statuts** : entravé (seules les actions « malgré l'entrave » restent, comme Se débattre ou Couper), coupé net
+  (la repousse s'arrête), étourdi (le tour passe), et les **attaques préparées** : annoncées un tour à l'avance,
+  elles partent seules au tour suivant, sauf si on inflige assez de dégâts pour les interrompre (ce qui étourdit).
+  Une compétence peut ne servir qu'une fois par combat (`once`).
 - **Les peurs de l'enfance comptent** : une créature dont le héros a peur (même mot que dans l'histoire : `araignees`,
   `cheveux`, `eau`) lui fait +25 % de dégâts. Le trait Prudent en retire 25.
 
@@ -191,9 +195,13 @@ lance un combat depuis l'histoire avec le héros tel que l'histoire l'a fait) :
 
 - **La grosse rousse** (jour 1, dans la grange) : le tutoriel. Elle pince, se gonfle un tour sur trois ;
   les conseils expliquent la frise, l'attaque et « Se protéger ». Gagner fait sauter la poule de son nid (un œuf).
-- **L'Esprit du puits** (nuit 3, « Combattre ») : il grandit avec sa légende (`force()`, +7 PV et +1 Force par point).
-  Les ciseaux du barbier donnent « Couper », deux fois plus fort contre les cheveux ; sinon on ramasse un bâton.
-  Fuir pendant le combat mène à la fin « Fuite ».
+- **La Rancunière** (l'Esprit du puits, nuit 3, « Combattre ») : elle grandit avec sa légende (`force()`, +5 PV et
+  +1 Force par point) et se joue en plusieurs temps. Elle murmure d'abord (le héros ralentit), entrave un tour sur trois,
+  prépare une noyade un tour sur quatre (à interrompre avec 15 % de ses PV de dégâts, ou à encaisser en se protégeant),
+  et sous la moitié de ses PV elle émerge du puits, plus forte et plus rapide. Ses cheveux repoussent à chaque tour.
+  Les ciseaux donnent « Couper » : deux fois plus fort contre les cheveux, utilisable entravé (ça libère), et la coupure
+  arrête la repousse, mais ça coûte de la mana. Le bâton donne « Coup de bâton », plus brut ; avec lui, il faut se débattre.
+  Le ruban d'Élio, montré une fois, la fige un tour. Fuir pendant le combat mène à la fin « Fuite ».
 - Pendant l'enfance, le héros a la classe **Enfant** (pas encore de voie) : ce sont ses objets et ses traits qui comptent.
 
 Le code est séparé en deux : un **moteur** qui ne connaît aucune histoire et sert à tout le jeu, et des **chapitres**

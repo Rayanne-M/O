@@ -11,7 +11,7 @@ function fight(equipmentIds: string[], monster: string, power = 0) {
   const b = new Battle([hero], [foe], battleData);
   for (let n = 0; b.outcome === 'ongoing' && n < 300; n++) {
     if (b.current().side === 'enemy') b.playAi();
-    else b.act(['snip', 'stick_swing', 'attack'].find((s) => b.usable(hero).some((u) => u.id === s))!, foe.id);
+    else if (!b.autoTurn()) b.act(['snip', 'stick_swing', 'attack', 'struggle'].find((s) => b.usable(hero).some((u) => u.id === s))!, foe.id);
   }
   return b.outcome;
 }
@@ -20,12 +20,12 @@ describe('combats de l’enfance', () => {
   it('le tutoriel de la poule se gagne à mains nues', () => {
     expect(fight([], 'grosse_rousse')).toBe('win');
   });
-  it('les ciseaux battent l’Esprit du puits tant que sa légende reste modérée', () => {
-    expect(fight(['ciseaux'], 'well_spirit_young', 5)).toBe('win');
-    expect(fight(['ciseaux'], 'well_spirit_young', 9)).toBe('lose');
+  it('les ciseaux battent la Rancunière tant que sa légende reste modérée', () => {
+    expect(fight(['ciseaux'], 'well_spirit_young', 3)).toBe('win');
+    expect(fight(['ciseaux'], 'well_spirit_young', 8)).toBe('lose');
   });
-  it('le bâton ne suffit que contre un Esprit faible', () => {
-    expect(fight(['baton'], 'well_spirit_young', 3)).toBe('win');
-    expect(fight(['baton'], 'well_spirit_young', 6)).toBe('lose');
+  it('le bâton est plus dur : il ne suffit que contre une Rancunière faible', () => {
+    expect(fight(['baton'], 'well_spirit_young', 2)).toBe('win');
+    expect(fight(['baton'], 'well_spirit_young', 4)).toBe('lose');
   });
 });

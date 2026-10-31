@@ -159,6 +159,13 @@ export function runBattle(host: HTMLElement, o: ScreenOptions): { done: Promise<
         await play(battle.playAi());
         continue;
       }
+      // Étourdi ou en pleine charge : le tour se joue tout seul.
+      const auto = battle.autoTurn();
+      if (auto) {
+        await play(auto);
+        await sleep(450);
+        continue;
+      }
       caption(o.tip?.(battle) ?? 'À toi !');
       const usable = new Set(battle.usable(hero).map((s) => s.id));
       const id = await choice(
@@ -209,6 +216,10 @@ function card(f: Combatant, showMana: boolean): string {
   const status = [
     f.burns.length ? `🔥×${f.burns.length}` : '',
     f.guarding ? '🛡' : '',
+    f.bound ? `🪢 entravé ${f.bound}` : '',
+    f.wounded ? `✂ coupé ${f.wounded}` : '',
+    f.stunned ? '💫 étourdi' : '',
+    f.charging ? `⚠ ${f.charging.skill === 'drown' ? 'prépare la noyade' : 'charge'} (${f.charging.taken}/${f.charging.breakAt})` : '',
     ...f.buffs.map((b) => `${b.name} ${b.turns}`),
     ...Object.entries(f.evades).filter(([, n]) => n > 0).map(([name]) => `🌈 ${name}`),
   ].filter(Boolean);
