@@ -11,6 +11,10 @@ const CHOICE_DELAY_MS = 300;
 
 type Listener = (key: string) => void;
 
+/** Les touches déjà prises par l'interface (boîte de dialogue, choix…). */
+const handled = new WeakSet<KeyboardEvent>();
+export const uiHandled = (e: KeyboardEvent) => handled.has(e);
+
 class Ui {
   /** Vrai tant qu'une boîte, un choix ou un écran attend le joueur : le héros ne bouge pas. */
   busy = false;
@@ -26,6 +30,8 @@ class Ui {
       const k = e.key.toLowerCase();
       if (!this.listener) return;
       if (ACTION.has(k) || UP.has(k) || DOWN.has(k)) e.preventDefault();
+      // le jeu ne doit pas traiter une seconde fois une touche que l'interface a prise
+      handled.add(e);
       if (!e.repeat) this.listener(k);
     });
     $('dialog').addEventListener('pointerdown', (e) => {
