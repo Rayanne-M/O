@@ -115,6 +115,19 @@ export function blocked(map: GameMap, x: number, y: number) {
   return map.solids.some((r) => overlap(foot, r));
 }
 
+/**
+ * Le héros passe une sortie seulement s'il est au bout et avance vers elle : le bord de ses pieds, dans le sens
+ * de la marche, touche la sortie, et il est bien en face (pas en train de la longer).
+ */
+export function entersExit(x: number, y: number, dx: number, dy: number, r: Rect) {
+  const fx = x + dx * 7, fy = dy < 0 ? y - 6 : dy > 0 ? y + 2 : y - 2;
+  if (!inRect(fx, fy, r)) return false;
+  // en face : le centre des pieds est dans la largeur de la porte (marche verticale) ou dans sa hauteur (horizontale)
+  if (dy !== 0 && dx === 0) return x >= r.x && x < r.x + r.w;
+  if (dx !== 0 && dy === 0) return y - 2 >= r.y && y - 2 < r.y + r.h;
+  return inRect(x, y - 2, { x: r.x - 4, y: r.y - 4, w: r.w + 8, h: r.h + 8 });
+}
+
 /** Le point libre le plus proche (à 2 tuiles au plus), pour qu'une arrivée mal placée ne coince pas le héros dans un mur. */
 export function nearestFree(map: GameMap, x: number, y: number) {
   if (!blocked(map, x, y)) return { x, y };

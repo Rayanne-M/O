@@ -2,7 +2,7 @@
 // déplace le héros, gère les portes, et offre aux chapitres une petite boîte à outils (dire, choisir,
 // marcher, montrer un gros plan…). Le contenu de l'histoire vit dans src/game/chapters/.
 import Phaser from 'phaser';
-import { active, blocked, inRect, nearestFree, type Dir, type Drawable, type GameMap, type MapObject, type Rect } from './maps';
+import { active, blocked, entersExit, inRect, nearestFree, type Dir, type Drawable, type GameMap, type MapObject, type Rect } from './maps';
 import { drawActor, dirOf, makeActor, vec, type Actor, type Look } from './actors';
 import { applyEffects, has, state, type Effects } from './state';
 import { ui, wait } from './ui';
@@ -65,6 +65,8 @@ export class Game extends Phaser.Scene {
   private zonesIn = new Set<string>();
   private waiters: { test: () => boolean; done: () => void }[] = [];
   private lastExitTry = 0;
+  private cuts = 0;
+  private lockedBeforeCut = false;
   /** Assombrit l'écran sauf autour d'un point (décompte, réveil). */
   vignette: { x: number; y: number; r: number; a: number } | null = null;
 
@@ -157,13 +159,15 @@ export class Game extends Phaser.Scene {
 
   /** Bloque le héros pendant une scène. */
   async cut<T>(fn: () => Promise<T>): Promise<T> {
-    const was = this.locked;
+    // des séquences peuvent se chevaucher (une arrivée lance un dialogue pendant le fondu de la porte) :
+    // on rend la main seulement quand la dernière se termine, dans l'état d'avant la première
+    if (this.cuts++ === 0) this.lockedBeforeCut = this.locked;
     this.locked = true;
     this.hero.moving = false;
     try {
       return await fn();
     } finally {
-      this.locked = was;
+      if (--this.cuts === 0) this.locked = this.lockedBeforeCut;
     }
   }
 
@@ -347,15 +351,11 @@ export class Game extends Phaser.Scene {
     const step = (h.speed * (h.wading ? 0.6 : 1) * delta) / 1000 / Math.hypot(dx, dy);
     const nx = h.x + dx * step, ny = h.y + dy * step;
     const hit = (x: number, y: number) => blocked(this.map, x, y) || this.actorAt(x, y);
-    const ox = h.x, oy = h.y;
     if (!hit(nx, h.y)) h.x = nx;
     if (!hit(h.x, ny)) h.y = ny;
-    const moved = Math.hypot(h.x - ox, h.y - oy) > step * 0.3;
     h.dir = dirOf(dx, dy);
     h.moving = true;
-    // une sortie : on y entre en marchant dessus, ou en poussant contre elle
-    const p = this.probe();
-    const exit = this.exitsHere().find((e) => inRect(h.x, h.y, e.px) || (!moved && inRect(p.x, p.y + 4, grow(e.px, 2))) || inRect(p.x, h.y, e.px));
+    const exit = this.exitsHere().find((e) => entersExit(h.x, h.y, dx, dy, e.px));
     if (exit) void this.tryExit(exit);
     // zones : on prévient le chapitre quand le héros y entre
     const now = new Set(this.zonesHere());

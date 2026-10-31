@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { active, blocked, flagsOk, loadMap, nearestFree, type MapFile } from './maps';
+import { active, blocked, entersExit, flagsOk, loadMap, nearestFree, type MapFile } from './maps';
 
 // Toutes les cartes du jeu, telles que le jeu les charge : chaque nouvelle carte est vérifiée sans rien ajouter ici.
 const files = Object.fromEntries(
@@ -25,12 +25,32 @@ describe('les cartes', () => {
     it('chaque sortie mène à une arrivée qui existe', () => {
       for (const e of m.exits) expect(maps[e.to]?.spawns[e.at], `${e.id} → ${e.to}/${e.at}`).toBeDefined();
     });
+    it('chaque sortie se passe en avançant vers elle depuis une case libre', () => {
+      for (const e of m.exits) {
+        let ok = false;
+        for (let y = e.px.y - 24; y <= e.px.y + e.px.h + 24 && !ok; y++)
+          for (let x = e.px.x - 24; x <= e.px.x + e.px.w + 24 && !ok; x++)
+            if (!blocked(m, x, y)) ok = [[0, -1], [0, 1], [-1, 0], [1, 0]].some(([dx, dy]) => entersExit(x, y, dx, dy, e.px));
+        expect(ok, e.id).toBe(true);
+      }
+    });
     it('on ne naît jamais dans un mur (au pire, une case à côté)', () => {
       for (const [s, p] of Object.entries(m.spawns)) {
         const q = nearestFree(m, p.x, p.y);
         expect(blocked(m, q.x, q.y), s).toBe(false);
       }
     });
+  });
+});
+
+describe('les portes', () => {
+  const door = { x: 100, y: 50, w: 12, h: 10 };
+  it('il faut être au bout et avancer vers elle', () => {
+    expect(entersExit(106, 65, 0, -1, door)).toBe(true);
+    expect(entersExit(106, 80, 0, -1, door)).toBe(false); // trop loin
+    expect(entersExit(106, 65, 0, 1, door)).toBe(false); // dos à la porte
+    expect(entersExit(94, 65, 0, -1, door)).toBe(false); // à côté
+    expect(entersExit(106, 64, 1, 0, door)).toBe(false); // la longe
   });
 });
 
