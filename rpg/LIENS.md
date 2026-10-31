@@ -64,7 +64,7 @@ scénario ne connaît pas encore.
 
 ```bash
 npm run dev       # le jeu, qui se recharge dès qu'un fichier de rpg/ change ; les planches sont refaites au passage
-npm run rpg       # vérifie les liens et refait les planches (cartes.html, direction-artistique.html, enfance-assets.html)
+npm run rpg       # vérifie les liens et refait les planches (cartes.html, direction-artistique.html, enfance-assets.html, bestiaire.html)
 npm run verifier  # le rapport complet des liens, avertissements compris
 npm test          # tous les tests, vérification des liens comprise
 ```

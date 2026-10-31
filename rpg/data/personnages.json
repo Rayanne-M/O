@@ -17,6 +17,7 @@
     "enfant_c": { "nom": "Un petit", "sprite": "enfant3", "enfant": true, "cheveux": 0.3, "palette": "enfant_c" },
     "villageois1": { "nom": "Un homme", "sprite": "villageois1", "enfant": false, "cheveux": 0.3, "palette": "villageois" },
     "villageois2": { "nom": "Une femme", "sprite": "villageois2", "enfant": false, "cheveux": 0.3, "palette": "villageois" },
+    "giorgio": { "nom": "Giorgio", "sprite": "giorgio", "portrait": "giorgio", "enfant": false, "cheveux": 0.2, "note": "section adolescent, easter egg : le gardien du pied de l'arc-en-ciel (bestiaire.html)" },
     "esprit": { "nom": "???", "note": "l'Esprit du puits parle par le visage d'Élio : portrait animé talkPortrait (horror.js)" }
   },
   "betes": ["poule", "poule_rousse", "poule_blanche", "chat", "chat_dort"]

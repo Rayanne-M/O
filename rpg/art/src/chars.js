@@ -99,6 +99,8 @@ function chFace(g, view, f) {
     if (f.stubble || f.beard) chEll(g, 11.5, 13.5, 6, 2.2, "z", (x, y) => y >= 13 && !(y === 13 && x >= 10 && x <= 13));
     if (f.beard) chEll(g, 11.5, 14, 5, 2, "z");
     if (f.mustache) chDot(g, [[9, 12], [10, 12], [11, 12], [12, 12], [13, 12], [14, 12], [9, 13], [14, 13]], "h");
+    if (f.goatee) chDot(g, [[11, 14], [12, 14], [11, 15], [12, 15]], "h");
+    if (f.earring) chDot(g, [[3, 12]], "Y");                                               // un anneau à l'oreille droite
     if (f.bruise) chDot(g, [[f.bruise === "L" ? 5 : 17, 12], [f.bruise === "L" ? 6 : 18, 13]], "X");
   } else if (view === "E") {
     chEll(g, 13, 9, 6.6, 6.4, "s"); chDot(g, [[20, 11], [20, 12], [19, 13]], "s");          // nez
@@ -107,6 +109,7 @@ function chFace(g, view, f) {
     if (f.stubble || f.beard) chEll(g, 15, 14, 5, 2, "z", (x, y) => y >= 13 && x >= 12 && !(x === 18 && y === 14));
     if (f.beard) chEll(g, 16, 14.5, 4, 1.8, "z");
     if (f.mustache) chDot(g, [[18, 13], [19, 13], [17, 13]], "h");
+    if (f.goatee) chDot(g, [[18, 15], [17, 15]], "h");
   } else if (view === "N" || view === "NE") {
     chEll(g, 11.5, 9, 7.6, 6.4, "s");
     if (view === "NE") chDot(g, [[18, 10], [19, 10], [18, 11], [19, 11], [19, 12]], "s");
@@ -122,6 +125,7 @@ const CH_HAIR = {
   bun: { fringe: 6, sides: 11, back: 13, parted: true, bun: true },
   short: { fringe: 6, sides: 10, back: 12 },
   balding: { fringe: 0, sides: 11, back: 12, bald: true },
+  golfes: { fringe: 4, sides: 11, back: 12, golfes: true },          // cheveux ras, golfes très dégarnis (Giorgio)
   shaved: { fringe: 0, sides: 0, back: 0, shaved: true },
   hood: { fringe: 8, sides: 15, back: 16, hood: true },
   long: { fringe: 7, sides: 18, back: 20 },
@@ -143,12 +147,15 @@ function chHairCap(g, view, H) {
     if (H.spikes) chDot(g, [[8, 0], [9, 0], [11, 0], [14, 0], [6, 1]], k);
     if (H.hood) { chRect(g, 2, 9, 3, 15, "u"); chRect(g, 20, 9, 21, 15, "u"); chRect(g, 4, 15, 19, 15, "u"); chRect(g, 6, H.fringe, 17, H.fringe, "U"); }
     if (H.bun) chEll(g, 11.5, 1.3, 3.4, 1.8, "h");
+    if (H.golfes) { chEll(g, 11.5, 9, 7.6, 6.4, "s", (x, y) => y >= 2 && y <= H.fringe && Math.abs(x - 11.5) >= 2.5 && Math.abs(x - 11.5) <= 6.5);
+      chRect(g, 2, 6, 2, H.sides, "."); chRect(g, 21, 6, 21, H.sides, "."); }                       // ras sur les côtés : pas de volume
   } else if (view === "E") {
     if (!H.bald) chEll(g, 11.8, 7.2, 8.6, 7.3, k, (x, y) => y <= H.fringe || (x < 13 && y <= H.sides));
     else chEll(g, 11.8, 9, 6, 4, k, (x, y) => x < 11 && y >= 6 && y <= H.sides);
     if (H.spikes) chDot(g, [[9, 0], [12, 0], [5, 2]], k);
     if (H.hood) { chRect(g, 3, 6, 6, 16, "u"); chRect(g, 13, 2, 15, 15, "u"); chRect(g, 15, H.fringe, 18, H.fringe, "U"); }
     if (H.bun) chEll(g, 5, 4, 2.4, 2.4, "h");
+    if (H.golfes) chEll(g, 13, 9, 6.6, 6.4, "s", (x, y) => y >= 2 && y <= H.fringe + 1 && x >= 14 && x <= 18);
   } else {                                                                                // dos, trois quarts dos
     if (!H.bald) chEll(g, 11.5, 7.6, 9.4, 7.4, k, (x, y) => y <= Math.max(H.back, H.hood ? 16 : 0) || y <= 13);
     else chEll(g, 11.5, 9, 9.4, 4, k, (x, y) => y >= 7 && y <= 12);
@@ -265,6 +272,9 @@ const CHAR_SPECS = {
   enfant3: { id: "enfant3", age: "child", hair: { style: "bowl" }, outfit: { collar: false, bottom: "shorts" }, pal: { ...HAIR.roux, ...SKIN.rose, c:"#a86a4a", C:"#7a4a32", l:"#c88a6a" } },
   villageois1: { id: "villageois1", age: "adult", hair: { style: "short" }, face: { beard: true }, outfit: { belt: true }, pal: { ...HAIR.chatain, z:"#7a4a2a", Z:"#5a3420", c:"#5a7a4a", C:"#3e5a32", l:"#7a9a6a" } },
   villageois2: { id: "villageois2", age: "adult", hair: { style: "messy" }, outfit: { belt: true }, pal: { ...HAIR.blond, c:"#8a6a9a", C:"#5e4670", l:"#aa8aba" } },
+  // section adolescent, easter egg : le gardien du pied de l’arc-en-ciel (bestiaire)
+  giorgio: { id: "giorgio", chapter: "adolescence", age: "adult", hair: { style: "golfes" }, face: { mustache: true, goatee: true, stubble: true, earring: true }, outfit: { collar: false },
+    pal: { h:"#2e2420", H:"#1c1512", j:"#4c3c34", s:"#e0ad88", S:"#b98060", z:"#6a5040", Z:"#4e3a2e", c:"#d4ba90", C:"#ad926c", l:"#ecd6b0", p:"#3e6a4a", P:"#2a4a34", Y:"#c8ccd4" } },
   mere_basile: { id: "mere_basile", age: "adult", hair: { style: "bun" }, outfit: { bottom: "skirt", collar: false }, pal: { ...HAIR.noir, c:"#6a8a5a", C:"#4a6a3e", l:"#8aaa7a", p:"#4a5a3a", P:"#33402a" } },
 };
 const CHARS = {}; for (const k in CHAR_SPECS) CHARS[k] = makeChar(CHAR_SPECS[k]);

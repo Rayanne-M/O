@@ -8,7 +8,7 @@ export default defineConfig({
   base: './',
   plugins: [rpgContenu()],
   build: {
-    rollupOptions: { input: { atelier: 'index.html', village: 'village.html', bestiaire: 'bestiaire.html' } },
+    rollupOptions: { input: { atelier: 'index.html', village: 'village.html' } },
     // Phaser pèse à lui seul environ 1,2 Mo
     chunkSizeWarningLimit: 1500,
   },

@@ -47,7 +47,7 @@ const prelude = () => `const PERSONNAGES = ${JSON.stringify(loadPersonnages().pe
 
 // Ordre de la page des cartes, puis les personnages et objets du chapitre 1, sans les fichiers d'interface des planches.
 export const GAME_ART_FILES = ['sprites.js', 'scene.js', 'herolab.js', 'dirs.js', 'nature.js', 'spirit.js', 'horror.js', 'world.js', 'interiors.js', 'exterior.js',
-  'closeups.js', 'chars.js', 'farm.js', 'portraits.js', 'poses.js', 'props.js', 'cinematics.js', 'fx.js'];
+  'closeups.js', 'chars.js', 'farm.js', 'portraits.js', 'poses.js', 'props.js', 'cinematics.js', 'fx.js', 'giorgio.js'];
 // Fonctions des planches qui touchent à leur propre page : jamais appelées par le jeu.
 const SKIP = new Set(['renderDirs', 'renderField', 'bindField', 'bindLab', 'renderLab', 'rebuildLab', 'layoutView', 'clampView',
   'applyView', 'zoomTo', 'focusPlace', 'bindMap', 'refreshPins', 'select', 'bindEditor', 'edOverlay', 'edPanel']);
@@ -134,6 +134,10 @@ export const PAGES = [
     id: 'enfance-assets', title: "Assets de l'enfance", out: 'enfance-assets.html', body: 'enfance-body.html', css: ['style.css'],
     files: ['sprites.js', 'scene.js', 'dirs.js', 'nature.js', 'spirit.js', 'horror.js', 'interiors-data.js', 'interiors.js', 'closeups.js', 'chars.js', 'farm.js',
       'portraits.js', 'poses.js', 'props.js', 'cinematics.js', 'fx.js', 'enfance-main.js'],
+  },
+  {
+    id: 'bestiaire', title: 'Bestiaire du RPG', out: 'bestiaire.html', body: 'bestiaire-body.html', css: ['style.css'],
+    files: ['sprites.js', 'scene.js', 'dirs.js', 'closeups.js', 'chars.js', 'portraits.js', 'giorgio.js', 'bestiaire-main.js'],
   },
 ];
 

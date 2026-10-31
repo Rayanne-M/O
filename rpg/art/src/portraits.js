@@ -39,6 +39,10 @@ const PORTRAITS = {
     shirt: { c: ["#2a2232", "#3c3048", "#5a4a6a", "#7a6a8a"], shawl: ["#5a2a26", "#86403a", "#b85a4a", "#d87a62"] }, bg: "#302838" },
   aubin: { name: "Aubin", age: "adult", skin: ["#8a5038", "#b87a5a", "#e0aa82", "#f0c49c"], hair: { style: "short", c: ["#100c14", "#1c1822", "#2e2a36", "#4a4458"] }, iris: "#3a3028", stubble: "#4a3a40", bags: true,
     shirt: { c: ["#2e2620", "#4a3e34", "#6a5a4a", "#8a7a66"] }, bg: "#2a2420" },
+  // section adolescent, easter egg (bestiaire) : cheveux ras, golfes très dégarnis, sourcils épais, moustache, bouc, anneau à l’oreille
+  giorgio: { name: "Giorgio", chapter: "adolescence", age: "adult", skin: ["#8a5038", "#b98060", "#e0ad88", "#f4d0b0"], hair: { style: "golfes", c: ["#140e0c", "#2a201c", "#3e302a", "#5a4a40"] }, iris: "#2a1a12",
+    stubble: "#5a4034", mustache: true, goatee: true, earring: "#c8ccd4", thickBrows: true,
+    shirt: { c: ["#7a6448", "#ad926c", "#d4ba90", "#ecd6b0"] }, bg: "#2a3448" },
   fauvel: { name: "Maître Fauvel", age: "adult", skin: ["#a8624e", "#d9967e", "#f6cfae", "#ffe4cc"], hair: { style: "balding", c: ["#5a5668", "#78748a", "#a8a4b0", "#d4d0dc"] }, iris: "#4a6a8a", mustache: true, wrinkles: true,
     shirt: { c: ["#a89c88", "#c9c0aa", "#f4ead2", "#ffffff"], tie: "#2a5e94" }, bg: "#24304a" },
 };
@@ -74,6 +78,8 @@ function ptHairFront(g, sp, h, t) {
   if (H.style === "bob") cap(dx => top + 10 + ((Math.floor(dx / 3) % 2) ? 1 : 0) + (dx > 6 ? -2 : 0), () => false, 10);
   if (H.style === "bowl") cap(() => top + 12, () => false, 2);
   if (H.style === "bun" || H.style === "bunWhite") { cap(dx => top + 6 + Math.abs(dx) * .35, () => false, 0); for (let y = top; y < top + 5; y++) cuP(g, cx, y, c[0]); }
+  if (H.style === "golfes") { cap(dx => Math.abs(dx) < 2.5 ? top + 6 : Math.abs(dx) < 9.5 ? top + 1 : top + 6, () => false, -2);    // une pointe au milieu, les tempes nues
+    cuEll(g, cx - 6, top + 4, 2, 1.2, sp.skin[3]); }
   if (H.style === "short") cap(dx => top + 7 + (Math.floor((dx + 20) / 4) % 2), () => false, -2);
   if (H.style === "balding") { for (let y = h.cy - 6; y < h.cy + 6; y++) [-1, 1].forEach(sd => { for (let k = 0; k < 4; k++) { const x = cx + sd * (h.rx - 1 + k - 1); cuP(g, x, y, k === 0 || k === 3 ? PTC.o : tone(.6 - (y - h.cy) * .05, x, y)); } });
     cuEll(g, cx - 5, top + 5, 3, 1.6, sp.skin[3]); }                                                                // le crâne qui brille
@@ -131,7 +137,7 @@ function ptFace(g, sp, h, E, open, t) {
   });
   // sourcils
   [-1, 1].forEach(sd => { const b = sd > 0 && E.browR ? E.browR : E.brow, ex = cx + sd * h.eyeDx, inner = [ex - sd * 3.5, h.browY + b[0] * .8], outer = [ex + sd * 3.5, h.browY + b[1] * .8];
-    cuLine(g, inner[0], inner[1], outer[0], outer[1], sp.age === "child" ? 1.6 : 1.8, sp.hair.style === "bunWhite" || sp.hair.style === "balding" ? sp.hair.c[1] : sp.hair.c[0]); });
+    cuLine(g, inner[0], inner[1], outer[0], outer[1], sp.thickBrows ? 2.6 : sp.age === "child" ? 1.6 : 1.8, sp.hair.style === "bunWhite" || sp.hair.style === "balding" ? sp.hair.c[1] : sp.hair.c[0]); });
   // moustache (derrière la bouche)
   // bouche
   const my = h.mouthY, mw = E.oMouth ? 2.5 : 4.5, sm = E.mouth;
@@ -142,6 +148,8 @@ function ptFace(g, sp, h, E, open, t) {
   else for (let k = -mw; k <= mw; k++) { const curve = -sm * (1 - (k / mw) ** 2) * 1.6 + sm * 1.2 + (E.smirk ? k * .25 : 0); cuP(g, cx + k, my + Math.round(curve), PTC.mouth); }
   if (sp.mustache) [-1, 1].forEach(sd => { cuCaps(g, cx + sd * 1, my - 2.5, cx + sd * 7, my - 1 + Math.sin(t / 900) * .3, 2.6, PTC.o); cuCaps(g, cx + sd * 1, my - 2.5, cx + sd * 7, my - 1, 1.7, (s, u, x, y) => cuTone(.7 - u * .3, x, y, sp.hair.c));
     cuP(g, cx + sd * 8, my - 2, sp.hair.c[1]); });
+  if (sp.goatee) { cuEll(g, cx, my + 4.5, 3, 2.6, PTC.o); cuEll(g, cx, my + 4.5, 2.2, 1.8, (nx, ny, x, y) => cuTone(.45 - ny * .2, x, y, sp.hair.c)); }
+  if (sp.earring) { const ex = cx - h.rx - .5, ey = h.cy + 7.5; [[-1, 0], [1, 0], [0, 1], [-1, 1], [1, 1], [0, 2]].forEach(([a, b]) => cuP(g, ex + a, ey + b, b === 2 ? "#8a8e98" : sp.earring)); }
   // larmes, sueur
   if (E.tear) { const k = (t % 2400) / 2400; cuR(g, cx - h.eyeDx - 2, h.eyeY + 4 + k * 8, 1, 2, PTC.tear); cuP(g, cx - h.eyeDx - 2, h.eyeY + 3, PTC.tear); }
   if (E.sweat) for (let i = 0; i < E.sweat; i++) { const k = ((t / 1800) + i * .37) % 1, x = cx + [11, -12, 9][i], y = h.cy - 8 + i * 5 + k * 6;

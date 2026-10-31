@@ -6,12 +6,12 @@ function anim(cv, fn) { io.observe(cv); renders.push([cv, fn]); return cv; }
 
 // personnages : chacun tourne et marche
 const DIRS8 = ["S", "SE", "E", "NE", "N", "NW", "W", "SW"], CHAR_NAMES = { heros_long: "Héros, cheveux longs", heros_pointes: "Héros, les pointes", heros_court: "Héros, court", elio: "Élio", elio_rase: "Élio rasé", elio_capuche: "Élio, capuche", margot: "Margot", basile: "Basile", mere: "La mère", ysol: "Grand-mère Ysol", aubin: "Aubin", fauvel: "Maître Fauvel", mere_basile: "La mère de Basile" };
-Object.keys(CHARS).forEach(k => { const cv = el("canvas", { width: 28, height: 38 }), g = cv.getContext("2d");
+Object.keys(CHARS).filter(k => !CHAR_SPECS[k].chapter).forEach(k => { const cv = el("canvas", { width: 28, height: 38 }), g = cv.getContext("2d");
   document.getElementById("g-chars").append(el("div", { className: "sprite" }, [cv, el("b", { textContent: CHAR_NAMES[k] || k.replace(/_/g, " ") })]));
   anim(cv, t => { g.clearRect(0, 0, 28, 38); const d = DIRS8[Math.floor(t / 1600) % 8]; drawChar(g, CHARS[k], 2, 38 - CHARS[k].H - 1, { dir: d, pose: "walk", t }); }); });
 // portraits : la bouche parle, un clic change d'expression
 const EXPRS = Object.keys(EXPR);
-Object.keys(PORTRAITS).forEach(k => { const cv = el("canvas", { width: 64, height: 64 }), g = cv.getContext("2d"); let e = 0; const b = el("span", { textContent: "neutre" });
+Object.keys(PORTRAITS).filter(k => !PORTRAITS[k].chapter).forEach(k => { const cv = el("canvas", { width: 64, height: 64 }), g = cv.getContext("2d"); let e = 0; const b = el("span", { textContent: "neutre" });
   cv.style.cssText = "width:128px;height:128px;cursor:pointer"; cv.onclick = () => { e = (e + 1) % EXPRS.length; b.textContent = EXPRS[e]; };
   document.getElementById("g-portraits").append(el("div", { className: "sprite" }, [cv, el("b", { textContent: PORTRAITS[k].name + (k.includes("_") ? " (" + k.split("_")[1] + ")" : "") }), b]));
   anim(cv, t => drawPortrait(g, k, t, { expr: EXPRS[e], open: (t % 3000) < 1600 ? talkMouth("Bonjour à toi", Math.floor((t % 3000) / 120), t) : 0 })); });
