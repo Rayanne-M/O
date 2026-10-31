@@ -878,7 +878,17 @@
    "w": 1.375,
    "h": 1.25,
    "seed": 308,
-   "solid": true
+   "solid": true,
+   "variants": [
+    {
+     "when": {
+      "day": 1,
+      "moment": "midi",
+      "if": "!basile_trouve"
+     },
+     "pieds": true
+    }
+   ]
   },
   {
    "id": "buisson7",
@@ -1577,11 +1587,11 @@
    "name": "Sous la fenêtre de Margot"
   },
   "cachette_basile": {
-   "x": 12.5,
-   "y": 18.6,
-   "w": 2.2,
-   "h": 1.6,
-   "name": "Sous la table d'Ysol",
+   "x": 12.6,
+   "y": 17,
+   "w": 1.8,
+   "h": 1.8,
+   "name": "Le buisson près de chez Ysol",
    "cachette": "basile"
   },
   "devant_ysol": {
@@ -1664,9 +1674,9 @@
     "day": 1,
     "moment": "midi"
    },
-   "title": "Basile sous la table d'Ysol",
+   "title": "Basile dans le buisson",
    "who": "Basile, Ysol",
-   "line": "Ses pieds dépassent de la nappe. Ysol : « Je n'ai vu personne. » Basile : « C'est pas juste, elle m'a dénoncé avec les yeux ! »"
+   "line": "Ses sabots dépassent du buisson. Ysol, à son rouet : « Je n’ai vu personne. » Basile : « C’est pas juste, elle m’a dénoncé avec les yeux ! »"
   },
   {
    "id": "s2_fausse_piste_basile",

@@ -101,7 +101,10 @@ const XDRAW = {
   chene: (c, t, X, Y, W, H, o) => { const fx = Math.round(X + W / 2), fy = Math.round(Y + H);
     oakColors(() => drawTree(c, t, fx, fy, 100000 + (o.seed || 7), Math.round(W / 2)));
     [[-14, -50], [10, -58], [-4, -40], [18, -44], [-20, -38]].forEach(([a, b], i) => { const k = W / 76; px(c, "#8a5a28", fx + Math.round(a * k), fy + Math.round(b * k)); if (i % 2) px(c, "#5a3a18", fx + Math.round(a * k), fy + Math.round(b * k) - 1); }); },
-  buisson: (c, t, X, Y, W, H, o) => { const R = Math.round((W - 4) / 2); drawBush(c, t, Math.round(X + R + 2), Math.round(Y + 2 * R), o.seed || 1, R); },
+  buisson: (c, t, X, Y, W, H, o) => { const R = Math.round((W - 4) / 2), bx = Math.round(X + R + 2), by = Math.round(Y + 2 * R);
+    // pieds : quelqu'un est caché dedans, les sabots dépassent (cache-cache)
+    if (o.pieds) { const w = Math.floor(t / 600) % 4 === 0 ? 1 : 0; [[-7 + w, 0], [1, 0]].forEach(([a]) => { fill(c, "#7a4a2c", bx + a, by - 1, 5, 3); fill(c, "#7a6a50", bx + a, by - 3, 3, 2); }); }
+    drawBush(c, t, bx, by, o.seed || 1, R); },
   rocher: (c, t, X, Y, W, H, o) => rock(c, X, Y, Math.round(W), Math.round(H), !!o.moss),
   caillou: (c, t, X, Y, W, H, o) => rock(c, X, Y, Math.round(W), Math.round(H), !!o.moss),
   fleurs: (c, t, X, Y, W, H, o) => { const cols = [T.fw, NV.pink, T.fy]; [[0, 0], [7, 3], [3, 6]].forEach(([a, b], i) => flower(c, X + a, Y + b, cols[((o.seed || 0) + i) % 3])); },
