@@ -58,7 +58,10 @@ app.innerHTML = `
   <header>
     <h1>Écran de combat</h1>
     <p>Prototype : le héros seul contre un monstre, tour par tour. La Vitesse décide de l’ordre ; les actions viennent de la classe, de l’équipement, des bénédictions et des synergies. Au clavier : flèches puis Entrée.</p>
-    <nav><a href="index.html">← Atelier de personnage</a> · <a href="village.html">Le village</a></nav>
+    <nav><a href="index.html">← Atelier de personnage</a> · <a href="village.html">Le village</a>
+      · Dans le jeu : <a href="village.html?scene=poule">la poule (tutoriel)</a>
+      · <a href="village.html?nuit=3&amp;scene=puits&amp;objet=ciseaux">le puits, avec les ciseaux</a>
+      · <a href="village.html?nuit=3&amp;scene=puits">le puits, sans</a></nav>
   </header>
   <main class="layout">
     <section class="arena">
