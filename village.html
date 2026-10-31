@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Le village natal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&display=swap" />
+  </head>
+  <body>
+    <main id="stage">
+      <div id="game"></div>
+      <div id="hud" hidden><b id="hud-when"></b><span id="hud-goal"></span></div>
+      <div id="banner" hidden></div>
+      <p id="caption" hidden></p>
+      <div id="dialog" hidden>
+        <canvas id="portrait" width="64" height="64" aria-label="Le visage d'Élio, possédé"></canvas>
+        <div class="body">
+          <b id="speaker"></b>
+          <p id="text" aria-live="polite"></p>
+          <ul id="choices"></ul>
+        </div>
+        <span class="next" aria-hidden="true">▼</span>
+      </div>
+      <div id="screen" hidden></div>
+      <div id="touch" aria-hidden="true">
+        <div id="stick"><div id="knob"></div></div>
+        <button type="button" id="btn-a">A</button>
+      </div>
+    </main>
+    <canvas id="cine" width="128" height="72" hidden></canvas><span id="cine-cap" hidden></span>
+    <script type="module" src="/src/game/main.ts"></script>
+  </body>
+</html>

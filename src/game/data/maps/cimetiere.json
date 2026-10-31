@@ -1,0 +1,448 @@
+{
+ "id": "cimetiere",
+ "name": "Le cimetière",
+ "chapter": "enfance",
+ "kind": "exterieur",
+ "tile": 16,
+ "w": 22,
+ "h": 15,
+ "terrain": {
+  "paths": [
+   [
+    [
+     11,
+     -0.5
+    ],
+    [
+     11,
+     4
+    ],
+    [
+     11,
+     7
+    ]
+   ],
+   [
+    [
+     11,
+     7
+    ],
+    [
+     7,
+     9
+    ]
+   ],
+   [
+    [
+     11,
+     7
+    ],
+    [
+     15,
+     9
+    ]
+   ]
+  ],
+  "plazas": [],
+  "fields": [],
+  "shallows": []
+ },
+ "objects": [
+  {
+   "id": "muret_g0",
+   "type": "muret",
+   "x": 0.5,
+   "y": 0.8,
+   "w": 2,
+   "h": 0.75,
+   "solid": true
+  },
+  {
+   "id": "muret_d0",
+   "type": "muret",
+   "x": 12.5,
+   "y": 0.8,
+   "w": 2,
+   "h": 0.75,
+   "solid": true
+  },
+  {
+   "id": "muret_g1",
+   "type": "muret",
+   "x": 2.5,
+   "y": 0.8,
+   "w": 2,
+   "h": 0.75,
+   "solid": true
+  },
+  {
+   "id": "muret_d1",
+   "type": "muret",
+   "x": 14.5,
+   "y": 0.8,
+   "w": 2,
+   "h": 0.75,
+   "solid": true
+  },
+  {
+   "id": "muret_g2",
+   "type": "muret",
+   "x": 4.5,
+   "y": 0.8,
+   "w": 2,
+   "h": 0.75,
+   "solid": true
+  },
+  {
+   "id": "muret_d2",
+   "type": "muret",
+   "x": 16.5,
+   "y": 0.8,
+   "w": 2,
+   "h": 0.75,
+   "solid": true
+  },
+  {
+   "id": "muret_g3",
+   "type": "muret",
+   "x": 6.5,
+   "y": 0.8,
+   "w": 2,
+   "h": 0.75,
+   "solid": true
+  },
+  {
+   "id": "muret_d3",
+   "type": "muret",
+   "x": 18.5,
+   "y": 0.8,
+   "w": 2,
+   "h": 0.75,
+   "solid": true
+  },
+  {
+   "id": "portail",
+   "type": "portail",
+   "x": 10.1,
+   "y": 0.2,
+   "w": 1.75,
+   "h": 1.375,
+   "solid": false
+  },
+  {
+   "id": "tombe0",
+   "type": "tombe",
+   "x": 2,
+   "y": 4,
+   "w": 0.75,
+   "h": 1,
+   "solid": true
+  },
+  {
+   "id": "tombe1",
+   "type": "tombe",
+   "x": 4,
+   "y": 4,
+   "w": 0.75,
+   "h": 1,
+   "solid": true
+  },
+  {
+   "id": "tombe2",
+   "type": "tombe",
+   "x": 6,
+   "y": 4,
+   "w": 0.75,
+   "h": 1,
+   "solid": true
+  },
+  {
+   "id": "tombe3",
+   "type": "tombe",
+   "x": 15,
+   "y": 4,
+   "w": 0.75,
+   "h": 1,
+   "solid": true
+  },
+  {
+   "id": "tombe4",
+   "type": "tombe",
+   "x": 17,
+   "y": 4,
+   "w": 0.75,
+   "h": 1,
+   "solid": true
+  },
+  {
+   "id": "tombe5",
+   "type": "tombe",
+   "x": 19,
+   "y": 4,
+   "w": 0.75,
+   "h": 1,
+   "solid": true
+  },
+  {
+   "id": "tombe6",
+   "type": "tombe",
+   "x": 3,
+   "y": 7,
+   "w": 0.75,
+   "h": 1,
+   "solid": true
+  },
+  {
+   "id": "tombe7",
+   "type": "tombe",
+   "x": 5,
+   "y": 7,
+   "w": 0.75,
+   "h": 1,
+   "solid": true
+  },
+  {
+   "id": "tombe8",
+   "type": "tombe",
+   "x": 16.5,
+   "y": 7,
+   "w": 0.75,
+   "h": 1,
+   "solid": true
+  },
+  {
+   "id": "tombe9",
+   "type": "tombe",
+   "x": 18.5,
+   "y": 7,
+   "w": 0.75,
+   "h": 1,
+   "solid": true
+  },
+  {
+   "id": "tombe10",
+   "type": "tombe",
+   "x": 2,
+   "y": 10.5,
+   "w": 0.75,
+   "h": 1,
+   "solid": true
+  },
+  {
+   "id": "tombe11",
+   "type": "tombe",
+   "x": 4,
+   "y": 10.5,
+   "w": 0.75,
+   "h": 1,
+   "solid": true
+  },
+  {
+   "id": "tombe12",
+   "type": "tombe",
+   "x": 6,
+   "y": 10.5,
+   "w": 0.75,
+   "h": 1,
+   "solid": true
+  },
+  {
+   "id": "tombe13",
+   "type": "tombe",
+   "x": 16,
+   "y": 10.5,
+   "w": 0.75,
+   "h": 1,
+   "solid": true
+  },
+  {
+   "id": "tombe14",
+   "type": "tombe",
+   "x": 18,
+   "y": 10.5,
+   "w": 0.75,
+   "h": 1,
+   "solid": true
+  },
+  {
+   "id": "croix",
+   "type": "croix",
+   "x": 10.6,
+   "y": 9.4,
+   "w": 0.75,
+   "h": 1.25,
+   "solid": true,
+   "interact": {
+    "label": "La grande croix",
+    "text": "Au milieu du cimetière."
+   }
+  },
+  {
+   "id": "fosse",
+   "type": "fosse",
+   "x": 12.2,
+   "y": 10.6,
+   "w": 1.25,
+   "h": 0.875,
+   "solid": true,
+   "when": {
+    "day": 4
+   },
+   "interact": {
+    "label": "La fosse",
+    "text": "Pour l'enterrement d'Élio : avec le corps, ou avec un cercueil vide s'il ne reste que l'eau rouge."
+   }
+  },
+  {
+   "id": "if0",
+   "type": "arbre",
+   "x": 0.4,
+   "y": 12,
+   "w": 2.25,
+   "h": 2.7,
+   "solid": true,
+   "seed": 907
+  },
+  {
+   "id": "if1",
+   "type": "arbre",
+   "x": 19.6,
+   "y": 12.2,
+   "w": 2.25,
+   "h": 2.7,
+   "solid": true,
+   "seed": 908
+  },
+  {
+   "id": "if2",
+   "type": "arbre",
+   "x": 0,
+   "y": 4.5,
+   "w": 2.25,
+   "h": 2.7,
+   "solid": true,
+   "seed": 909
+  },
+  {
+   "id": "if3",
+   "type": "arbre",
+   "x": 20.2,
+   "y": 3.2,
+   "w": 2.25,
+   "h": 2.7,
+   "solid": true,
+   "seed": 910
+  },
+  {
+   "id": "buisson0",
+   "type": "buisson",
+   "x": 8.2,
+   "y": 12.6,
+   "w": 1.375,
+   "h": 1.25,
+   "solid": true,
+   "seed": 77
+  },
+  {
+   "id": "fleurs0",
+   "type": "fleurs",
+   "x": 13.2,
+   "y": 12.8,
+   "w": 0.75,
+   "h": 0.75,
+   "solid": false,
+   "seed": 2
+  }
+ ],
+ "exits": [
+  {
+   "id": "vers_village",
+   "x": 10.2,
+   "y": 0,
+   "w": 1.6,
+   "h": 0.7,
+   "to": "village",
+   "at": "route_sud",
+   "label": "Vers le village"
+  }
+ ],
+ "spawns": {
+  "entree": {
+   "x": 11,
+   "y": 1.9,
+   "dir": "S"
+  }
+ },
+ "zones": {
+  "enterrement": {
+   "x": 9.6,
+   "y": 9,
+   "w": 4.6,
+   "h": 3,
+   "name": "L'enterrement"
+  }
+ },
+ "npcs": [
+  {
+   "id": "aubin",
+   "x": 13.8,
+   "y": 11.9,
+   "when": {
+    "day": 4
+   }
+  },
+  {
+   "id": "mere",
+   "x": 9.4,
+   "y": 12.4,
+   "when": {
+    "day": 4
+   }
+  },
+  {
+   "id": "margot",
+   "x": 10.4,
+   "y": 13,
+   "when": {
+    "day": 4
+   }
+  },
+  {
+   "id": "basile",
+   "x": 12,
+   "y": 13.2,
+   "when": {
+    "day": 4
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "j4_enterrement",
+   "zone": "enterrement",
+   "when": {
+    "day": 4
+   },
+   "title": "L'enterrement",
+   "who": "Aubin",
+   "line": "Aubin est sobre pour la première fois. Si le héros a encore le ruban, il peut le lui donner (« C'est à elle. ») ou le garder."
+  }
+ ],
+ "collision": [
+  "0000000000000000000000",
+  "0111111110000111111110",
+  "0000000000000000000000",
+  "0000000000000000000000",
+  "0010101000000001010100",
+  "0000000000000000000001",
+  "0000000000000000000000",
+  "0101010000000000101000",
+  "0000000000000000000000",
+  "0000000000000000000000",
+  "0000000000100000000000",
+  "0010101000000000101000",
+  "0000000000000000000000",
+  "0000000010000000000000",
+  "0100000000000000000010"
+ ]
+}

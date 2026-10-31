@@ -1,0 +1,295 @@
+{
+ "id": "maison_cuisine",
+ "name": "Maison du héros — la cuisine",
+ "chapter": "enfance",
+ "kind": "piece",
+ "tile": 16,
+ "w": 10,
+ "h": 8,
+ "floor": "pierre",
+ "wall": "platre",
+ "objects": [
+  {
+   "id": "poele",
+   "type": "poele",
+   "x": 1,
+   "y": 0,
+   "w": 2,
+   "h": 2,
+   "solid": true,
+   "light": [
+    2,
+    1.6,
+    30
+   ],
+   "interact": {
+    "label": "Le poêle",
+    "text": "Le soir du jour 1, la mère pose le bol du gardien juste à côté."
+   }
+  },
+  {
+   "id": "tresse_ail",
+   "type": "tresse_ail",
+   "x": 3.4,
+   "y": 0,
+   "w": 1,
+   "h": 2,
+   "solid": false
+  },
+  {
+   "id": "fenetre",
+   "type": "fenetre",
+   "x": 5,
+   "y": 0,
+   "w": 2,
+   "h": 2,
+   "solid": false
+  },
+  {
+   "id": "porte_salle",
+   "type": "porte",
+   "x": 8.4,
+   "y": 0,
+   "w": 1,
+   "h": 2,
+   "solid": false
+  },
+  {
+   "id": "table",
+   "type": "table",
+   "x": 3,
+   "y": 3.4,
+   "w": 3,
+   "h": 2,
+   "solid": true
+  },
+  {
+   "id": "chaise_g",
+   "type": "chaise",
+   "x": 2,
+   "y": 4,
+   "w": 1,
+   "h": 1,
+   "solid": true
+  },
+  {
+   "id": "chaise_d",
+   "type": "chaise",
+   "x": 6,
+   "y": 4,
+   "w": 1,
+   "h": 1,
+   "solid": true
+  },
+  {
+   "id": "panier",
+   "type": "panier",
+   "x": 3.6,
+   "y": 3.4,
+   "w": 1,
+   "h": 1,
+   "solid": false,
+   "on": "table",
+   "interact": {
+    "label": "Le panier à œufs",
+    "text": "« Va me chercher les œufs. Cinq, pas un de moins. Et attention à la grosse rousse, elle pince. »",
+    "scene": "s1_oeufs"
+   }
+  },
+  {
+   "id": "bol_gardien",
+   "type": "bol",
+   "x": 1.4,
+   "y": 2.1,
+   "w": 1,
+   "h": 1,
+   "solid": false,
+   "when": {
+    "day": 1,
+    "moment": [
+     "soir",
+     "nuit"
+    ]
+   },
+   "interact": {
+    "label": "Le bol du gardien",
+    "text": "Jour 1, soir : un bol de lait près du poêle, « pour le gardien de la maison ». Poser le pain à côté (mage +1, béni +5), le manger en cachette, ou boire le lait.",
+    "scene": "s5_gardien"
+   }
+  },
+  {
+   "id": "bol_matin",
+   "type": "bol",
+   "x": 1.4,
+   "y": 2.1,
+   "w": 1,
+   "h": 1,
+   "solid": false,
+   "when": {
+    "day": 2,
+    "moment": "matin"
+   },
+   "etat": "bu",
+   "sans_pain": true,
+   "variants": [
+    {
+     "when": {
+      "if": "a_bu_le_lait"
+     },
+     "etat": "retourne"
+    }
+   ],
+   "interact": {
+    "label": "Le bol, le lendemain",
+    "text": "Le lait est toujours bu. Si le héros l'a bu lui-même, le bol est retourné, et la bougie refusera de s'allumer le soir."
+   }
+  },
+  {
+   "id": "sabots",
+   "type": "sabots",
+   "x": 4.6,
+   "y": 6.4,
+   "w": 1,
+   "h": 1,
+   "solid": false,
+   "variants": [
+    {
+     "when": {
+      "day": 2,
+      "if": "pain_pose"
+     },
+     "etat": "cires"
+    },
+    {
+     "when": {
+      "day": 2,
+      "if": "pain_mange"
+     },
+     "etat": "un"
+    }
+   ],
+   "interact": {
+    "label": "Les sabots",
+    "text": "Le matin du jour 2 : cirés devant la porte si le héros a posé le pain ; s'il l'a mangé, il en manque un."
+   }
+  },
+  {
+   "id": "seau_cendres",
+   "type": "seau_cendres",
+   "x": 8,
+   "y": 5.6,
+   "w": 1,
+   "h": 1,
+   "solid": true,
+   "variants": [
+    {
+     "when": {
+      "day": 2,
+      "if": "pain_mange"
+     },
+     "sabot": true
+    }
+   ],
+   "interact": {
+    "label": "Le seau à cendres",
+    "text": "Le sabot disparu y finit, si le héros a mangé le pain du gardien."
+   }
+  },
+  {
+   "id": "etagere",
+   "type": "etagere",
+   "x": 7,
+   "y": 0,
+   "w": 1.4,
+   "h": 2,
+   "solid": false
+  }
+ ],
+ "exits": [
+  {
+   "id": "sortie",
+   "x": 4,
+   "y": 7,
+   "w": 2,
+   "h": 1,
+   "to": "village",
+   "at": "porte_maison",
+   "label": "Sortir"
+  },
+  {
+   "id": "vers_salle",
+   "x": 8.4,
+   "y": 1,
+   "w": 1,
+   "h": 1,
+   "to": "maison_salle",
+   "at": "depuis_cuisine",
+   "label": "La salle commune"
+  }
+ ],
+ "spawns": {
+  "entree": {
+   "x": 5,
+   "y": 6.6,
+   "dir": "N"
+  },
+  "depuis_salle": {
+   "x": 8.9,
+   "y": 2.7,
+   "dir": "S"
+  }
+ },
+ "zones": {},
+ "npcs": [
+  {
+   "id": "mere",
+   "x": 6.8,
+   "y": 3.4,
+   "when": {
+    "night": false
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "s1_oeufs",
+   "when": {
+    "day": 1,
+    "moment": "matin"
+   },
+   "title": "Les œufs",
+   "who": "La mère",
+   "line": "« Va me chercher les œufs. Cinq, pas un de moins. »"
+  },
+  {
+   "id": "s1_retour",
+   "when": {
+    "day": 1,
+    "moment": "matin"
+   },
+   "title": "Le retour du panier",
+   "who": "La mère",
+   "line": "« Cinq. Tu vois quand tu veux. File, ils t'attendent. » (ou « Quatre ? Bon. On fera une omelette plus petite. »)"
+  },
+  {
+   "id": "s5_gardien",
+   "when": {
+    "day": 1,
+    "moment": "soir"
+   },
+   "title": "Le gardien de la maison",
+   "who": "La mère",
+   "line": "« Pose ça à côté du lait. C'est pour le gardien de la maison. Il veille sur nous tant qu'on le nourrit. »"
+  }
+ ],
+ "collision": [
+  "1111111111",
+  "1111111111",
+  "0000000000",
+  "0001110000",
+  "0011111000",
+  "0000000000",
+  "0000000010",
+  "0000000000"
+ ]
+}

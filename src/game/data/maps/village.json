@@ -1,0 +1,2075 @@
+{
+ "id": "village",
+ "name": "Le village natal",
+ "chapter": "enfance",
+ "kind": "exterieur",
+ "tile": 16,
+ "w": 35,
+ "h": 23,
+ "terrain": {
+  "river": {
+   "points": [
+    [
+     27,
+     -0.75
+    ],
+    [
+     26.25,
+     3.125
+    ],
+    [
+     27.875,
+     7.5
+    ],
+    [
+     26.5,
+     12.25
+    ],
+    [
+     28.25,
+     16.875
+    ],
+    [
+     29.625,
+     23.25
+    ]
+   ],
+   "half": 0.625,
+   "wobble": 0.1563
+  },
+  "paths": [
+   [
+    [
+     9.125,
+     7
+    ],
+    [
+     10,
+     8.75
+    ],
+    [
+     13.25,
+     11
+    ]
+   ],
+   [
+    [
+     5.625,
+     10.75
+    ],
+    [
+     9.125,
+     9.375
+    ]
+   ],
+   [
+    [
+     17.625,
+     7.75
+    ],
+    [
+     16.875,
+     10.25
+    ]
+   ],
+   [
+    [
+     18.125,
+     12.875
+    ],
+    [
+     21.75,
+     13.875
+    ],
+    [
+     23.75,
+     15.625
+    ]
+   ],
+   [
+    [
+     18.125,
+     12.25
+    ],
+    [
+     23.75,
+     11.875
+    ],
+    [
+     29.375,
+     12.5
+    ],
+    [
+     35,
+     12.875
+    ]
+   ],
+   [
+    [
+     15.625,
+     15
+    ],
+    [
+     15.25,
+     18.75
+    ],
+    [
+     14.75,
+     23.25
+    ]
+   ],
+   [
+    [
+     22.5,
+     7.375
+    ],
+    [
+     20.625,
+     9.375
+    ],
+    [
+     18.125,
+     10.75
+    ]
+   ],
+   [
+    [
+     13.125,
+     12.5
+    ],
+    [
+     7.5,
+     13.75
+    ],
+    [
+     2.5,
+     15.625
+    ],
+    [
+     -0.625,
+     16.375
+    ]
+   ],
+   [
+    [
+     29.75,
+     12.4375
+    ],
+    [
+     31.25,
+     11.625
+    ],
+    [
+     31.625,
+     11.125
+    ]
+   ],
+   [
+    [
+     12.25,
+     18.75
+    ],
+    [
+     13.375,
+     18.5
+    ]
+   ]
+  ],
+  "plazas": [
+   {
+    "x": 15.625,
+    "y": 12.5,
+    "r": 2.625
+   }
+  ],
+  "fields": [
+   {
+    "x": 1.75,
+    "y": 12.25,
+    "w": 4.75,
+    "h": 2.625
+   }
+  ],
+  "shallows": [
+   {
+    "x": 26,
+    "y": 13.6,
+    "w": 2.6,
+    "h": 2.6
+   }
+  ]
+ },
+ "objects": [
+  {
+   "id": "arbre0",
+   "type": "arbre",
+   "x": -0.875,
+   "y": 14.425,
+   "w": 2.25,
+   "h": 2.7,
+   "seed": 100,
+   "solid": true
+  },
+  {
+   "id": "arbre1",
+   "type": "arbre",
+   "x": 28.6875,
+   "y": -0.7875,
+   "w": 2.375,
+   "h": 2.85,
+   "seed": 101,
+   "solid": true
+  },
+  {
+   "id": "arbre2",
+   "type": "arbre",
+   "x": -1.625,
+   "y": 1.25,
+   "w": 2.5,
+   "h": 3,
+   "seed": 103,
+   "solid": true
+  },
+  {
+   "id": "arbre3",
+   "type": "arbre",
+   "x": 21.0625,
+   "y": -2.975,
+   "w": 3,
+   "h": 3.6,
+   "seed": 104,
+   "solid": true
+  },
+  {
+   "id": "arbre4",
+   "type": "arbre",
+   "x": 19.9375,
+   "y": -1.25,
+   "w": 2.5,
+   "h": 3,
+   "seed": 107,
+   "solid": true
+  },
+  {
+   "id": "arbre5",
+   "type": "arbre",
+   "x": -0.625,
+   "y": 16.0125,
+   "w": 2.125,
+   "h": 2.55,
+   "seed": 109,
+   "solid": true
+  },
+  {
+   "id": "arbre6",
+   "type": "arbre",
+   "x": 13.1875,
+   "y": -0.0125,
+   "w": 2.25,
+   "h": 2.7,
+   "seed": 110,
+   "solid": true
+  },
+  {
+   "id": "arbre7",
+   "type": "arbre",
+   "x": 19.875,
+   "y": -2.05,
+   "w": 2.125,
+   "h": 2.55,
+   "seed": 113,
+   "solid": true
+  },
+  {
+   "id": "arbre8",
+   "type": "arbre",
+   "x": -1.3125,
+   "y": 8.3875,
+   "w": 2.125,
+   "h": 2.55,
+   "seed": 115,
+   "solid": true
+  },
+  {
+   "id": "arbre9",
+   "type": "arbre",
+   "x": 11.125,
+   "y": -3.05,
+   "w": 2.75,
+   "h": 3.3,
+   "seed": 116,
+   "solid": true
+  },
+  {
+   "id": "arbre10",
+   "type": "arbre",
+   "x": -0.1875,
+   "y": 12.5125,
+   "w": 2.125,
+   "h": 2.55,
+   "seed": 118,
+   "solid": true
+  },
+  {
+   "id": "arbre11",
+   "type": "arbre",
+   "x": 6.8125,
+   "y": -2.65,
+   "w": 2.625,
+   "h": 3.15,
+   "seed": 119,
+   "solid": true
+  },
+  {
+   "id": "arbre12",
+   "type": "arbre",
+   "x": 0.9375,
+   "y": 18.35,
+   "w": 2,
+   "h": 2.4,
+   "seed": 124,
+   "solid": true
+  },
+  {
+   "id": "arbre13",
+   "type": "arbre",
+   "x": 33.4375,
+   "y": 4.3,
+   "w": 2.25,
+   "h": 2.7,
+   "seed": 126,
+   "solid": true
+  },
+  {
+   "id": "arbre14",
+   "type": "arbre",
+   "x": -0.6875,
+   "y": 5.2625,
+   "w": 2.75,
+   "h": 3.3,
+   "seed": 130,
+   "solid": true
+  },
+  {
+   "id": "arbre15",
+   "type": "arbre",
+   "x": 8.625,
+   "y": -2.5875,
+   "w": 2.625,
+   "h": 3.15,
+   "seed": 131,
+   "solid": true
+  },
+  {
+   "id": "arbre16",
+   "type": "arbre",
+   "x": 0.5625,
+   "y": 6.9125,
+   "w": 2.625,
+   "h": 3.15,
+   "seed": 133,
+   "solid": true
+  },
+  {
+   "id": "arbre17",
+   "type": "arbre",
+   "x": -0.25,
+   "y": 4.2,
+   "w": 2.125,
+   "h": 2.55,
+   "seed": 136,
+   "solid": true
+  },
+  {
+   "id": "arbre18",
+   "type": "arbre",
+   "x": 31.625,
+   "y": -0.525,
+   "w": 2,
+   "h": 2.4,
+   "seed": 137,
+   "solid": true
+  },
+  {
+   "id": "arbre19",
+   "type": "arbre",
+   "x": 1.375,
+   "y": -1.675,
+   "w": 2.75,
+   "h": 3.3,
+   "seed": 149,
+   "solid": true
+  },
+  {
+   "id": "arbre20",
+   "type": "arbre",
+   "x": 3.875,
+   "y": -2.5625,
+   "w": 2.5,
+   "h": 3,
+   "seed": 152,
+   "solid": true
+  },
+  {
+   "id": "arbre21",
+   "type": "arbre",
+   "x": 33,
+   "y": -2.7875,
+   "w": 3,
+   "h": 3.6,
+   "seed": 153,
+   "solid": true
+  },
+  {
+   "id": "arbre22",
+   "type": "arbre",
+   "x": -0.75,
+   "y": 9.3625,
+   "w": 2.25,
+   "h": 2.7,
+   "seed": 157,
+   "solid": true
+  },
+  {
+   "id": "arbre23",
+   "type": "arbre",
+   "x": 28.125,
+   "y": -2.075,
+   "w": 2.25,
+   "h": 2.7,
+   "seed": 164,
+   "solid": true
+  },
+  {
+   "id": "arbre24",
+   "type": "arbre",
+   "x": 15.6875,
+   "y": -0.65,
+   "w": 2.625,
+   "h": 3.15,
+   "seed": 167,
+   "solid": true
+  },
+  {
+   "id": "arbre25",
+   "type": "arbre",
+   "x": 0.3125,
+   "y": 16.675,
+   "w": 2.25,
+   "h": 2.7,
+   "seed": 169,
+   "solid": true
+  },
+  {
+   "id": "arbre26",
+   "type": "arbre",
+   "x": 1.0625,
+   "y": 0.95,
+   "w": 2.125,
+   "h": 2.55,
+   "seed": 172,
+   "solid": true
+  },
+  {
+   "id": "arbre27",
+   "type": "arbre",
+   "x": 23.6875,
+   "y": -1.5625,
+   "w": 2.5,
+   "h": 3,
+   "seed": 173,
+   "solid": true
+  },
+  {
+   "id": "arbre28",
+   "type": "arbre",
+   "x": 0.125,
+   "y": -2.2,
+   "w": 2.25,
+   "h": 2.7,
+   "seed": 176,
+   "solid": true
+  },
+  {
+   "id": "arbre29",
+   "type": "arbre",
+   "x": -1.4375,
+   "y": 16.85,
+   "w": 2.625,
+   "h": 3.15,
+   "seed": 178,
+   "solid": true
+  },
+  {
+   "id": "arbre30",
+   "type": "arbre",
+   "x": 27,
+   "y": -0.35,
+   "w": 2.375,
+   "h": 2.85,
+   "seed": 185,
+   "solid": true
+  },
+  {
+   "id": "arbre31",
+   "type": "arbre",
+   "x": 0.75,
+   "y": 13.0875,
+   "w": 3,
+   "h": 3.6,
+   "seed": 187,
+   "solid": true
+  },
+  {
+   "id": "arbre32",
+   "type": "arbre",
+   "x": 15.25,
+   "y": -3.1,
+   "w": 3,
+   "h": 3.6,
+   "seed": 188,
+   "solid": true
+  },
+  {
+   "id": "arbre33",
+   "type": "arbre",
+   "x": -1.5625,
+   "y": 10.9625,
+   "w": 2.375,
+   "h": 2.85,
+   "seed": 190,
+   "solid": true
+  },
+  {
+   "id": "arbre34",
+   "type": "arbre",
+   "x": -1.5625,
+   "y": 19.85,
+   "w": 2.625,
+   "h": 3.15,
+   "seed": 193,
+   "solid": true
+  },
+  {
+   "id": "arbre35",
+   "type": "arbre",
+   "x": 1.8125,
+   "y": 16.35,
+   "w": 2,
+   "h": 2.4,
+   "seed": 196,
+   "solid": true
+  },
+  {
+   "id": "arbre36",
+   "type": "arbre",
+   "x": -0.4375,
+   "y": 2.975,
+   "w": 2,
+   "h": 2.4,
+   "seed": 205,
+   "solid": true
+  },
+  {
+   "id": "arbre37",
+   "type": "arbre",
+   "x": 8.4375,
+   "y": 9.2125,
+   "w": 2.375,
+   "h": 2.85,
+   "seed": 207,
+   "solid": true
+  },
+  {
+   "id": "arbre38",
+   "type": "arbre",
+   "x": -0.0625,
+   "y": 1.45,
+   "w": 2.125,
+   "h": 2.55,
+   "seed": 214,
+   "solid": true
+  },
+  {
+   "id": "arbre39",
+   "type": "arbre",
+   "x": 14.125,
+   "y": -2.4125,
+   "w": 2.375,
+   "h": 2.85,
+   "seed": 218,
+   "solid": true
+  },
+  {
+   "id": "arbre40",
+   "type": "arbre",
+   "x": -1.1875,
+   "y": 18.375,
+   "w": 2.5,
+   "h": 3,
+   "seed": 220,
+   "solid": true
+  },
+  {
+   "id": "arbre41",
+   "type": "arbre",
+   "x": -1.125,
+   "y": -1.1875,
+   "w": 2.5,
+   "h": 3,
+   "seed": 224,
+   "solid": true
+  },
+  {
+   "id": "arbre42",
+   "type": "arbre",
+   "x": 8.6875,
+   "y": -1.0125,
+   "w": 2.25,
+   "h": 2.7,
+   "seed": 230,
+   "solid": true
+  },
+  {
+   "id": "arbre43",
+   "type": "arbre",
+   "x": 30,
+   "y": -2.2625,
+   "w": 2.25,
+   "h": 2.7,
+   "seed": 236,
+   "solid": true
+  },
+  {
+   "id": "arbre44",
+   "type": "arbre",
+   "x": 32.375,
+   "y": 0.075,
+   "w": 2.125,
+   "h": 2.55,
+   "seed": 239,
+   "solid": true
+  },
+  {
+   "id": "arbre45",
+   "type": "arbre",
+   "x": 2,
+   "y": 17.7375,
+   "w": 2.25,
+   "h": 2.7,
+   "seed": 241,
+   "solid": true
+  },
+  {
+   "id": "arbre46",
+   "type": "arbre",
+   "x": 18.625,
+   "y": -1.65,
+   "w": 2,
+   "h": 2.4,
+   "seed": 248,
+   "solid": true
+  },
+  {
+   "id": "arbre47",
+   "type": "arbre",
+   "x": 11.3125,
+   "y": -1.7625,
+   "w": 2.875,
+   "h": 3.45,
+   "seed": 251,
+   "solid": true
+  },
+  {
+   "id": "arbre48",
+   "type": "arbre",
+   "x": 3.625,
+   "y": -1.2375,
+   "w": 2.75,
+   "h": 3.3,
+   "seed": 257,
+   "solid": true
+  },
+  {
+   "id": "arbre49",
+   "type": "arbre",
+   "x": 22.375,
+   "y": -0.65,
+   "w": 2,
+   "h": 2.4,
+   "seed": 260,
+   "solid": true
+  },
+  {
+   "id": "arbre50",
+   "type": "arbre",
+   "x": 28.75,
+   "y": 14.0375,
+   "w": 2,
+   "h": 2.4,
+   "seed": 261,
+   "solid": true
+  },
+  {
+   "id": "arbre51",
+   "type": "arbre",
+   "x": 0.25,
+   "y": 19,
+   "w": 2.5,
+   "h": 3,
+   "seed": 262,
+   "solid": true
+  },
+  {
+   "id": "arbre52",
+   "type": "arbre",
+   "x": 32.1875,
+   "y": -2.2,
+   "w": 2.25,
+   "h": 2.7,
+   "seed": 275,
+   "solid": true
+  },
+  {
+   "id": "arbre53",
+   "type": "arbre",
+   "x": 1.75,
+   "y": 19.225,
+   "w": 2.625,
+   "h": 3.15,
+   "seed": 283,
+   "solid": true
+  },
+  {
+   "id": "arbre54",
+   "type": "arbre",
+   "x": 2.1875,
+   "y": 15.05,
+   "w": 2.25,
+   "h": 2.7,
+   "seed": 285,
+   "solid": true
+  },
+  {
+   "id": "arbre55",
+   "type": "arbre",
+   "x": 30.1875,
+   "y": 0.9375,
+   "w": 2.5,
+   "h": 3,
+   "seed": 288,
+   "solid": true
+  },
+  {
+   "id": "arbre56",
+   "type": "arbre",
+   "x": 1.1875,
+   "y": -0.025,
+   "w": 2,
+   "h": 2.4,
+   "seed": 313,
+   "solid": true
+  },
+  {
+   "id": "arbre57",
+   "type": "arbre",
+   "x": 17.1875,
+   "y": -0.5375,
+   "w": 2.375,
+   "h": 2.85,
+   "seed": 317,
+   "solid": true
+  },
+  {
+   "id": "arbre58",
+   "type": "arbre",
+   "x": 20.4375,
+   "y": 6.725,
+   "w": 2.625,
+   "h": 3.15,
+   "seed": 333,
+   "solid": true
+  },
+  {
+   "id": "arbre59",
+   "type": "arbre",
+   "x": 27.4375,
+   "y": 2.0375,
+   "w": 2,
+   "h": 2.4,
+   "seed": 339,
+   "solid": true
+  },
+  {
+   "id": "chene",
+   "type": "chene",
+   "x": 13.625,
+   "y": 7.45,
+   "w": 4,
+   "h": 4.8,
+   "seed": 7,
+   "solid": true
+  },
+  {
+   "id": "buisson0",
+   "type": "buisson",
+   "x": -0.0625,
+   "y": 15.875,
+   "w": 1.5,
+   "h": 1.375,
+   "seed": 300,
+   "solid": true
+  },
+  {
+   "id": "buisson1",
+   "type": "buisson",
+   "x": 22.4375,
+   "y": 0.4375,
+   "w": 1.25,
+   "h": 1.125,
+   "seed": 301,
+   "solid": true
+  },
+  {
+   "id": "buisson2",
+   "type": "buisson",
+   "x": 24.125,
+   "y": 19.9375,
+   "w": 1.25,
+   "h": 1.125,
+   "seed": 302,
+   "solid": true
+  },
+  {
+   "id": "buisson3",
+   "type": "buisson",
+   "x": 30.5625,
+   "y": 12.6875,
+   "w": 1.375,
+   "h": 1.25,
+   "seed": 304,
+   "solid": true
+  },
+  {
+   "id": "buisson4",
+   "type": "buisson",
+   "x": 30.375,
+   "y": 1.9375,
+   "w": 1.25,
+   "h": 1.125,
+   "seed": 305,
+   "solid": true
+  },
+  {
+   "id": "buisson5",
+   "type": "buisson",
+   "x": 30.125,
+   "y": 20.375,
+   "w": 1.5,
+   "h": 1.375,
+   "seed": 306,
+   "solid": true
+  },
+  {
+   "id": "buisson6",
+   "type": "buisson",
+   "x": 12.8125,
+   "y": 17.25,
+   "w": 1.375,
+   "h": 1.25,
+   "seed": 308,
+   "solid": true,
+   "variants": [
+    {
+     "when": {
+      "day": 1,
+      "moment": "midi",
+      "if": "!basile_trouve"
+     },
+     "pieds": true
+    }
+   ]
+  },
+  {
+   "id": "buisson7",
+   "type": "buisson",
+   "x": 12.3125,
+   "y": 4.75,
+   "w": 1.375,
+   "h": 1.25,
+   "seed": 309,
+   "solid": true
+  },
+  {
+   "id": "buisson8",
+   "type": "buisson",
+   "x": 32.4375,
+   "y": 19.9375,
+   "w": 1.375,
+   "h": 1.25,
+   "seed": 310,
+   "solid": true
+  },
+  {
+   "id": "buisson9",
+   "type": "buisson",
+   "x": 33.8125,
+   "y": 14.75,
+   "w": 1.375,
+   "h": 1.25,
+   "seed": 311,
+   "solid": true
+  },
+  {
+   "id": "buisson10",
+   "type": "buisson",
+   "x": 30.9375,
+   "y": 19.8125,
+   "w": 1.375,
+   "h": 1.25,
+   "seed": 312,
+   "solid": true
+  },
+  {
+   "id": "buisson11",
+   "type": "buisson",
+   "x": 6.125,
+   "y": 12.25,
+   "w": 1.375,
+   "h": 1.25,
+   "seed": 313,
+   "solid": true
+  },
+  {
+   "id": "buisson13",
+   "type": "buisson",
+   "x": 13.0625,
+   "y": 5.125,
+   "w": 1.375,
+   "h": 1.25,
+   "seed": 317,
+   "solid": true
+  },
+  {
+   "id": "buisson14",
+   "type": "buisson",
+   "x": 16.3125,
+   "y": -0.875,
+   "w": 1.5,
+   "h": 1.375,
+   "seed": 318,
+   "solid": true
+  },
+  {
+   "id": "buisson15",
+   "type": "buisson",
+   "x": 24.25,
+   "y": 10.375,
+   "w": 1.25,
+   "h": 1.125,
+   "seed": 319,
+   "solid": true
+  },
+  {
+   "id": "buisson16",
+   "type": "buisson",
+   "x": 21.4375,
+   "y": 13.875,
+   "w": 1.125,
+   "h": 1,
+   "seed": 400,
+   "solid": true
+  },
+  {
+   "id": "buisson17",
+   "type": "buisson",
+   "x": 22,
+   "y": 13.9375,
+   "w": 1.125,
+   "h": 1,
+   "seed": 401,
+   "solid": true
+  },
+  {
+   "id": "buisson18",
+   "type": "buisson",
+   "x": 22.5625,
+   "y": 13.875,
+   "w": 1.125,
+   "h": 1,
+   "seed": 402,
+   "solid": true
+  },
+  {
+   "id": "buisson19",
+   "type": "buisson",
+   "x": 23.125,
+   "y": 13.9375,
+   "w": 1.125,
+   "h": 1,
+   "seed": 403,
+   "solid": true
+  },
+  {
+   "id": "buisson20",
+   "type": "buisson",
+   "x": 23.6875,
+   "y": 13.875,
+   "w": 1.125,
+   "h": 1,
+   "seed": 404,
+   "solid": true
+  },
+  {
+   "id": "buisson21",
+   "type": "buisson",
+   "x": 24.25,
+   "y": 13.9375,
+   "w": 1.125,
+   "h": 1,
+   "seed": 405,
+   "solid": true
+  },
+  {
+   "id": "buisson22",
+   "type": "buisson",
+   "x": 24.8125,
+   "y": 13.875,
+   "w": 1.125,
+   "h": 1,
+   "seed": 406,
+   "solid": true
+  },
+  {
+   "id": "rocher0",
+   "type": "rocher",
+   "x": 6,
+   "y": 10.75,
+   "w": 0.3125,
+   "h": 0.25,
+   "moss": true,
+   "solid": true
+  },
+  {
+   "id": "rocher1",
+   "type": "rocher",
+   "x": 18.75,
+   "y": 18.75,
+   "w": 0.5,
+   "h": 0.375,
+   "moss": false,
+   "solid": true
+  },
+  {
+   "id": "rocher2",
+   "type": "rocher",
+   "x": 32.5,
+   "y": 18.125,
+   "w": 0.75,
+   "h": 0.5625,
+   "moss": true,
+   "solid": true
+  },
+  {
+   "id": "rocher4",
+   "type": "rocher",
+   "x": 11.625,
+   "y": 9.375,
+   "w": 0.375,
+   "h": 0.25,
+   "moss": false,
+   "solid": true
+  },
+  {
+   "id": "maison",
+   "type": "maison",
+   "x": 6.875,
+   "y": 2.375,
+   "w": 4.625,
+   "h": 4.625,
+   "solid": true,
+   "name": "Maison du héros",
+   "bougie": 1,
+   "variants": [
+    {
+     "when": {
+      "day": 3,
+      "night": true
+     },
+     "lit": false
+    }
+   ]
+  },
+  {
+   "id": "barbier",
+   "type": "maison",
+   "x": 15.375,
+   "y": 3.125,
+   "w": 4.625,
+   "h": 4.625,
+   "solid": true,
+   "name": "Salon de Maître Fauvel",
+   "toit": "bleu",
+   "enseigne": "barbier",
+   "variants": [
+    {
+     "when": {
+      "night": true
+     },
+     "lit": [
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "maison_ysol",
+   "type": "maison",
+   "x": 7.75,
+   "y": 15.125,
+   "w": 4.625,
+   "h": 4.625,
+   "solid": true,
+   "name": "Maison de Grand-mère Ysol",
+   "toit": "vert"
+  },
+  {
+   "id": "maison_basile",
+   "type": "maison",
+   "x": 16.875,
+   "y": 15.75,
+   "w": 4.625,
+   "h": 4.625,
+   "solid": true,
+   "name": "Maison de Basile",
+   "toit": "orange",
+   "paille": true
+  },
+  {
+   "id": "maison_margot",
+   "type": "maison",
+   "x": 29.375,
+   "y": 6.25,
+   "w": 4.625,
+   "h": 4.625,
+   "solid": true,
+   "name": "Maison de Margot",
+   "toit": "violet",
+   "lit": [
+    0
+   ]
+  },
+  {
+   "id": "caisse_margot",
+   "type": "caisse",
+   "x": 32.5,
+   "y": 10.375,
+   "w": 0.75,
+   "h": 0.6875,
+   "solid": true,
+   "interact": {
+    "label": "Une caisse sous la fenêtre",
+    "text": "Posée juste sous la fenêtre de la chambre de Margot. Sur le mur, des traces de pas. L'indice de la fenêtre, en décor, pour qui regarde."
+   }
+  },
+  {
+   "id": "traces_margot",
+   "type": "traces_mur",
+   "x": 32.625,
+   "y": 9.75,
+   "w": 0.5,
+   "h": 0.875,
+   "above": true
+  },
+  {
+   "id": "grange",
+   "type": "grange",
+   "x": 2.4375,
+   "y": 7,
+   "w": 4.125,
+   "h": 3.875,
+   "solid": true,
+   "name": "La grange"
+  },
+  {
+   "id": "moulin",
+   "type": "moulin",
+   "x": 22.5625,
+   "y": 4,
+   "w": 3.875,
+   "h": 4,
+   "solid": true,
+   "name": "Le moulin d'Aubin",
+   "variants": [
+    {
+     "when": {
+      "day": 3,
+      "night": true
+     },
+     "lit": false
+    }
+   ]
+  },
+  {
+   "id": "roue",
+   "type": "roue",
+   "x": 26.3125,
+   "y": 5.3125,
+   "w": 1.875,
+   "h": 1.875,
+   "solid": true,
+   "variants": [
+    {
+     "when": {
+      "day": 3,
+      "night": true
+     },
+     "still": true
+    }
+   ]
+  },
+  {
+   "id": "lavoir",
+   "type": "lavoir",
+   "x": 20.6875,
+   "y": 15.375,
+   "w": 3.625,
+   "h": 2.625,
+   "solid": true,
+   "name": "Le lavoir"
+  },
+  {
+   "id": "puits",
+   "type": "puits",
+   "x": 23.75,
+   "y": 12.75,
+   "w": 2.75,
+   "h": 3.5,
+   "solid": true,
+   "name": "Le vieux puits",
+   "variants": [
+    {
+     "when": {
+      "night": true
+     },
+     "cheveux": 0.12
+    },
+    {
+     "when": {
+      "day": 3,
+      "night": true
+     },
+     "cheveux": 0.22
+    }
+   ]
+  },
+  {
+   "id": "pont",
+   "type": "pont",
+   "x": 25.625,
+   "y": 11.625,
+   "w": 1.875,
+   "h": 1.25
+  },
+  {
+   "id": "fontaine",
+   "type": "fontaine",
+   "x": 12.875,
+   "y": 13,
+   "w": 2.125,
+   "h": 1.875,
+   "solid": true,
+   "name": "La fontaine"
+  },
+  {
+   "id": "table_ysol",
+   "type": "table_nappe",
+   "x": 12.625,
+   "y": 18.75,
+   "w": 2,
+   "h": 1.25,
+   "solid": true,
+   "interact": {
+    "label": "La table d'Ysol",
+    "text": "Grand-mère Ysol mange dehors l'été, sous une longue nappe. Jour 1, cache-cache : Basile est dessous, ses pieds dépassent. Ysol : « Je n'ai vu personne », en regardant la table."
+   }
+  },
+  {
+   "id": "rouet_ysol",
+   "type": "rouet",
+   "x": 11.125,
+   "y": 19.75,
+   "w": 1.125,
+   "h": 1.25,
+   "solid": true,
+   "when": {
+    "night": false
+   }
+  },
+  {
+   "id": "linge_ysol",
+   "type": "corde_linge",
+   "x": 5.375,
+   "y": 16.75,
+   "w": 2.75,
+   "h": 1.375
+  },
+  {
+   "id": "trainee",
+   "type": "trainee",
+   "x": 23.5,
+   "y": 8,
+   "w": 2.5,
+   "h": 7,
+   "when": {
+    "day": 3,
+    "night": true
+   },
+   "pts": [
+    [
+     2.1,
+     0
+    ],
+    [
+     1.6,
+     1.5
+    ],
+    [
+     0.4,
+     3.4
+    ],
+    [
+     1.2,
+     5.2
+    ],
+    [
+     1.6,
+     6.9
+    ]
+   ],
+   "interact": {
+    "label": "Une traînée de cheveux",
+    "text": "Nuit 3 : de longs cheveux mouillés partent du mur du moulin, traversent le chemin et descendent vers le lavoir. Il suffit de la suivre jusqu'au puits."
+   }
+  },
+  {
+   "id": "balle",
+   "type": "balle",
+   "x": 27.5,
+   "y": 14.5,
+   "w": 0.375,
+   "h": 0.375,
+   "when": {
+    "day": 2,
+    "moment": "après-midi",
+    "night": false
+   }
+  }
+ ],
+ "exits": [
+  {
+   "id": "porte_maison",
+   "x": 8.75,
+   "y": 6.375,
+   "w": 0.75,
+   "h": 0.625,
+   "to": "maison_cuisine",
+   "at": "entree",
+   "label": "Entrer"
+  },
+  {
+   "id": "porte_grange",
+   "x": 3.75,
+   "y": 10.25,
+   "w": 1.375,
+   "h": 0.625,
+   "to": "grange",
+   "at": "entree",
+   "label": "Entrer"
+  },
+  {
+   "id": "porte_barbier",
+   "x": 17.25,
+   "y": 7.125,
+   "w": 0.75,
+   "h": 0.625,
+   "to": "barbier",
+   "at": "entree",
+   "label": "Entrer"
+  },
+  {
+   "id": "porte_moulin",
+   "x": 24.125,
+   "y": 7.375,
+   "w": 0.5,
+   "h": 0.625,
+   "to": "moulin_meule",
+   "at": "entree",
+   "label": "Entrer"
+  },
+  {
+   "id": "porte_maison_ysol",
+   "x": 9.625,
+   "y": 19.125,
+   "w": 0.75,
+   "h": 0.625,
+   "to": "ysol",
+   "at": "entree",
+   "label": "Entrer"
+  },
+  {
+   "id": "porte_maison_basile",
+   "x": 18.75,
+   "y": 19.75,
+   "w": 0.75,
+   "h": 0.625,
+   "to": "maison_basile",
+   "at": "entree",
+   "label": "Entrer"
+  },
+  {
+   "id": "route_sud",
+   "x": 13.9,
+   "y": 22.3,
+   "w": 1.6,
+   "h": 0.7,
+   "to": "cimetiere",
+   "at": "entree",
+   "label": "Vers le cimetière"
+  }
+ ],
+ "spawns": {
+  "porte_maison": {
+   "x": 9.125,
+   "y": 7.375,
+   "dir": "S"
+  },
+  "porte_grange": {
+   "x": 4.4375,
+   "y": 11.4,
+   "dir": "S"
+  },
+  "porte_barbier": {
+   "x": 17.625,
+   "y": 8.3,
+   "dir": "S"
+  },
+  "porte_moulin": {
+   "x": 24.375,
+   "y": 8.375,
+   "dir": "S"
+  },
+  "porte_ysol": {
+   "x": 10,
+   "y": 20.3,
+   "dir": "S"
+  },
+  "porte_basile": {
+   "x": 19.125,
+   "y": 20.75,
+   "dir": "S"
+  },
+  "route_sud": {
+   "x": 14.6,
+   "y": 21.6,
+   "dir": "N"
+  },
+  "fenetre_heros": {
+   "x": 10.9,
+   "y": 7.4,
+   "dir": "S"
+  },
+  "depart": {
+   "x": 9.1,
+   "y": 7.5,
+   "dir": "S"
+  }
+ },
+ "zones": {
+  "place": {
+   "x": 13,
+   "y": 10.4,
+   "w": 5.4,
+   "h": 4.4,
+   "name": "La place"
+  },
+  "chene": {
+   "x": 14.6,
+   "y": 10.2,
+   "w": 2,
+   "h": 2.2,
+   "name": "Le grand chêne",
+   "cachette": "margot"
+  },
+  "fontaine": {
+   "x": 12.7,
+   "y": 13.4,
+   "w": 2.4,
+   "h": 1.6,
+   "name": "La fontaine"
+  },
+  "lavoir": {
+   "x": 20.6,
+   "y": 15.4,
+   "w": 3.6,
+   "h": 2.6,
+   "name": "Le lavoir"
+  },
+  "puits": {
+   "x": 23.6,
+   "y": 14.6,
+   "w": 3,
+   "h": 2.6,
+   "name": "Le vieux puits",
+   "cachette": "elio"
+  },
+  "riviere_baignade": {
+   "x": 26,
+   "y": 13.6,
+   "w": 2.6,
+   "h": 2.6,
+   "name": "La baignade"
+  },
+  "rive_elio": {
+   "x": 28.6,
+   "y": 14,
+   "w": 1.8,
+   "h": 1.6,
+   "name": "La rive"
+  },
+  "devant_barbier": {
+   "x": 16.2,
+   "y": 7.8,
+   "w": 3,
+   "h": 1.6,
+   "name": "Devant le salon"
+  },
+  "moulin_dehors": {
+   "x": 22.4,
+   "y": 8,
+   "w": 4,
+   "h": 2,
+   "name": "Devant le moulin"
+  },
+  "fenetre_elio": {
+   "x": 24.9,
+   "y": 7.9,
+   "w": 1.1,
+   "h": 0.9,
+   "name": "Sous la fenêtre d'Élio"
+  },
+  "fenetre_cuisine_moulin": {
+   "x": 22.9,
+   "y": 7.9,
+   "w": 1.1,
+   "h": 0.9,
+   "name": "Sous la fenêtre de la cuisine du moulin"
+  },
+  "trainee_cheveux": {
+   "x": 23.4,
+   "y": 8,
+   "w": 2.8,
+   "h": 7,
+   "name": "La traînée de cheveux"
+  },
+  "fenetre_heros": {
+   "x": 10.3,
+   "y": 6.4,
+   "w": 1.4,
+   "h": 1.2,
+   "name": "Sous la fenêtre du héros"
+  },
+  "fenetre_margot": {
+   "x": 32.3,
+   "y": 10.3,
+   "w": 1.4,
+   "h": 1.4,
+   "name": "Sous la fenêtre de Margot"
+  },
+  "cachette_basile": {
+   "x": 12.6,
+   "y": 17,
+   "w": 1.8,
+   "h": 1.8,
+   "name": "Le buisson près de chez Ysol",
+   "cachette": "basile"
+  },
+  "devant_ysol": {
+   "x": 9.4,
+   "y": 19.8,
+   "w": 3.2,
+   "h": 1.6,
+   "name": "Chez Grand-mère Ysol"
+  },
+  "devant_basile": {
+   "x": 18.4,
+   "y": 20.4,
+   "w": 2.8,
+   "h": 1.4,
+   "name": "Chez Basile"
+  },
+  "devant_margot": {
+   "x": 30.8,
+   "y": 11.4,
+   "w": 2.6,
+   "h": 1.4,
+   "name": "Chez Margot"
+  },
+  "devant_maison": {
+   "x": 8.4,
+   "y": 7.1,
+   "w": 2.4,
+   "h": 1.4,
+   "name": "Devant la maison"
+  },
+  "grange_devant": {
+   "x": 3.4,
+   "y": 11,
+   "w": 2.6,
+   "h": 1.4,
+   "name": "Devant la grange"
+  },
+  "lisiere": {
+   "x": 0,
+   "y": 15,
+   "w": 3.6,
+   "h": 2.6,
+   "name": "La lisière de la forêt"
+  },
+  "route_sud": {
+   "x": 13.6,
+   "y": 20.6,
+   "w": 2.2,
+   "h": 2.4,
+   "name": "La route du sud"
+  }
+ },
+ "scenes": [
+  {
+   "id": "s2_cache_cache",
+   "zone": "place",
+   "when": {
+    "day": 1,
+    "moment": "midi"
+   },
+   "title": "Le cache-cache",
+   "who": "Margot, Basile, Élio",
+   "line": "« Cache-cache. C'est toi qui cherches, t'es arrivé en dernier. » Basile : « Pas dans la forêt, hein. Ni près du puits. Et pas le droit de se cacher à l'intérieur ! »"
+  },
+  {
+   "id": "s2_margot",
+   "zone": "chene",
+   "when": {
+    "day": 1,
+    "moment": "midi"
+   },
+   "title": "Margot en haut du chêne",
+   "who": "Margot",
+   "line": "Des glands tombent quand on passe dessous. « La reine des brigands se laisse attraper, c'est différent. »"
+  },
+  {
+   "id": "s2_basile",
+   "zone": "cachette_basile",
+   "when": {
+    "day": 1,
+    "moment": "midi"
+   },
+   "title": "Basile dans le buisson",
+   "who": "Basile, Ysol",
+   "line": "Ses sabots dépassent du buisson. Ysol, à son rouet : « Je n’ai vu personne. » Basile : « C’est pas juste, elle m’a dénoncé avec les yeux ! »"
+  },
+  {
+   "id": "s2_fausse_piste_basile",
+   "zone": "devant_basile",
+   "when": {
+    "day": 1,
+    "moment": "midi"
+   },
+   "title": "Fausse piste : chez Basile",
+   "who": "La mère de Basile",
+   "line": "Elle coud sur le pas de la porte, les petits frères partout : « Basile ? On joue pas dans ma maison. Dehors ! »"
+  },
+  {
+   "id": "s2_aubin",
+   "zone": "moulin_dehors",
+   "when": {
+    "day": 1,
+    "moment": "midi"
+   },
+   "title": "Aubin chasse le héros",
+   "who": "Aubin",
+   "line": "« Dehors ! On joue pas devant mon moulin. »"
+  },
+  {
+   "id": "s2_elio",
+   "zone": "puits",
+   "when": {
+    "day": 1,
+    "moment": "midi"
+   },
+   "title": "Élio sur la margelle",
+   "who": "Élio",
+   "line": "On le trouve en dernier, en suivant le lavoir. « Je me cachais pas. J'aime bien ici. C'est calme. Chez moi c'est pas calme. »"
+  },
+  {
+   "id": "s3_legende",
+   "zone": "puits",
+   "when": {
+    "day": 1,
+    "moment": "fin d'après-midi"
+   },
+   "title": "La légende du puits",
+   "who": "Basile, Margot, Élio",
+   "line": "« Quand un enfant garde une rancune trop longtemps… elle remonte la boire. »"
+  },
+  {
+   "id": "s7_balade",
+   "zone": "devant_barbier",
+   "when": {
+    "day": 2,
+    "moment": "matin"
+   },
+   "title": "La balade pendant que les grands parlent",
+   "line": "On peut se promener dans le salon et dans la rue devant."
+  },
+  {
+   "id": "s8_aubin",
+   "zone": "devant_barbier",
+   "when": {
+    "day": 2,
+    "moment": "fin de matinée"
+   },
+   "title": "Aubin et son rasoir",
+   "who": "Aubin",
+   "line": "« C'est toi, le copain du gamin. Tu lui diras de rentrer tôt. Ce soir, je lui rase la tête. »"
+  },
+  {
+   "id": "s9_riviere",
+   "zone": "riviere_baignade",
+   "when": {
+    "day": 2,
+    "moment": "après-midi"
+   },
+   "title": "La baignade",
+   "who": "Margot, Basile, les enfants",
+   "line": "On joue à la balle dans l'eau. Margot : « Moi je sors souvent par ma fenêtre la nuit. Elle n'en sait rien. »"
+  },
+  {
+   "id": "s9_elio_rive",
+   "zone": "rive_elio",
+   "when": {
+    "day": 2,
+    "moment": "après-midi"
+   },
+   "title": "Élio sur la rive",
+   "who": "Élio",
+   "line": "« J'ai pas envie qu'on voie mes bras. » « C'est elle qui m'a fait les tresses. C'est tout ce qu'il me reste d'elle. »"
+  },
+  {
+   "id": "s10_tete_rasee",
+   "zone": "place",
+   "when": {
+    "day": 3,
+    "moment": "matin"
+   },
+   "title": "La tête rasée",
+   "who": "Élio, Margot",
+   "line": "« Il l'a fait hier soir. Il a jeté les tresses dans le poêle. J'ai juste sauvé ça. » Un ruban bleu, à moitié brûlé."
+  },
+  {
+   "id": "s11_peur_basile",
+   "zone": "lavoir",
+   "when": {
+    "day": 3,
+    "moment": "après-midi"
+   },
+   "title": "La peur de Basile",
+   "who": "Basile",
+   "line": "« Il a de la rancune plein le ventre. La Rancunière va venir. Faut prévenir les autres. »"
+  },
+  {
+   "id": "s12_a_demain",
+   "zone": "place",
+   "when": {
+    "day": 3,
+    "moment": "fin d'après-midi"
+   },
+   "title": "« À demain »",
+   "who": "Élio",
+   "line": "« Garde-le, toi. Chez moi, il le brûlerait. » Ses derniers mots vivants : « À demain. »"
+  },
+  {
+   "id": "n3_fenetre",
+   "zone": "fenetre_heros",
+   "when": {
+    "day": 3,
+    "night": true
+   },
+   "title": "Le saut par la fenêtre",
+   "line": "Le héros enjambe le rebord et saute dans le jardin. Voleur +1 (première sortie)."
+  },
+  {
+   "id": "n3_moulin",
+   "zone": "moulin_dehors",
+   "when": {
+    "day": 3,
+    "night": true
+   },
+   "title": "Devant la maison d'Élio",
+   "line": "Le moulin est silencieux, la roue arrêtée. La fenêtre d'Élio est grande ouverte, le rideau bat."
+  },
+  {
+   "id": "n3_fenetre_cuisine",
+   "zone": "fenetre_cuisine_moulin",
+   "when": {
+    "day": 3,
+    "night": true
+   },
+   "title": "Aubin endormi",
+   "who": "Aubin",
+   "line": "Par la fenêtre : Aubin endormi sur la table, une bouteille couchée. Si on frappe au carreau, il murmure le prénom de sa femme."
+  },
+  {
+   "id": "n3_trainee",
+   "zone": "trainee_cheveux",
+   "when": {
+    "day": 3,
+    "night": true
+   },
+   "title": "La traînée de cheveux",
+   "line": "Des cheveux mouillés partent du mur, traversent le chemin et descendent vers le lavoir."
+  },
+  {
+   "id": "n3_puits",
+   "zone": "puits",
+   "when": {
+    "day": 3,
+    "night": true
+   },
+   "title": "Le puits : Élio est mort",
+   "who": "L'Esprit (« ??? »)",
+   "line": "« Tu es venu le chercher ? » Parler, Combattre, Pacte ou Fuir."
+  },
+  {
+   "id": "n3_aubin_lanterne",
+   "zone": "lisiere",
+   "when": {
+    "day": 3,
+    "night": true
+   },
+   "title": "Aubin à la lanterne",
+   "who": "Aubin",
+   "line": "Il cherche son fils dans la mauvaise direction."
+  },
+  {
+   "id": "j4_aube",
+   "zone": "puits",
+   "when": {
+    "day": 4,
+    "moment": "aube"
+   },
+   "title": "Voie de jour",
+   "who": "Aubin, Basile",
+   "line": "Aubin tambourine aux portes : « Le gamin a disparu ! » Au fond du puits, le corps d'Élio, ou seulement de l'eau rouge."
+  },
+  {
+   "id": "n_chant",
+   "zone": "puits",
+   "when": {
+    "night": true
+   },
+   "title": "Le puits, la nuit",
+   "line": "Quelques mèches de cheveux pendent de la margelle."
+  }
+ ],
+ "npcs": [
+  {
+   "id": "margot",
+   "x": 14.2,
+   "y": 13.7,
+   "when": {
+    "night": false,
+    "day": [
+     1,
+     2,
+     3
+    ]
+   }
+  },
+  {
+   "id": "basile",
+   "x": 17,
+   "y": 13.9,
+   "when": {
+    "night": false,
+    "day": [
+     1,
+     2,
+     3
+    ]
+   }
+  },
+  {
+   "id": "elio",
+   "x": 15.8,
+   "y": 14.4,
+   "when": {
+    "night": false,
+    "day": [
+     1,
+     2
+    ]
+   }
+  },
+  {
+   "id": "elio",
+   "x": 15.8,
+   "y": 14.4,
+   "when": {
+    "night": false,
+    "day": 3
+   },
+   "look": "elio_capuche"
+  },
+  {
+   "id": "mere",
+   "x": 7.6,
+   "y": 7.6,
+   "when": {
+    "night": false
+   }
+  },
+  {
+   "id": "fauvel",
+   "x": 18.9,
+   "y": 8.9,
+   "when": {
+    "night": false
+   }
+  },
+  {
+   "id": "aubin",
+   "x": 25.9,
+   "y": 9.4,
+   "when": {
+    "night": false,
+    "day": [
+     1,
+     3
+    ]
+   }
+  },
+  {
+   "id": "aubin",
+   "x": 17.6,
+   "y": 9.1,
+   "when": {
+    "day": 2,
+    "moment": "fin de matinée",
+    "night": false
+   }
+  },
+  {
+   "id": "ysol",
+   "x": 11.6,
+   "y": 21.1,
+   "when": {
+    "night": false,
+    "day": [
+     1,
+     2,
+     3
+    ]
+   }
+  },
+  {
+   "id": "chat",
+   "x": 9.2,
+   "y": 20.9,
+   "when": {
+    "night": false
+   }
+  },
+  {
+   "id": "enfant_a",
+   "x": 26.8,
+   "y": 14.8,
+   "when": {
+    "day": 2,
+    "moment": "après-midi",
+    "night": false
+   }
+  },
+  {
+   "id": "enfant_b",
+   "x": 27.6,
+   "y": 15.6,
+   "when": {
+    "day": 2,
+    "moment": "après-midi",
+    "night": false
+   }
+  },
+  {
+   "id": "elio",
+   "x": 29.4,
+   "y": 15.4,
+   "when": {
+    "day": 2,
+    "moment": "après-midi",
+    "night": false
+   }
+  },
+  {
+   "id": "poule",
+   "x": 3.4,
+   "y": 12.6,
+   "when": {
+    "night": false
+   }
+  },
+  {
+   "id": "poule_blanche",
+   "x": 5.6,
+   "y": 12.2,
+   "when": {
+    "night": false
+   }
+  },
+  {
+   "id": "aubin",
+   "x": 3.4,
+   "y": 16.6,
+   "when": {
+    "day": 3,
+    "night": true
+   },
+   "lantern": true
+  }
+ ],
+ "collision": [
+  "01000100110010011101101000110101011",
+  "10100100010010000000010110100100100",
+  "00100000000000100110000001101001010",
+  "01100000000000000000000001100001000",
+  "00000000000000000000000000111000000",
+  "10000001111001000000000000110000000",
+  "10000001111001001111000111010000001",
+  "00000000000000001111000111011000000",
+  "10000000000000000000000000010000000",
+  "01011100000100000000010000010011110",
+  "00011110000000000000000000110011110",
+  "10000000010000000000000010100000000",
+  "00000000000000010000000000000000000",
+  "00000010000000000000000000110001000",
+  "10000000000001100000001111000000000",
+  "00000000000000000000000011000000001",
+  "10100000000000000000000000011100000",
+  "10010000000000000000011100011000000",
+  "10100000111101000001000000001000100",
+  "01000000111101100111100000001100000",
+  "01010000000000000000000010001101010",
+  "11000000000000000000000000000110000",
+  "00010000000000000000000000000100000"
+ ]
+}

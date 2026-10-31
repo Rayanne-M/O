@@ -3,8 +3,12 @@
 Un RPG jouable dans le navigateur, centré sur la construction de personnage :
 classe, bénédictions, malédictions et passifs se combinent pour déclencher des **synergies**.
 
-Pour l'instant, le projet contient l'**atelier de personnage** : un outil de développement et d'équilibrage
-où tout est accessible librement, pour tester des combinaisons et comparer leurs dégâts.
+Le projet contient deux pages :
+
+- l'**atelier de personnage** (`index.html`) : un outil de développement et d'équilibrage
+  où tout est accessible librement, pour tester des combinaisons et comparer leurs dégâts ;
+- la **tranche jouable de l'enfance** (`village.html`) : le village natal en vue de dessus, trois jours
+  et trois nuits, la fenêtre de la chambre et la nuit au puits. Voir [plus bas](#la-tranche-jouable-de-lenfance).
 
 ## Lancer le projet
 
@@ -12,7 +16,7 @@ Il faut [Node.js](https://nodejs.org) (version 20 ou plus).
 
 ```bash
 npm install      # installe les dépendances (une seule fois)
-npm run dev      # lance le jeu sur http://localhost:5173
+npm run dev      # l'atelier sur http://localhost:5173, le village sur http://localhost:5173/village.html
 npm test         # lance les tests
 npm run build    # vérifie les types et prépare une version à publier dans dist/
 ```
@@ -110,3 +114,47 @@ Les conditions possibles : `class`, `tags` (nombre minimum par tag), `ids` (él�
 
 Lance `npm test` après chaque ajout : les tests de `src/data/data.test.ts` vérifient que le contenu est cohérent
 (identifiants uniques, tags nommés, synergies et passifs qui pointent vers des éléments existants).
+
+## La tranche jouable de l'enfance
+
+Le village natal, dans l'esprit des RPG sur DS : écran de 384 × 216 pixels agrandi sans flou, tuiles de 16 px,
+héros enfant qui marche dans les 8 directions. Affichage avec [Phaser 3](https://phaser.io), textes et menus en HTML
+par-dessus pour qu'ils restent nets.
+
+Commandes : flèches, ZQSD ou WASD pour marcher (deux touches pour les diagonales), Espace, Entrée ou E pour parler
+et examiner. Sur mobile, un joystick et un bouton A apparaissent.
+
+Pour tester un moment précis : `village.html?jour=2` commence au jour 2, `village.html?nuit=3` à la nuit 3,
+`village.html?scene=cache-cache` ou `?scene=riviere` saute directement à une scène.
+
+Le code est séparé en deux : un **moteur** qui ne connaît aucune histoire et sert à tout le jeu, et des **chapitres**
+qui racontent. Un nouveau chapitre réutilise le moteur, les cartes et les dessins sans rien y changer.
+
+```
+scripts/import-art.mjs  Copie les planches de dessin et les cartes du dossier partagé du projet (rpg/) dans
+                        src/game. À relancer après chaque nouvelle planche ou carte :
+                        `node scripts/import-art.mjs [dossier rpg/art/src]`.
+src/game/
+  art/shared.js    Toutes les planches réunies en un seul module (généré, ne pas modifier à la main).
+  data/maps/       Toutes les cartes du jeu, au format commun (généré). index.json les liste par chapitre.
+  engine/
+    maps.ts        Le format commun des cartes : sorties, objets, zones, conditions (« jour », « moment », drapeaux).
+    world.ts       Charge toutes les cartes d'un chapitre ; une seule fonction (drawAnyMap) les dessine toutes.
+    game.ts        La boucle de jeu : déplacements, personnages, gros plans, cinématiques, dialogues.
+    handlers.ts    « Quand on parle à X / examine Y / sort par Z / entre dans la zone W, faire … ».
+    actors.ts      Les personnages : marche, poses, personnages qui suivent le héros.
+    state.ts       Ce que l'enfance laisse sur le héros : jauges, compteurs cachés, peurs, traits, objets.
+    ui.ts          Boîte de dialogue, choix, sous-titres, écrans titre et bilan.
+  chapters/enfance/
+    story.ts       Toute l'histoire : chaque jour, ses moments, ses textes et ses choix.
+    plans.ts       Les gros plans et les cinématiques (une cinématique = une suite de plans et leurs durées).
+    cast.ts        Les personnages et leur apparence.
+```
+
+**Changer un texte** : tout est dans `src/game/chapters/enfance/story.ts`. Les effets s'écrivent comme dans
+le scénario : `{ guerrier: 1 }`, `{ rancoeur: -1 }`, `{ 'peurs.araignees': 'peur' }`, `{ trait: 'Conteur' }`.
+
+**Ajouter une carte** : la déposer dans `rpg/data/maps/` du dossier partagé et dans son `index.json`, puis relancer l'import.
+Les tests vérifient d'eux-mêmes que ses sorties mènent quelque part et qu'on n'y apparaît pas dans un mur.
+
+Ce qui reste provisoire : la pousse des cheveux n'est visible que par paliers (épaules, pointes, court).
