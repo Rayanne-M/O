@@ -13,7 +13,6 @@ const maps = Object.fromEntries(
 
 // Défauts connus des cartes, signalés au fil des cartes : à retirer d'ici quand ils sont corrigés.
 const KNOWN: Record<string, string[]> = {
-  barbier: ['portrait'], // caché derrière le client assis : pas la place de passer entre lui et le fauteuil
 };
 
 describe('les cartes', () => {
