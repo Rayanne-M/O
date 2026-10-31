@@ -20,7 +20,7 @@ export interface MapObject extends Rect {
   when?: When;
   [extra: string]: unknown;
 }
-export interface MapExit extends Rect { id: string; to: string; at: string; label?: string; locked?: 'nuit' | true; when?: When }
+export interface MapExit extends Rect { id: string; to: string; at: string; label?: string; locked?: 'nuit' | true; when?: When; action?: boolean }
 
 /** Une carte telle qu'elle est écrite dans rpg/data/maps/<id>.json (en tuiles). */
 export interface MapFile {
@@ -155,7 +155,8 @@ function buildMask(map: GameMap) {
       if (x >= 0 && y >= 0 && x < map.w && y < map.h) map.mask[y * map.w + x] = 1;
     }
   }
-  for (const e of map.exits) fillMask(map, e.px, 0);
+  // on peut marcher dans l'embrasure d'une porte ; une fenêtre, elle, se prend depuis le sol
+  for (const e of map.exits) if (!actionExit(map, e)) fillMask(map, e.px, 0);
 }
 
 /** Les pieds d'un personnage : 10 × 4 px, posés sur (x, y). */
@@ -211,17 +212,26 @@ export function sortThings(map: GameMap, objects: PlacedObject[]) {
     });
 }
 
+/** Une porte se passe à 5 px au plus devant les pieds, en la recouvrant d'au moins 4 px. */
+const DOOR_REACH = 5, DOOR_OVERLAP = 4;
+
 /**
- * Le héros passe une sortie seulement s'il est au bout et avance vers elle : le bord de ses pieds, dans le sens
- * de la marche, touche la sortie, et il est bien en face (pas en train de la longer).
+ * Le héros passe une sortie quand il avance vers elle et qu'elle est juste devant ses pieds (pas besoin d'être collé
+ * au pixel), en face d'elle (pas en train de la longer).
  */
-export function entersExit(x: number, y: number, dx: number, dy: number, r: Rect) {
-  const fx = x + dx * 7, fy = dy < 0 ? y - 6 : dy > 0 ? y + 2 : y - 2;
-  if (!inRect(fx, fy, r)) return false;
-  // en face : le centre des pieds est dans la largeur de la porte (marche verticale) ou dans sa hauteur (horizontale)
-  if (dy !== 0 && dx === 0) return x >= r.x && x < r.x + r.w;
-  if (dx !== 0 && dy === 0) return y - 2 >= r.y && y - 2 < r.y + r.h;
-  return inRect(x, y - 2, { x: r.x - 4, y: r.y - 4, w: r.w + 8, h: r.h + 8 });
+export function entersExit(x: number, y: number, dx: number, dy: number, r: Rect): boolean {
+  if (dx && dy) return entersExit(x, y, dx, 0, r) || entersExit(x, y, 0, dy, r);
+  const f = footAt(x, y), k = DOOR_REACH;
+  const reach =
+    dy < 0 ? { ...f, y: f.y - k, h: f.h + k } : dy > 0 ? { ...f, h: f.h + k } : dx < 0 ? { ...f, x: f.x - k, w: f.w + k } : { ...f, w: f.w + k };
+  if (!overlap(reach, r)) return false;
+  const span = dy ? Math.min(f.x + f.w, r.x + r.w) - Math.max(f.x, r.x) : Math.min(f.y + f.h, r.y + r.h) - Math.max(f.y, r.y);
+  return span >= Math.min(DOOR_OVERLAP, dy ? r.w : r.h);
+}
+
+/** Une sortie qui se prend avec le bouton d'action (une fenêtre) plutôt qu'en marchant. */
+export function actionExit(map: GameMap, e: MapExit & { px: Rect }) {
+  return !!e.action || map.objects.some((o) => o.type === 'fenetre' && overlap(o.px, e.px));
 }
 
 /** Le point libre le plus proche (à 2 tuiles au plus), pour qu'une arrivée mal placée ne coince pas le héros dans un mur. */
@@ -305,7 +315,10 @@ export function auditMap(map: GameMap, hit?: (x: number, y: number) => boolean) 
     for (let i = 0; i < seen.length; i++) if (seen[i] && test(i % map.w, Math.floor(i / map.w))) return true;
     return false;
   };
-  const exits = map.exits.filter((e) => !some((x, y) => DIR4.some(([dx, dy]) => entersExit(x, y, dx, dy, e.px)))).map((e) => e.id);
+  const probeIn = (r: Rect) => (x: number, y: number) => DIR4.some(([dx, dy]) => inRect(x + dx * 12, y - 4 + dy * 10, r));
+  const passes = (e: GameMap['exits'][number]) =>
+    actionExit(map, e) ? probeIn({ x: e.px.x - 4, y: e.px.y - 4, w: e.px.w + 8, h: e.px.h + 8 }) : (x: number, y: number) => DIR4.some(([dx, dy]) => entersExit(x, y, dx, dy, e.px));
+  const exits = map.exits.filter((e) => !some(passes(e))).map((e) => e.id);
   const near = (o: PlacedObject) => reachOf(map, o);
   const objects = map.objects
     .filter((o) => o.interact && !o.secret)

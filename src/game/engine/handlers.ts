@@ -45,6 +45,11 @@ export class Handlers {
   }
 
   /** Plusieurs cibles à la fois : une réaction de l'étape passe avant une réaction permanente, quelle que soit la cible. */
+  /** Une réaction existe-t-elle pour l'une de ces cibles ? */
+  has(targets: Target[]) {
+    return targets.some((t) => Handlers.keys(t).some((k) => this.step.has(k) || this.always.has(k)));
+  }
+
   async interactAll(g: Game, targets: Target[]) {
     for (const pool of [this.step, this.always])
       for (const t of targets)

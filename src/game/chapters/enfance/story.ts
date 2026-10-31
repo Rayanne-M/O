@@ -962,7 +962,9 @@ async function night3(g: Game): Promise<'fenetre' | 'lit'> {
     'object:maison_chambre/bougie': () => g.say('narr', 'La bougie est éteinte. Elle ne se rallume pas.'),
     'exit:maison_chambre/vers_salle': () => g.say('narr', 'La porte est fermée à clé.'),
   });
+  g.hints = false;
   await g.until(() => choice !== null);
+  g.hints = true;
   return choice!;
 }
 
@@ -1094,7 +1096,7 @@ async function talk(g: Game): Promise<Ending | null> {
   } else if (k === 3) {
     await g.say('heros', 'Tu peux la laisser partir, ta rancune.');
     if (force() <= 4) {
-      await g.say('narr', 'Et l\'Esprit chante. Pour la première fois, avec des paroles. Il lâche Élio, et s\'en va.');
+      await g.say('narr', 'Les cheveux se détendent, mèche après mèche, et redescendent dans le noir. L\'Esprit lâche Élio, et s\'en va.');
       applyEffects({ mage: 2, trait: 'Chuchoteur d\'esprits' });
       return 'apaisement';
     }
@@ -1264,7 +1266,11 @@ async function burial(g: Game, end: Ending) {
 export async function playAct(g: Game, from: { day: number; night: boolean; scene?: string }) {
   dressMaps(g);
   setupAlways(g);
-  if (from.day <= 1 && !from.night) {
+  if (from.scene === 'coucher') {
+    // ?scene=coucher : commencer au coucher du jour 1 (la bougie, la fenêtre)
+    looks(g);
+    await bedtime(g);
+  } else if (from.day <= 1 && !from.night) {
     // ?scene=cache-cache : commencer au cache-cache (pour essayer une scène sans rejouer ce qui précède)
     if (from.scene !== 'cache-cache') await day1Eggs(g);
     await day1HideAndSeek(g);
@@ -1283,9 +1289,10 @@ export async function playAct(g: Game, from: { day: number; night: boolean; scen
   if (way === 'fenetre') {
     await night3Outside(g);
     if (!has('rentre_nuit3')) end = await well(g);
-    const fin = ({ apaisement: 'chante', victoire: 'fuit', incredulite: 'relache' } as const)[end as 'apaisement'];
-    if (fin) {
-      await g.cut(() => play(g, P.nightEndCine(fin)));
+    // l'apaisement : quelques mèches qui redescendent, sans chant
+    const cine = end === 'apaisement' ? P.quietEndCine : end === 'victoire' ? P.nightEndCine('fuit') : end === 'incredulite' ? P.nightEndCine('relache') : null;
+    if (cine) {
+      await g.cut(() => play(g, cine));
       g.showPlan(null);
     }
   }

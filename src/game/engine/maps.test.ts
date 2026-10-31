@@ -58,6 +58,9 @@ describe('les portes', () => {
     expect(entersExit(106, 65, 0, 1, door)).toBe(false); // dos à la porte
     expect(entersExit(94, 65, 0, -1, door)).toBe(false); // à côté
     expect(entersExit(106, 64, 1, 0, door)).toBe(false); // la longe
+    expect(entersExit(106, 68, 0, -1, door)).toBe(true); // pas besoin d'être collé
+    expect(entersExit(99, 65, 0, -1, door)).toBe(true); // un peu de côté
+    expect(entersExit(98, 65, 0, -1, door)).toBe(false); // trop de côté
   });
 });
 

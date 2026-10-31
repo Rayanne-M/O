@@ -42,6 +42,7 @@ export const enfance: Chapter = {
     }
   },
   interact: (g, targets) => H.interactAll(g, targets),
+  canInteract: (_g, targets) => H.has(targets),
   async canExit(g, e) {
     const fn = H.match({ kind: 'exit', id: e.id, map: g.map.id });
     if (fn) return (await fn(g)) === true;
