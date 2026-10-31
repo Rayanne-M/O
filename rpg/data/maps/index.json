@@ -1,0 +1,96 @@
+{
+ "tile": 16,
+ "chapters": {
+  "enfance": "Chapitre 1 : l'Enfance"
+ },
+ "start": {
+  "map": "maison_chambre",
+  "at": "lit"
+ },
+ "maps": {
+  "village": {
+   "name": "Le village natal",
+   "chapter": "enfance",
+   "kind": "exterieur",
+   "file": "village.json"
+  },
+  "cimetiere": {
+   "name": "Le cimetière",
+   "chapter": "enfance",
+   "kind": "exterieur",
+   "file": "cimetiere.json"
+  },
+  "maison_cuisine": {
+   "name": "Maison du héros — la cuisine",
+   "chapter": "enfance",
+   "kind": "piece",
+   "file": "maison_cuisine.json"
+  },
+  "maison_salle": {
+   "name": "Maison du héros — la salle commune",
+   "chapter": "enfance",
+   "kind": "piece",
+   "file": "maison_salle.json"
+  },
+  "maison_chambre": {
+   "name": "Maison du héros — la chambre",
+   "chapter": "enfance",
+   "kind": "piece",
+   "file": "maison_chambre.json"
+  },
+  "grange": {
+   "name": "La grange",
+   "chapter": "enfance",
+   "kind": "piece",
+   "file": "grange.json"
+  },
+  "grange_fenil": {
+   "name": "La grange — le fenil",
+   "chapter": "enfance",
+   "kind": "piece",
+   "file": "grange_fenil.json"
+  },
+  "barbier": {
+   "name": "Salon de Maître Fauvel",
+   "chapter": "enfance",
+   "kind": "piece",
+   "file": "barbier.json"
+  },
+  "barbier_arriere": {
+   "name": "Salon de Fauvel — l'arrière-boutique",
+   "chapter": "enfance",
+   "kind": "piece",
+   "file": "barbier_arriere.json"
+  },
+  "moulin_meule": {
+   "name": "Le moulin — la salle de la meule",
+   "chapter": "enfance",
+   "kind": "piece",
+   "file": "moulin_meule.json"
+  },
+  "moulin_cuisine": {
+   "name": "Le moulin — la cuisine",
+   "chapter": "enfance",
+   "kind": "piece",
+   "file": "moulin_cuisine.json"
+  },
+  "chambre_elio": {
+   "name": "Le moulin — la chambre d'Élio",
+   "chapter": "enfance",
+   "kind": "piece",
+   "file": "chambre_elio.json"
+  },
+  "ysol": {
+   "name": "Maison de Grand-mère Ysol",
+   "chapter": "enfance",
+   "kind": "piece",
+   "file": "ysol.json"
+  },
+  "maison_basile": {
+   "name": "Maison de Basile — la cuisine",
+   "chapter": "enfance",
+   "kind": "piece",
+   "file": "maison_basile.json"
+  }
+ }
+}

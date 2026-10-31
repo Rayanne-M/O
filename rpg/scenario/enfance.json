@@ -1,0 +1,151 @@
+{
+  "_source": "Scénario de l'enfance (doc Claude) : https://claude.ai/artifact/YSwNfBWsKdC37qiBTEsRUz. Noms provisoires.",
+  "compteurs": {
+    "jauges": {"guerrier": 0, "mage": 0, "voleur": 0},
+    "legende": 1, "rancoeur": 2, "peur": 0,
+    "force_esprit": "legende + rancoeur + peur ; 0-3 faible, 4-6 moyenne, 7+ forte",
+    "maudit": 0, "beni": 0,
+    "cheveux": "court | mi-long | long (fixé au barbier, jour 2)",
+    "peurs": {"araignees": "aime | neutre | peur", "noir": "aime | neutre | peur", "cheveux": "neutre | peur", "eau": "neutre | peur"},
+    "drapeaux": ["dit_nimporte_quoi", "a_monte_legende_soi_meme", "a_ciseaux", "a_ruban", "a_crie_au_puits", "sorti_fenetre_une_fois", "bougie_allumee_nuits", "sorti_nuits"]
+  },
+  "scenes": [
+    {"id": "s1_grange", "jour": 1, "moment": "matin", "lieu": "grange", "pnj": ["mere"],
+     "lignes": [{"qui": "mere", "texte": "Six œufs, pas cinq. Et tu ne traînes pas, Élio t'attend déjà sur la place."}],
+     "evenement": "Une grosse araignée descend de la poutre et se pose sur le panier.",
+     "choix": [
+      {"texte": "La laisser grimper sur ta main", "effets": {"peurs.araignees": "aime"}},
+      {"texte": "La chasser d'une pichenette", "effets": {"peurs.araignees": "neutre"}},
+      {"texte": "Crier et lâcher le panier", "effets": {"peurs.araignees": "peur"}, "note": "deux œufs cassés, la mère soupire"}]},
+    {"id": "s2_place", "jour": 1, "moment": "midi", "lieu": "place", "pnj": ["margot", "elio", "basile"],
+     "lignes": [{"qui": "margot", "texte": "Moi je suis la reine des brigands, c'est décidé. Toi, tu prends quoi ?"}],
+     "choix": [
+      {"texte": "Chevalier. Je protège Élio.", "effets": {"guerrier": 1}},
+      {"texte": "Sorcier. Je vous transforme tous en crapauds.", "effets": {"mage": 1}},
+      {"texte": "Brigand. Je vole la couronne de Margot.", "effets": {"voleur": 1}}],
+     "apres": [
+      {"qui": "basile", "texte": "T'as quoi, là ?"},
+      {"qui": "elio", "texte": "Je suis tombé du grenier."},
+      {"qui": "margot", "texte": "Il tombe beaucoup, ces temps-ci.", "note": "tout bas au héros"}]},
+    {"id": "s3_legende", "jour": 1, "moment": "soir", "lieu": "puits (margelle, derrière le lavoir)", "pnj": ["basile", "margot", "elio"],
+     "lignes": [
+      {"qui": "basile", "texte": "Il y a cent ans, une fille du village avait des cheveux si longs qu'ils traînaient par terre. Sa sœur, jalouse, les lui a coupés pendant qu'elle dormait. La fille n'a jamais pardonné. Elle s'est jetée dans le puits avec sa rancune. Depuis, ses cheveux repoussent au fond. Et quand un enfant garde une rancune trop longtemps… elle remonte la boire."},
+      {"qui": "margot", "texte": "Ma mère dit que c'est pour qu'on arrête de bouder."},
+      {"qui": "elio", "texte": "Moi je trouve qu'elle avait raison, la fille.", "note": "regarde le fond du puits"}],
+     "choix": [
+      {"texte": "J'y crois. J'ai déjà entendu chanter là-dedans.", "effets": {"mage": 1, "legende": 1, "a_monte_legende_soi_meme": true}},
+      {"texte": "N'importe quoi. C'est un trou avec de l'eau.", "effets": {"dit_nimporte_quoi": true}},
+      {"texte": "Tu la racontes mal. Écoute.", "effets": {"voleur": 1, "legende": 2, "trait": "Conteur", "a_monte_legende_soi_meme": true}}]},
+    {"id": "s4_comptine", "jour": 1, "moment": "veillée", "lieu": "maison du héros", "pnj": ["ysol", "mere"],
+     "lignes": [
+      {"qui": "ysol", "texte": "Quand le jour avalera la nuit, naîtra l'enfant des deux lumières…", "note": "chanté"},
+      {"qui": "heros", "texte": "C'est qui, l'enfant des deux lumières ?"},
+      {"qui": "ysol", "texte": "Le prince, mon cœur. L'Élu est déjà né, à la capitale. Les prêtres l'ont dit."},
+      {"qui": "mere", "texte": "Tu es né la même nuit que lui, d'ailleurs. Le ciel était tout noir. Tu ne pleurais même pas."},
+      {"qui": "ysol", "texte": "Beaucoup d'enfants sont nés cette nuit-là. Au lit."}]},
+    {"id": "s5_barbier", "jour": 2, "moment": "matin", "lieu": "boutique du barbier", "pnj": ["mere", "fauvel"],
+     "lignes": [
+      {"qui": "mere", "texte": "Regarde-toi, on dirait un buisson. On coupe."},
+      {"qui": "fauvel", "texte": "Alors, jeune homme, on fait comment ?"}],
+     "choix": [
+      {"texte": "Court. Comme un soldat.", "effets": {"cheveux": "court"}},
+      {"texte": "Juste un peu, derrière.", "effets": {"cheveux": "mi-long"}},
+      {"texte": "Sauter de la chaise et filer par la porte", "effets": {"cheveux": "long", "voleur": 1}, "note": "la mère est fâchée jusqu'au soir"}],
+     "interaction": {"objet": "ciseaux sur le comptoir", "effets": {"voleur": 1, "trait": "Doigts légers", "a_ciseaux": true}, "note": "personne ne s'en rend compte avant le lendemain"}},
+    {"id": "s6_aubin", "jour": 2, "moment": "fin de matinée", "lieu": "devant le barbier", "pnj": ["aubin", "elio"],
+     "lignes": [
+      {"qui": "aubin", "texte": "Tu vas me couper ça. Je ne veux plus voir ces tresses sous mon toit."},
+      {"qui": "elio", "texte": "C'est maman qui les a faites !"},
+      {"qui": "aubin", "texte": "Ta mère est partie. Les tresses aussi."}],
+     "choix": [
+      {"texte": "Laissez-le !", "effets": {"guerrier": 2, "rancoeur": -1, "compte_coeur_fidele": 1}, "note": "les adultes trouvent le héros insolent"},
+      {"texte": "C'est moi qui lui ai dit de les garder. Pour notre jeu.", "effets": {"voleur": 1, "rancoeur": -1, "compte_coeur_fidele": 1}},
+      {"texte": "(ne rien dire)", "effets": {"rancoeur": 1}}],
+     "apres": [{"qui": "aubin", "texte": "Demain matin, c'est moi qui les coupe."}]},
+    {"id": "s7_riviere", "jour": 2, "moment": "après-midi", "lieu": "rivière", "pnj": ["basile", "margot"],
+     "lignes": [
+      {"qui": "basile", "texte": "Ma mère ferme la porte à clé la nuit. Rapport à la Rancunière."},
+      {"qui": "margot", "texte": "La mienne aussi. Moi je sors souvent par ma fenêtre la nuit. Elle n'en sait rien."},
+      {"qui": "basile", "texte": "T'es folle."},
+      {"qui": "margot", "texte": "Je suis la reine des brigands."}],
+     "note": "Seul indice de la fenêtre. Aucune surbrillance, aucune quête."},
+    {"id": "s8_bol_de_lait", "jour": 2, "moment": "soir", "lieu": "maison du héros", "optionnel": "si le Domovoï est validé",
+     "choix": [{"texte": "Boire le lait"}, {"texte": "Le laisser"}, {"texte": "Y ajouter son pain", "effets": {"beni": 5}}]},
+    {"id": "s9_tete_tondue", "jour": 3, "moment": "matin", "lieu": "place", "pnj": ["elio", "margot"],
+     "lignes": [
+      {"qui": "elio", "texte": "Il l'a fait à l'aube. Avec son couteau. Il a jeté les tresses dans le poêle."},
+      {"qui": "elio", "texte": "Je le déteste. Je voudrais qu'il disparaisse."}],
+     "choix": [
+      {"texte": "Tes cheveux vont repousser. Viens dormir chez nous ce soir.", "effets": {"rancoeur": -1, "compte_coeur_fidele": 1}},
+      {"texte": "Moi aussi je le déteste. Il mérite pire.", "effets": {"rancoeur": 1, "compte_rancunier": 1}},
+      {"texte": "(lui donner un coup d'épaule)", "effets": {}}],
+     "si": {"a_ciseaux": "Fauvel passe en criant au voleur ; Margot regarde le héros, sourit, se tait."}},
+    {"id": "s10_disparition", "jour": 3, "moment": "après-midi", "lieu": "village (exploration)", "pnj": ["aubin", "basile"],
+     "indices": [
+      {"id": "ruban", "lieu": "cendre devant le moulin", "effets": {"a_ruban": true}},
+      {"id": "cheveux_noirs", "lieu": "haie vers le lavoir"},
+      {"id": "traces", "lieu": "boue du lavoir"}],
+     "lignes": [
+      {"qui": "aubin", "texte": "Il a fugué. Comme sa mère. Il reviendra quand il aura faim."},
+      {"qui": "aubin", "texte": "Je n'aurais pas dû… Va-t'en.", "note": "si on insiste"},
+      {"qui": "basile", "texte": "C'est la Rancunière. Il avait de la rancune plein le ventre, tout le monde l'a vu."}],
+     "choix": [
+      {"texte": "C'est la Rancunière, il faut aller au puits !", "effets": {}, "note": "les adultes rient : les enfants et leurs histoires"},
+      {"texte": "Aider Basile à prévenir tous les enfants", "effets": {"legende": 1, "mage": 1, "a_monte_legende_soi_meme": true}},
+      {"texte": "Garder ça pour soi", "effets": {}}]},
+    {"id": "s11_soir", "jour": 3, "moment": "soir", "lieu": "maison du héros", "pnj": ["mere"],
+     "lignes": [{"qui": "mere", "texte": "Les hommes le chercheront demain à la lanterne. Toi, tu dors."}],
+     "cinematique": "Au lavoir, Élio pleure sous l'auvent. De longs cheveux noirs sortent de la haie, s'enroulent à ses chevilles et le traînent jusqu'au puits. Il ne crie pas. Fondu au noir."}
+  ],
+  "nuits": {
+    "commun": "Chambre, porte fermée à clé. Se coucher = jour suivant. Fenêtre = objet interactif, jamais signalé. Bougie : souffler ou laisser allumée. Première sortie : voleur +1 (une fois).",
+    "peur_du_noir": "bougie allumée >= 2 nuits : peur ; soufflée et sorti >= 2 nuits : aime ; sinon neutre. Peur du noir : peur +1 au puits.",
+    "nuit1": {"chambre": "le chat entre par la fenêtre, fait le tour du lit, ressort", "dehors": [{"lieu": "moulin", "qui": "aubin", "texte": "Tu lui as laissé tes tresses pour que je te voie tous les jours, c'est ça ?"}]},
+    "nuit2": {"dehors": [{"lieu": "fenêtre d'Élio", "scene": "n2_elio"}, {"lieu": "puits", "texte": "chant faible, sans paroles"}], "si_trait_conteur": "une araignée attend sur le rebord de la fenêtre au retour ; elle regarde, rien d'autre"},
+    "n2_elio": {
+      "lignes": [
+        {"qui": "elio", "texte": "Qu'est-ce que tu fais là ? T'es sorti par ta fenêtre ?"},
+        {"qui": "elio", "texte": "Il a dit demain. Je l'entends aiguiser son couteau."},
+        {"qui": "elio", "texte": "Des fois, la nuit, j'entends quelqu'un chanter, vers le lavoir. Elle chante pour moi, je crois."}],
+      "choix": [
+        {"texte": "N'écoute pas. Demain je reste avec toi toute la journée.", "effets": {"rancoeur": -1, "compte_coeur_fidele": 1}},
+        {"texte": "Si elle existe, elle pourrait le punir, lui.", "effets": {"rancoeur": 1, "legende": 1, "compte_rancunier": 1, "a_monte_legende_soi_meme": true}},
+        {"texte": "C'est le vent dans le lavoir.", "effets": {}}]},
+    "nuit3": {"dehors": [{"lieu": "puits", "scene": "puits"}, {"lieu": "lisière de la forêt", "qui": "aubin", "texte": "(cherche Élio à la lanterne, dans la mauvaise direction)"}]}
+  },
+  "puits": {
+    "arrivee": "Élio debout sur la margelle, dos au héros. Des cheveux noirs sortent du puits, entrent dans son oreille, ressortent par ses yeux. L'Esprit parle par la bouche d'Élio.",
+    "lignes": [{"qui": "esprit", "texte": "Il en avait tellement, de la rancune. Elle était bonne."}],
+    "reaction": [
+      {"texte": "Reculer en criant", "effets": {"peur": 1, "peurs.cheveux": "peur", "a_crie_au_puits": true}},
+      {"texte": "Rester planté là, les poings serrés", "effets": {}},
+      {"texte": "Appeler Élio par son nom", "effets": {}, "note": "la main d'Élio tressaille"}],
+    "commentaires_esprit": [
+      {"si": "trait Conteur", "texte": "Tu me racontes si bien. Hier soir, grâce à toi, j'ai grandi d'un pied."},
+      {"si": "dit_nimporte_quoi", "texte": "Toi, tu ne crois pas en moi. Pourtant tu es venu jusqu'ici."},
+      {"si": "compte_rancunier >= 1", "texte": "Merci de l'avoir nourri pour moi."}],
+    "menu": {
+      "parler": [
+        {"texte": "(tendre le ruban à Élio)", "condition": "a_ruban", "effets": {"rancoeur": -2}, "note": "les doigts d'Élio se referment dessus"},
+        {"texte": "Je ne crois pas en toi.", "condition": "dit_nimporte_quoi && !a_monte_legende_soi_meme && !a_crie_au_puits", "succes": "fin_incredulite", "echec": {"qui": "esprit", "texte": "Tu y croyais hier. Je t'ai entendu."}},
+        {"texte": "Je connais ton histoire. Ta sœur t'a coupé les cheveux.", "suite": {"texte": "Tu peux la laisser partir, ta rancune.", "condition": "rancoeur <= 2", "succes": {"qui": "elio", "texte": "Je veux pas devenir comme elle.", "fin": "fin_apaisement"}, "echec": {"qui": "elio", "texte": "Elle a raison. Je le déteste."}}},
+        {"texte": "Qu'est-ce que tu veux ?", "ouvre": "pacte"}],
+      "combattre": "Couper 3 mèches qui tiennent Élio. Ciseaux : 1 coup par mèche ; bâton : 3. L'Esprit saisit le héros ; 2 saisies = défaite. Vitesse des saisies selon force_esprit. Victoire -> fin_victoire ; défaite -> fin_defaite.",
+      "pacte": {
+        "lignes": [
+          {"qui": "esprit", "texte": "Ce n'est pas lui que je voulais. Sa rancune est petite, comme lui. Toi… quand tu crois quelque chose, ça pèse. Je l'ai senti dès ta naissance."},
+          {"qui": "esprit", "texte": "Laisse-moi vivre dans tes cheveux, et je le lâche. Mais ne les coupe pas. Chaque mèche coupée, c'est moi que tu coupes."},
+          {"si": "cheveux == court", "qui": "esprit", "texte": "Courts ? Ils pousseront. J'ai le temps."}],
+        "choix": [{"texte": "Accepter", "fin": "fin_pacte"}, {"texte": "Refuser", "retour": "menu"}]},
+      "fuir": "retour à la chambre -> fin_lit"},
+    "fins": {
+      "fin_incredulite": {"elio": "libéré, ne se souvient de rien", "esprit": "Un seul incroyant ne me tue pas. Mais ta voix pèse lourd.", "effets": {"trait": "Incrédule"}},
+      "fin_apaisement": {"elio": "libéré ; Aubin le serre contre lui : « Je te les laisserai pousser. »", "esprit": "le chant cesse", "effets": {"mage": 2, "trait": "Chuchoteur d'esprits"}},
+      "fin_victoire": {"elio": "libéré, terrifié", "esprit": "blessé, rancunier envers le héros", "effets": {"guerrier": 2, "trait": "Petit brave"}},
+      "fin_pacte": {"elio": "libéré", "esprit": "vit dans les cheveux du héros ; puits vide", "effets": {"mage": 1, "maudit": 15, "trait": "Cheveux vivants"}, "matin": "la mère trouve ses cheveux plus longs d'un doigt"},
+      "fin_defaite": {"elio": "revient changé (comme fin_lit)", "esprit": "plus fort", "effets": {"guerrier": 1, "peurs.eau": "peur"}, "matin": "Aubin repêche le héros à l'aube"},
+      "fin_lit": {"elio": "revient le soir du jour 4, calme, muet, cheveux noirs et longs repoussés en une nuit ; plus aucune rancune ; messager de l'Esprit", "esprit": "plus fort", "effets": {}}
+    }
+  },
+  "traits_a_seuil": {"Coeur fidèle": "compte_coeur_fidele >= 2", "Rancunier": "compte_rancunier >= 2"}
+}

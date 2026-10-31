@@ -1,0 +1,145 @@
+<div class="wrap">
+  <header style="display:grid;gap:12px">
+    <span class="eyebrow">RPG · atelier graphisme · version 2</span>
+    <h1>Direction artistique</h1>
+    <p class="lead">Vue de dessus dans l'esprit des RPG sur DS comme Pokémon Platine, avec un héros plus grand et plus détaillé. On suit le personnage depuis l'enfance, et ses choix laissent des traces sur son corps. Tout est dessiné pour le jeu : rien n'est repris d'un jeu existant.</p>
+  </header>
+
+  <section>
+    <div class="stage">
+      <canvas id="scene" class="scene" width="384" height="216" aria-label="Scène d'exemple en 384 par 216 pixels : un village de naissance"></canvas>
+      <p class="caption">Le village natal à la vraie résolution du jeu : 384 × 216 pixels, tuiles de 16 px. Le héros adulte mesure 24 × 34 px, l'enfant 24 × 27 px. Agrandi ×5, cela donne exactement 1920 × 1080.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Le héros, de l'enfance aux conséquences</h2>
+    <p>Le personnage est plus grand qu'avant (24 × 34 au lieu de 16 × 24) : visage, écharpe, sacoche et bottes se lisent. Chaque variante ci-dessous part du même dessin : une cicatrice, une malédiction ou une bénédiction s'ajoutent par-dessus ou changent ses couleurs.</p>
+    <div class="sprites">
+      <div class="sprite"><canvas id="sp-child" width="28" height="38"></canvas><b>Enfant</b><span>Tête plus grosse, corps plus court</span></div>
+      <div class="sprite"><canvas id="sp-idle" width="28" height="38"></canvas><b>Adulte</b><span>Repos, 2 images</span></div>
+      <div class="sprite"><canvas id="sp-walk" width="28" height="38"></canvas><b>Marche</b><span>4 images, vue de face</span></div>
+      <div class="sprite"><canvas id="sp-scar" width="28" height="38"></canvas><b>Cicatrice</b><span>Un combat perdu laisse une marque</span></div>
+      <div class="sprite"><canvas id="sp-curse" width="28" height="38"></canvas><b>Maudit</b><span>Yeux luisants, veines, teint pâle</span></div>
+      <div class="sprite"><canvas id="sp-bless" width="28" height="38"></canvas><b>Béni</b><span>Cheveux blanchis, vêtements clairs</span></div>
+    </div>
+  </section>
+
+
+
+  <section>
+    <h2>Le héros dans les 8 directions</h2>
+    <p>De dos, de profil et de trois quarts, pour se déplacer aussi en diagonale. Toutes les vues partagent la coupe de face : même casque de cheveux, mêmes épis sur le dessus, même frange en pointes. En diagonale, il garde exactement la tête de face. Les jambes ont le même écartement dans toutes les vues. Les directions vers la gauche sont le miroir de celles vers la droite.</p>
+    <div class="stage"><canvas id="dirs" width="232" height="40" style="width:100%;height:auto" aria-label="Le héros qui marche dans les 8 directions"></canvas>
+      <p class="caption">Dans l'ordre : nord, nord-est, est, sud-est, sud, sud-ouest, ouest, nord-ouest. Chaque direction a sa marche en 4 images.</p></div>
+    <div class="field-wrap">
+      <canvas id="field" width="160" height="90" tabindex="0" aria-label="Terrain d'essai : clique puis utilise les flèches, ZQSD ou WASD"></canvas>
+      <div class="pad" aria-label="Croix directionnelle">
+        <button type="button" data-pad="arrowup" style="grid-area:u" aria-label="Haut">▲</button>
+        <button type="button" data-pad="arrowleft" style="grid-area:l" aria-label="Gauche">◀</button>
+        <button type="button" data-pad="arrowright" style="grid-area:r" aria-label="Droite">▶</button>
+        <button type="button" data-pad="arrowdown" style="grid-area:d" aria-label="Bas">▼</button>
+      </div>
+    </div>
+    <p class="caption">Le héros se promène tout seul. Clique sur le terrain puis utilise les flèches, ZQSD ou WASD (deux touches à la fois pour les diagonales), ou la croix sur mobile.</p>
+  </section>
+
+  <section>
+    <h2>Un décor vivant</h2>
+    <p>Pour donner une vraie patte au monde, chaque élément bouge un peu. Le ruisseau coule, avec ses reflets, son écume, ses pierres de gué et ses nénuphars. Les herbes et les roseaux ondulent sous une rafale de vent qui traverse l'écran, et les arbres sont faits de touffes de feuillage qui se balancent doucement.</p>
+    <div class="stage"><canvas id="nature" width="384" height="216" style="width:100%;height:auto;image-rendering:pixelated" aria-label="Clairière animée avec un ruisseau, des arbres, des oiseaux et des papillons"></canvas>
+      <p class="caption">À guetter : les oiseaux qui se posent sur l'arbre de droite puis s'envolent, le poisson qui saute, la libellule au-dessus de l'eau, les papillons, les feuilles qui tombent, le pollen et l'ombre des nuages.</p></div>
+  </section>
+  <section>
+    <h2>Le labo d'apparence</h2>
+    <p>Un seul dessin, et des réglages continus. Le jeu calcule l'apparence à partir de l'état du personnage : rien n'est dessiné à la main pour chaque niveau. Joue avec les curseurs.</p>
+    <div class="lab">
+      <div class="stage lab-stage"><canvas id="lab" width="96" height="60" aria-label="Aperçu du héros, au repos et en marche"></canvas></div>
+      <div class="lab-controls">
+        <label class="ctl" for="age"><span>Âge</span>
+          <select id="age"><option value="adult">Adulte</option><option value="child">Enfant</option></select></label>
+        <div class="ctl"><label for="hair">Depuis le dernier coiffeur <output id="hair-v"></output></label>
+          <input type="range" id="hair" min="0" max="365" value="55">
+          <button type="button" id="barber" class="small">Aller chez le coiffeur</button></div>
+        <div class="ctl"><span>Pacte de l'Esprit capillaire <output id="pact-v"></output></span>
+          <label class="check"><input type="checkbox" id="pact"> Pacte conclu</label>
+          <label class="check"><input type="checkbox" id="combat"> En combat (les cheveux s'animent)</label></div>
+        <label class="ctl" for="faith"><span>Allégeance</span>
+          <select id="faith"><option value="divin">Un dieu de lumière</option><option value="sombre">Un diable ou dieu sombre</option><option value="paien">Un esprit des légendes</option><option value="athee">Athée, refuse tout</option><option value="aucune">Personne pour l'instant</option></select></label>
+        <div class="ctl"><label for="renown">Renommée <output id="renown-v"></output></label><input type="range" id="renown" min="0" max="100" value="60"></div>
+        <div class="ctl"><label for="regard">Ce que les gens pensent <output id="regard-v"></output></label><input type="range" id="regard" min="-100" max="100" value="60">
+          <span class="caption" style="display:flex;justify-content:space-between"><span>craint</span><span>aimé</span></span></div>
+        <div class="ctl"><label for="bless">Bénédiction (marques sur le corps) <output id="bless-v"></output></label><input type="range" id="bless" min="0" max="100" value="0"></div>
+        <div class="ctl"><label for="curse">Malédiction (marques sur le corps) <output id="curse-v"></output></label><input type="range" id="curse" min="0" max="100" value="0"></div>
+        <fieldset class="ctl"><legend>Tenue (selon l'équipement)</legend>
+          <label><input type="radio" name="outfit" id="o-tunique" value="tunique" checked> Tunique de voyage</label>
+          <label><input type="radio" name="outfit" id="o-mage" value="mage"> Robe de mage</label>
+          <label><input type="radio" name="outfit" id="o-guerrier" value="guerrier"> Armure de guerrier</label>
+          <label><input type="radio" name="outfit" id="o-voleur" value="voleur"> Cape de voleur</label>
+        </fieldset>
+      </div>
+    </div>
+    <div class="opts">
+      <div class="opt"><strong>Cheveux</strong>La longueur se calcule à partir des jours sans coiffeur : la frange s'allonge, puis des mèches descendent. Chez l'adulte, la barbe pousse aussi. Une visite chez le coiffeur remet le compteur à zéro.</div>
+      <div class="opt"><strong>L'aura vient des croyances</strong>Elle dépend de trois choses : à qui le héros a prêté allégeance, combien on parle de lui (renommée), et ce que les gens pensent de lui. Un même pacte donne une lumière chaude s'il est aimé, froide et dure s'il est craint. Un athée n'a pas d'aura : la magie grésille et s'éteint autour de lui.</div>
+      <div class="opt"><strong>Bénédictions et malédictions</strong>Elles marquent le corps plutôt que l'aura : couleurs qui glissent vers l'or ou le violet, veines qui apparaissent une à une, yeux luisants. Les deux peuvent coexister.</div>
+      <div class="opt"><strong>Tenues</strong>Chaque pièce d'équipement est une couche qui remplace une partie du corps (torse, jambes, tête). Il suffit de dessiner chaque tenue une fois par direction.</div>
+    </div>
+  </section>
+
+
+  <section>
+    <h2>L'Esprit capillaire de la rancoeur</h2>
+    <p>Pour l'instant, on ne voit jamais l'esprit : seulement ses cheveux, beaucoup trop de cheveux, qui débordent du puits et rampent sur le sol comme des racines.</p>
+    <div class="spirit-row">
+      <div class="sprite"><canvas id="spirit" width="64" height="64" aria-label="Le puits, avec ses cheveux qui débordent"></canvas><b>Le puits</b><span>Seau, manivelle, et une mèche qui tâte le sol</span></div>
+      <div class="stage cine">
+        <canvas id="cine" width="128" height="72" aria-label="Mini cinématique : les cheveux traînent l'ami par le pied jusque dans le puits"></canvas>
+        <p class="caption" id="cine-cap" aria-live="polite"></p>
+        <button type="button" class="small" id="cine-replay">Revoir depuis le début</button>
+      </div>
+    </div>
+    <p class="caption">11 secondes en boucle, d'après ton schéma : les cheveux sortent du champ, attrapent l'ami par le pied, le traînent jusqu'au puits, puis le soulèvent en arc et l'y précipitent. La manivelle tourne pendant qu'il est tiré.</p>
+  </section>
+
+  <section>
+    <h2>Au fond du puits</h2>
+    <p>Le héros se penche et regarde au fond. D'abord tout est noir, puis ses yeux s'habituent : les parois d'abord, puis ce qui l'attend en bas. La tête de son ami, prise dans une touffe de cheveux tentaculaire : les cheveux entrent par l'oreille et ressortent par les orbites vides et le nez. Les deux yeux ont été emportés dans les cheveux. L'esprit lui-même reste invisible.</p>
+    <div class="stage horror">
+      <canvas id="horror" width="160" height="120" aria-label="Vue plongeante au fond du puits, image gore" hidden></canvas>
+      <div id="horror-veil" class="veil"><p>Image gore : sang, cheveux qui traversent le visage d'un enfant.</p><button type="button" class="small" id="horror-show">Regarder au fond du puits</button></div>
+      <button type="button" class="small" id="horror-again" hidden>Revoir l'arrivée de la vision</button>
+    </div>
+    <h3>L'esprit parle à travers lui</h3>
+    <p>Pour les dialogues, l'esprit se sert du visage de l'enfant comme d'une marionnette : des cheveux descendent des orbites jusque dans la bouche et tirent la mâchoire, pendant que les autres mèches ondulent. L'animation boucle et suit le texte qui s'écrit.</p>
+    <div class="talk" id="talk-box" hidden>
+      <canvas id="talk" width="64" height="64" aria-label="Portrait animé de l'enfant possédé"></canvas>
+      <div class="talk-body"><span class="talk-name">???</span><p id="talk-text" aria-live="off"></p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Avant et après</h2>
+    <p>La première proposition à gauche, celle-ci à droite, à la même échelle.</p>
+    <div class="stage" style="justify-items:center"><canvas id="compare" width="64" height="40" style="width:min(100%,384px);height:auto"></canvas></div>
+  </section>
+
+  <section>
+    <h2>Les nouveaux réglages</h2>
+    <div class="opts">
+      <div class="opt reco"><span class="tag">Écran</span><strong>384 × 216</strong>Un peu plus large que la DS pour du 16:9. Net en 1080p (×5) et en 4K (×10).</div>
+      <div class="opt reco"><span class="tag">Décor</span><strong>Tuiles de 16 px</strong>Arbres, maisons et rochers sur plusieurs tuiles (arbre 48 × 64, maison 72 × 64), comme dans les RPG sur DS.</div>
+      <div class="opt reco"><span class="tag">Héros</span><strong>24 × 34 px</strong>Environ 16 % de la hauteur de l'écran : bien visible, avec la place pour les détails d'équipement et de physique.</div>
+      <div class="opt reco"><span class="tag">Animation</span><strong>4 directions</strong>Repos 2 images, marche 4, et plus tard attaque et sorts. Environ 8 images par seconde.</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Outils et intégration au jeu</h2>
+    <div class="opts">
+      <div class="opt reco"><span class="tag">Dessin et animation</span><strong>Aseprite</strong>L'outil de référence pour le pixel art (environ 20 €). Calques, animation, et export d'une planche PNG + fichier JSON que le jeu lit directement. Gratuit : LibreSprite ou Piskel dans le navigateur.</div>
+      <div class="opt reco"><span class="tag">Cartes</span><strong>Tiled</strong>Gratuit. On peint les cartes avec les tuiles, puis on exporte en JSON.</div>
+      <div class="opt reco"><span class="tag">Affichage</span><strong>Phaser 3 + HTML pour les menus</strong>Phaser gère sprites, animations, cartes Tiled et caméra. Les écrans de build restent en HTML/CSS par-dessus.</div>
+    </div>
+  </section>
+</div>

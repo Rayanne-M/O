@@ -8,8 +8,7 @@ Le projet contient deux pages :
 - l'**atelier de personnage** (`index.html`) : un outil de développement et d'équilibrage
   où tout est accessible librement, pour tester des combinaisons et comparer leurs dégâts ;
 - la **tranche jouable de l'enfance** (`village.html`) : le village natal en vue de dessus, trois jours
-  et trois nuits, la fenêtre de la chambre et la nuit au puits. Voir [plus bas](#la-tranche-jouable-de-lenfance) ;
-- le **bestiaire** (`bestiaire.html`) : les entités dessinées et animées. Voir [plus bas](#le-bestiaire).
+  et trois nuits, la fenêtre de la chambre et la nuit au puits. Voir [plus bas](#la-tranche-jouable-de-lenfance).
 
 ## Lancer le projet
 
@@ -20,7 +19,12 @@ npm install      # installe les dépendances (une seule fois)
 npm run dev      # l'atelier sur http://localhost:5173, le village sur http://localhost:5173/village.html
 npm test         # lance les tests
 npm run build    # vérifie les types et prépare une version à publier dans dist/
+npm run rpg      # vérifie les liens du contenu (rpg/) et refait les planches
 ```
+
+**Tout est relié** : le jeu, la page des cartes et les planches lisent le même dossier `rpg/`. Changer un sprite,
+une carte ou un personnage les change partout, et une référence cassée est signalée tout de suite.
+Voir [rpg/LIENS.md](rpg/LIENS.md).
 
 ## Comment le projet est organisé
 
@@ -125,47 +129,35 @@ par-dessus pour qu'ils restent nets.
 Commandes : flèches, ZQSD ou WASD pour marcher (deux touches pour les diagonales), Espace, Entrée ou E pour parler
 et examiner. Sur mobile, un joystick et un bouton A apparaissent.
 
-Pour tester un moment précis : `village.html?jour=2` commence au jour 2, `village.html?nuit=3` à la nuit 3.
+Pour tester un moment précis : `village.html?jour=2` commence au jour 2, `village.html?nuit=3` à la nuit 3,
+`village.html?scene=cache-cache` ou `?scene=riviere` saute directement à une scène.
+
+Le code est séparé en deux : un **moteur** qui ne connaît aucune histoire et sert à tout le jeu, et des **chapitres**
+qui racontent. Un nouveau chapitre réutilise le moteur, les cartes et les dessins sans rien y changer.
 
 ```
-src/village/
-  art/planche.js   Le code de dessin repris tel quel de la planche de direction artistique (sprites, décor,
-                   puits, cinématique, portrait de l'esprit). Ses types sont dans planche.d.ts.
-  art/sprites.ts   Transforme ces dessins en images pour Phaser (héros, personnages, maisons).
-  art/decor.ts     Les éléments ajoutés pour la tranche : lavoir, fontaine, rivière, bougie…
-  script.ts        Tous les textes : les moments de chaque journée, les nuits, le puits et les fins.
-  dialogue.ts      Joue les étapes de script.ts et applique leurs effets.
-  state.ts         Ce que l'enfance laisse sur le héros : jauges, compteurs cachés, peurs, traits.
-  maps.ts          Le village et la chambre : décor, obstacles, lieux des scènes.
-  world.ts         La scène de jeu : déplacements, enchaînement des journées, cinématique, puits.
-  ui.ts            Boîte de dialogue, choix, sous-titres, écrans titre et de fin.
+rpg/                    Le contenu, source unique : dessins, cartes, registre des personnages, scénario.
+                        Le jeu le lit directement (voir rpg/LIENS.md) : rien à copier ni à importer.
+scripts/rpg/            Le branchement : plugin Vite (« virtual:rpg-art »), planches, vérification des liens.
+src/game/
+  engine/
+    maps.ts        Le format commun des cartes : sorties, objets, zones, conditions (« jour », « moment », drapeaux).
+    world.ts       Charge toutes les cartes d'un chapitre ; une seule fonction (drawAnyMap) les dessine toutes.
+    game.ts        La boucle de jeu : déplacements, personnages, gros plans, cinématiques, dialogues.
+    handlers.ts    « Quand on parle à X / examine Y / sort par Z / entre dans la zone W, faire … ».
+    actors.ts      Les personnages : marche, poses, personnages qui suivent le héros.
+    state.ts       Ce que l'enfance laisse sur le héros : jauges, compteurs cachés, peurs, traits, objets.
+    ui.ts          Boîte de dialogue, choix, sous-titres, écrans titre et bilan.
+  chapters/enfance/
+    story.ts       Toute l'histoire : chaque jour, ses moments, ses textes et ses choix.
+    plans.ts       Les gros plans et les cinématiques (une cinématique = une suite de plans et leurs durées).
+    cast.ts        Les personnages et leur apparence.
 ```
 
-**Changer un texte** : tout est dans `src/village/script.ts`. Une scène est une liste d'étapes
-(`{ say: '…', who: 'elio' }` pour une réplique, `{ ask: '…', options: [...] }` pour un choix),
-et les effets s'écrivent comme dans le scénario : `{ guerrier: 1 }`, `{ rancoeur: -1 }`,
-`{ 'peurs.araignees': 'peur' }`, `{ trait: 'Conteur' }`, `{ a_ciseaux: true }`.
+**Changer un texte** : tout est dans `src/game/chapters/enfance/story.ts`. Les effets s'écrivent comme dans
+le scénario : `{ guerrier: 1 }`, `{ rancoeur: -1 }`, `{ 'peurs.araignees': 'peur' }`, `{ trait: 'Conteur' }`.
 
-Ce qui reste provisoire :
+**Ajouter une carte** : la déposer dans `rpg/data/maps/` et dans son `index.json` : le jeu la charge aussitôt.
+Les tests vérifient d'eux-mêmes que ses sorties mènent quelque part et qu'on n'y apparaît pas dans un mur.
 
-- le héros enfant en 8 directions est dérivé des vues adultes de la planche (tête gardée, corps raccourci),
-  en attendant de vraies vues enfant ;
-- le combat contre l'Esprit est résolu sans mini-jeu : avec les ciseaux, on gagne si sa force est de 6 ou moins,
-  avec un bâton, de 3 ou moins ;
-- la pousse des cheveux n'est pas encore visible sur le héros.
-
-## Le bestiaire
-
-`bestiaire.html` montre les entités déjà dessinées, animées, avec le même code de dessin que le jeu.
-Le dessin de chaque entité vit dans `src/bestiaire/`.
-
-**Giorgio** (`src/bestiaire/giorgio.ts`), section adolescent : le gardien du pied de l'arc-en-ciel.
-Il garde un chaudron qui montre à chacun ce qu'il désire le plus ; lui y voit des pâtes,
-et comme on ne mange pas un reflet, il a toujours faim.
-
-- `giorgioFrames(dir)` : repos + 4 images de marche, 24 × 34, dans les 8 directions. Le corps et la marche
-  sont ceux du héros adulte de la planche ; seules la tête et les couleurs changent.
-- `drawPortrait(ctx, 'neutre' | 'affame', ouverture)` : le portrait de dialogue 64 × 64.
-- `drawRainbowTravel(ctx, ms)` : il invoque un arc-en-ciel, glisse dessus et retombe de l'autre côté.
-- `drawCauldron(ctx, x, y, ms, 'pates' | 'or' | 'reflet')` : le chaudron, selon le désir de celui qui regarde.
-
+Ce qui reste provisoire : la pousse des cheveux n'est visible que par paliers (épaules, pointes, court).

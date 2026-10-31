@@ -1,0 +1,33 @@
+<div class="wrap">
+  <header style="display:grid;gap:10px">
+    <p class="eyebrow">Monde</p>
+    <h1>Les cartes du jeu</h1>
+    <p class="lead">Toutes les cartes du jeu au même endroit : le village de l'enfance, ses maisons, le cimetière, et bientôt les lieux des chapitres suivants. Touche un lieu pour voir les scènes qui s'y passent, une porte pour entrer. Filtre par jour et par moment, passe en vue de nuit, ou ouvre le mode édition pour déplacer, ajouter et relier.</p>
+  </header>
+  <div class="map-app">
+    <div class="map-view" id="map-view">
+      <div id="map-layer"><canvas id="map" width="560" height="368" aria-label="La carte affichée"></canvas></div>
+      <div class="map-bar"><button type="button" id="map-back" class="map-back" aria-label="Revenir à la carte précédente" hidden>←</button><b id="map-title"></b></div>
+      <div class="map-tools"><button type="button" id="zoom-out" aria-label="Dézoomer">−</button><span id="zoom-level">×1</span><button type="button" id="zoom-in" aria-label="Zoomer">+</button><button type="button" id="zoom-fit" aria-label="Voir toute la carte">⤢</button></div>
+    </div>
+    <aside class="map-side">
+      <label class="ed-field">Carte<select id="map-pick" class="map-pick"></select></label>
+      <div class="map-filters" role="group" aria-label="Filtrer par jour">
+        <button class="pal" type="button" data-day="0" aria-pressed="true">Tous</button><button class="pal" type="button" data-day="1" aria-pressed="false">Jour 1</button><button class="pal" type="button" data-day="2" aria-pressed="false">Jour 2</button><button class="pal" type="button" data-day="3" aria-pressed="false">Jour 3</button><button class="pal" type="button" data-day="4" aria-pressed="false">Jour 4</button>
+      </div>
+      <div class="map-filters"><select id="moment" class="map-pick" aria-label="Moment de la journée"></select><button class="pal" type="button" id="night" aria-pressed="false">Passer à la nuit</button></div>
+      <div class="map-filters"><button class="pal" type="button" id="show-zones" aria-pressed="false">Montrer zones, sorties et collisions</button><button class="pal" type="button" id="ed-toggle" aria-pressed="false">Mode édition</button></div>
+      <section id="ed-panel" class="ed-panel" hidden aria-label="Édition">
+        <p class="eyebrow" id="ed-where"></p>
+        <div id="ed-layers" class="ed-row" role="group" aria-label="Calque"></div>
+        <div id="ed-palette" class="ed-palette" aria-label="Ajouter"></div>
+        <div id="ed-props" class="ed-props"></div>
+        <p id="ed-status" class="ed-status" role="status"></p>
+        <div class="ed-row"><button class="pal" type="button" id="ed-save">Sauvegarder</button><button class="small" type="button" id="ed-export" hidden>Exporter en JSON</button><button class="small" type="button" id="ed-reset">Remettre cette carte comme avant</button></div>
+      </section>
+      <div id="map-info"></div>
+      <div id="map-list" aria-label="Lieux, objets et sorties"></div>
+    </aside>
+  </div>
+  <p class="caption">Glisse pour te déplacer, zoome avec la molette, le pincement ou les boutons. Toutes les cartes partagent le même format (rpg/data/maps) : ce que tu modifies ici, le jeu le lit tel quel une fois exporté. Les noms des lieux et des personnages sont provisoires.</p>
+</div>

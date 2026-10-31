@@ -1,0 +1,34 @@
+<div class="wrap">
+  <header style="display:grid;gap:10px">
+    <p class="eyebrow">Monde · Enfance</p>
+    <h1>Le village natal</h1>
+    <p class="lead">Une vue d'ensemble du village de l'enfance, dessinée avec le style du décor vivant. Touche un lieu pour voir les scènes qui s'y passent, ou pour entrer dans les maisons. Tu peux filtrer par jour ou passer en vue de nuit.</p>
+  </header>
+  <div class="map-app">
+    <div class="map-view" id="map-view">
+      <div id="map-layer"><canvas id="map" width="560" height="360" aria-label="Carte du village : maisons, place, moulin, lavoir, puits, rivière et forêt"></canvas></div>
+      <div id="room-view" class="room-view" hidden>
+        <div class="room-bar"><b id="room-name"></b><div id="room-exits" class="room-exits"></div><button type="button" id="room-close" class="room-x" aria-label="Revenir à la carte">✕</button></div>
+        <div class="room-stage"><canvas id="room" width="192" height="144" aria-label="Intérieur du lieu"></canvas></div>
+      </div>
+      <div class="map-tools"><button type="button" id="zoom-out" aria-label="Dézoomer">−</button><span id="zoom-level">×1</span><button type="button" id="zoom-in" aria-label="Zoomer">+</button><button type="button" id="zoom-fit" aria-label="Voir tout le village">⤢</button></div>
+    </div>
+    <aside class="map-side">
+      <div class="map-filters" role="group" aria-label="Filtrer par jour">
+        <button class="pal" type="button" data-day="0" aria-pressed="true">Tous</button><button class="pal" type="button" data-day="1" aria-pressed="false">Jour 1</button><button class="pal" type="button" data-day="2" aria-pressed="false">Jour 2</button><button class="pal" type="button" data-day="3" aria-pressed="false">Jour 3</button>
+      </div>
+      <button class="pal" type="button" id="night" aria-pressed="false">Passer à la nuit</button>
+      <button class="pal" type="button" id="ed-toggle" aria-pressed="false">Mode édition</button>
+      <section id="ed-panel" class="ed-panel" hidden aria-label="Édition">
+        <p class="eyebrow" id="ed-where"></p>
+        <div id="ed-palette" class="ed-palette" aria-label="Ajouter un élément"></div>
+        <div id="ed-props" class="ed-props"></div>
+        <p id="ed-status" class="ed-status" role="status"></p>
+        <div class="ed-row"><button class="pal" type="button" id="ed-save">Sauvegarder</button><button class="small" type="button" id="ed-export" hidden>Exporter en JSON</button><button class="small" type="button" id="ed-reset">Remettre comme avant</button></div>
+      </section>
+      <div id="map-info"></div>
+      <div id="map-list" aria-label="Lieux du village"></div>
+    </aside>
+  </div>
+  <p class="caption">Glisse pour te déplacer, et zoome avec la molette, le pincement ou les boutons. Les noms des lieux et des personnages sont provisoires, repris du scénario de l'enfance.</p>
+</div>
