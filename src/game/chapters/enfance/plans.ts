@@ -330,31 +330,6 @@ export const rescueCine: Cine = [(c, t) => A.drawWellRescue(c, t), A.RESCUE_LEN]
 /** PLAN-12 : l'enterrement. */
 export const funeralCine = (vide: boolean, ruban?: 'donne' | 'garde'): Cine => [(c, t) => A.drawFuneral(c, t, { vide, ruban }), A.FUNERAL_LEN];
 /** PLAN-13 : la fin de la nuit au bord du puits. */
-export const nightEndCine = (fin: 'fuit' | 'relache'): Cine => [(c, t) => A.drawNightEnding(c, t, { fin }), A.NIGHT_END_LEN];
-/**
- * La fin apaisée : pas de chant, seulement quelques mèches qui pendent par-dessus la margelle et redescendent
- * doucement dans le noir. Même décor et même durée que PLAN-13.
- */
-const QUIET = [[118, 116, 64], [176, 112, 88], [214, 114, 72], [268, 117, 58]];
-export const quietEndCine: Cine = [
-  (c, t) => {
-    c.imageSmoothingEnabled = false;
-    c.drawImage(A.ciWellRimLayer(), 0, 0);
-    QUIET.forEach(([bx, by, len], i) => {
-      const reach = 1 - A.cuEase(A.ciK(t, 2400 + i * 500, 6200 + i * 400));
-      if (reach <= 0.02) return;
-      const pts: number[][] = [];
-      for (let s = 0; s <= 6; s++) {
-        const u = s / 6;
-        pts.push([bx + Math.sin(u * 3 + i) * 6, by + u * len * reach]);
-      }
-      A.ciStrand(c, pts, 3, ['#050308', '#1a1626', '#3e3858', '#6a6490'], t, i, 0.6);
-    });
-    A.cuVignette(c, 0.6, '#000', 0.5);
-    A.ciFades(c, t, A.NIGHT_END_LEN, 400, 900);
-  },
-  A.NIGHT_END_LEN,
-];
-
+export const nightEndCine = (fin: 'chante' | 'fuit' | 'relache'): Cine => [(c, t) => A.drawNightEnding(c, t, { fin }), A.NIGHT_END_LEN];
 /** PLAN-14 : les recherches à l'aube. */
 export const dawnSearchCine: Cine = [(c, t) => A.drawDawnSearch(c, t), A.DAWN_SEARCH_LEN];

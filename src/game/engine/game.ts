@@ -2,7 +2,7 @@
 // déplace le héros, gère les portes, et offre aux chapitres une petite boîte à outils (dire, choisir,
 // marcher, montrer un gros plan…). Le contenu de l'histoire vit dans src/game/chapters/.
 import Phaser from 'phaser';
-import { actionExit, active, blocked, footAt, overlap, blockedBy, entersExit, inRect, nearestFree, reachOf, sortLine, sortThings, type PlacedObject, type Dir, type Drawable, type GameMap, type Rect } from './maps';
+import { actionExit, active, blocked, footAt, overlap, takesExit, blockedBy, inRect, nearestFree, reachOf, sortLine, sortThings, type PlacedObject, type Dir, type Drawable, type GameMap, type Rect } from './maps';
 import { drawActor, dirOf, makeActor, vec, type Actor, type Look } from './actors';
 import { applyEffects, has, state, type Effects } from './state';
 import { ui, wait } from './ui';
@@ -31,8 +31,6 @@ export interface Chapter {
   run(g: Game): Promise<void>;
   /** Le joueur appuie sur action devant ces cibles (la plus proche d'abord). Renvoie faux si rien ne se passe. */
   interact?(g: Game, targets: Target[]): Promise<boolean>;
-  /** Quelque chose réagirait-il à action devant ces cibles ? (pour afficher l'indice au-dessus du héros) */
-  canInteract?(g: Game, targets: Target[]): boolean;
   /** Le héros entre dans une zone nommée de la carte. */
   enter?(g: Game, zone: string): void;
   /** Le héros veut franchir une sortie : faux pour l'en empêcher. */
@@ -67,8 +65,6 @@ export class Game extends Phaser.Scene {
   private zonesIn = new Set<string>();
   private waiters: { test: () => boolean; done: () => void }[] = [];
   private lastExitTry = 0;
-  /** Faux : pas d'indice au-dessus du héros (une scène où le joueur doit trouver seul). */
-  hints = true;
   private cuts = 0;
   private lockedBeforeCut = false;
   /** Assombrit l'écran sauf autour d'un point (décompte, réveil). */
@@ -319,17 +315,6 @@ export class Game extends Phaser.Scene {
     });
   }
 
-  /** Vrai si appuyer sur action ferait quelque chose ici. */
-  private canAct() {
-    if (!this.hints) return false;
-    const targets = this.targetsHere();
-    const win = this.actionExitIn(targets);
-    // une sortie secrète (la fenêtre, la nuit) ne se signale pas
-    if (win && !(win as { secret?: boolean }).secret) return true;
-    const secret = new Set(this.map.objects.filter((o) => o.secret).map((o) => o.id));
-    return !!this.chapter.canInteract?.(this, targets.filter((t) => t.kind !== 'exit' && !(t.kind === 'object' && secret.has(t.id))));
-  }
-
   private async tryExit(e: GameMap['exits'][number]) {
     if (this.time.now - this.lastExitTry < 700) return;
     this.lastExitTry = this.time.now;
@@ -400,7 +385,7 @@ export class Game extends Phaser.Scene {
       }
     h.dir = dirOf(dx, dy);
     h.moving = true;
-    const exit = this.exitsHere().find((e) => !actionExit(this.map, e) && entersExit(h.x, h.y, dx, dy, e.px));
+    const exit = this.exitsHere().find((e) => !actionExit(this.map, e) && takesExit(e, h.x, h.y, dx, dy, hit));
     if (exit) void this.tryExit(exit);
     // zones : on prévient le chapitre quand le héros y entre
     const now = new Set(this.zonesHere());
@@ -483,15 +468,10 @@ export class Game extends Phaser.Scene {
     const o = this.chapter.mapOptions?.(this, m.id) ?? {};
     const flags = Object.fromEntries([...state.flags].map((f) => [f, true]));
     m.paint(ctx, m, t, { night: this.night, day: state.day, moment: state.moment, flags, actors, state: o.state ?? {}, animals: o.animals ?? true });
-    // l'indice : une petite flèche au-dessus du héros quand action ferait quelque chose
-    if (!ui.busy && !this.locked && !this.plan && this.hero.map === m.id && this.canAct()) A.drawInteractHint(ctx, h.x, h.y - HERO_H, t);
     this.chapter.overlay?.(this, ctx, t);
     ctx.restore();
   }
 }
-
-/** Hauteur du sprite du héros enfant, pour poser l'indice au-dessus de sa tête. */
-const HERO_H = 26;
 
 /** Jusqu'où on cherche un passage à côté quand on bute contre un coin. */
 const CORNER_PX = 6;

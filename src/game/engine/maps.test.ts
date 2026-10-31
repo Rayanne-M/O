@@ -29,15 +29,6 @@ describe('les cartes', () => {
     it('chaque sortie mène à une arrivée qui existe', () => {
       for (const e of m.exits) expect(maps[e.to]?.spawns[e.at], `${e.id} → ${e.to}/${e.at}`).toBeDefined();
     });
-    it('chaque sortie se passe en avançant vers elle depuis une case libre', () => {
-      for (const e of m.exits) {
-        let ok = false;
-        for (let y = e.px.y - 24; y <= e.px.y + e.px.h + 24 && !ok; y++)
-          for (let x = e.px.x - 24; x <= e.px.x + e.px.w + 24 && !ok; x++)
-            if (!blocked(m, x, y)) ok = [[0, -1], [0, 1], [-1, 0], [1, 0]].some(([dx, dy]) => entersExit(x, y, dx, dy, e.px));
-        expect(ok, e.id).toBe(true);
-      }
-    });
     it('depuis les arrivées, on atteint chaque sortie et chaque objet à examiner', () => {
       expect(auditMap(m)).toEqual({ exits: [], objects: KNOWN[id] ?? [] });
     });
@@ -51,16 +42,16 @@ describe('les cartes', () => {
 });
 
 describe('les portes', () => {
+  // une porte dans un mur horizontal : le mur bloque tout ce qui est au-dessus de y = 60
   const door = { x: 100, y: 50, w: 12, h: 10 };
-  it('il faut être au bout et avancer vers elle', () => {
-    expect(entersExit(106, 65, 0, -1, door)).toBe(true);
-    expect(entersExit(106, 80, 0, -1, door)).toBe(false); // trop loin
-    expect(entersExit(106, 65, 0, 1, door)).toBe(false); // dos à la porte
-    expect(entersExit(94, 65, 0, -1, door)).toBe(false); // à côté
-    expect(entersExit(106, 64, 1, 0, door)).toBe(false); // la longe
-    expect(entersExit(106, 68, 0, -1, door)).toBe(true); // pas besoin d'être collé
-    expect(entersExit(99, 65, 0, -1, door)).toBe(true); // un peu de côté
-    expect(entersExit(98, 65, 0, -1, door)).toBe(false); // trop de côté
+  const wall = (_x: number, y: number) => y - 4 < 60;
+  it('il faut buter contre le mur à l\'endroit de la porte, en avançant vers elle', () => {
+    expect(entersExit(106, 64, 0, -1, door, wall)).toBe(true);
+    expect(entersExit(106, 66, 0, -1, door, wall)).toBe(false); // pas encore contre le mur
+    expect(entersExit(106, 64, 0, 1, door, wall)).toBe(false); // dos à la porte
+    expect(entersExit(94, 64, 0, -1, door, wall)).toBe(false); // à côté
+    expect(entersExit(99, 64, 0, -1, door, wall)).toBe(true); // un peu de côté, mais sur la porte
+    expect(entersExit(106, 64, 1, 0, door, wall)).toBe(false); // la longe
   });
 });
 

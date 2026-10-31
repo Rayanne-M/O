@@ -127,7 +127,7 @@ async function bedtime(g: Game) {
       await cutTo(g, 'maison_chambre', 'depuis_fenetre');
     },
     'exit:village/*': () => g.say('narr', 'Tout est fermé, la nuit.'),
-    'enter:village/puits': () => g.say('narr', 'Le puits chante, tout bas. Tu n\'oses pas t\'approcher plus.'),
+    'enter:village/puits': () => g.say('narr', 'Quelques cheveux mouillés pendent de la margelle. Tu n\'oses pas t\'approcher plus.'),
   });
   await g.until(() => slept);
 }
@@ -154,7 +154,7 @@ export function setupAlways(g: Game) {
     'object:barbier/portrait': () => g.say('fauvel', 'Le prince Élu ! Je l\'ai coiffé en rêve, figure-toi.'),
     'object:barbier/canari': () => g.say('narr', 'Le canari chante dès que tu t\'approches.'),
     'object:moulin_meule/meule': () => g.say('narr', 'La grande meule. Elle ne tourne plus beaucoup.'),
-    'object:village/puits': () => g.say('narr', g.night ? 'Le puits chante, tout bas.' : 'Le vieux puits. De l\'eau noire, très loin.'),
+    'object:village/puits': () => g.say('narr', g.night ? 'Quelques cheveux mouillés pendent de la margelle.' : 'Le vieux puits. De l\'eau noire, très loin.'),
     'object:village/chene': () => g.say('narr', 'Le grand chêne de la place. Ses branches sont épaisses comme des bras.'),
     'object:village/fontaine': () => g.say('narr', 'L\'eau de la fontaine est glacée.'),
     'object:village/caisse_margot': () => g.say('narr', 'Une caisse, juste sous la fenêtre de Margot. Sur le mur, des traces de pas.'),
@@ -178,7 +178,13 @@ export function dressMaps(g: Game) {
   v.file.objects = v.file.objects.filter((o) => o.id !== 'balle');
   v.objects = v.objects.filter((o) => o.id !== 'balle');
   v.zones.baton = { x: 20.6 * T, y: 12.6 * T, w: 1.6 * T, h: 1.2 * T };
+  // le puits ne chante pas le soir : seulement quelques mèches qui dépassent de la margelle
+  for (const o of [...v.file.objects, ...v.objects].filter((q) => q.type === 'puits')) {
+    const vs = (o.variants ?? []) as { when?: unknown; chant?: boolean; cheveux?: number }[];
+    o.variants = vs.map((x) => (x.chant ? { when: x.when, cheveux: WELL_STRANDS } : x));
+  }
 }
+const WELL_STRANDS = 0.12;
 
 /** Ce que l'histoire change au dessin des cartes : état des objets par id, bêtes dessinées ou non. */
 export function mapOptions(_g: Game, map: string): { state?: Record<string, unknown>; animals?: boolean } {
@@ -962,9 +968,7 @@ async function night3(g: Game): Promise<'fenetre' | 'lit'> {
     'object:maison_chambre/bougie': () => g.say('narr', 'La bougie est éteinte. Elle ne se rallume pas.'),
     'exit:maison_chambre/vers_salle': () => g.say('narr', 'La porte est fermée à clé.'),
   });
-  g.hints = false;
   await g.until(() => choice !== null);
-  g.hints = true;
   return choice!;
 }
 
@@ -1096,7 +1100,7 @@ async function talk(g: Game): Promise<Ending | null> {
   } else if (k === 3) {
     await g.say('heros', 'Tu peux la laisser partir, ta rancune.');
     if (force() <= 4) {
-      await g.say('narr', 'Les cheveux se détendent, mèche après mèche, et redescendent dans le noir. L\'Esprit lâche Élio, et s\'en va.');
+      await g.say('narr', 'Et l\'Esprit chante. Pour la première fois, avec des paroles. Il lâche Élio, et s\'en va.');
       applyEffects({ mage: 2, trait: 'Chuchoteur d\'esprits' });
       return 'apaisement';
     }
@@ -1289,10 +1293,9 @@ export async function playAct(g: Game, from: { day: number; night: boolean; scen
   if (way === 'fenetre') {
     await night3Outside(g);
     if (!has('rentre_nuit3')) end = await well(g);
-    // l'apaisement : quelques mèches qui redescendent, sans chant
-    const cine = end === 'apaisement' ? P.quietEndCine : end === 'victoire' ? P.nightEndCine('fuit') : end === 'incredulite' ? P.nightEndCine('relache') : null;
-    if (cine) {
-      await g.cut(() => play(g, cine));
+    const fin = ({ apaisement: 'chante', victoire: 'fuit', incredulite: 'relache' } as const)[end as 'apaisement'];
+    if (fin) {
+      await g.cut(() => play(g, P.nightEndCine(fin)));
       g.showPlan(null);
     }
   }

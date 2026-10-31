@@ -89,7 +89,8 @@ export interface GameMap {
   /** Obstacles en plus du masque (pixels). */
   solids: Rect[];
   objects: PlacedObject[];
-  exits: (MapExit & { px: Rect })[];
+  /** floor : une sortie posée au sol (un escalier), qu'on prend en marchant dessus ; sinon c'est une porte dans un mur. */
+  exits: (MapExit & { px: Rect; floor?: boolean })[];
   spawns: Record<string, Spawn>;
   zones: Record<string, Rect>;
   shape: MapShape;
@@ -118,6 +119,12 @@ export function loadMap(file: MapFile, paint: MapPainter, shape: MapShape = boxS
     paint,
   };
   buildMask(map);
+  for (const e of map.exits) {
+    let free = 0, all = 0;
+    for (let y = Math.floor(e.px.y); y < Math.ceil(e.px.y + e.px.h); y++)
+      for (let x = Math.floor(e.px.x); x < Math.ceil(e.px.x + e.px.w); x++) if (x >= 0 && y >= 0 && x < map.w && y < map.h) (all++, (free += map.mask[y * map.w + x] ? 0 : 1));
+    e.floor = !actionExit(map, e) && all > 0 && free / all > 0.9 && inside(e.px, map);
+  }
   return map;
 }
 
@@ -131,7 +138,7 @@ function fillMask(map: GameMap, r: Rect, v: number) {
 /**
  * Le masque au pixel près : dans une pièce, le mur du fond (2 tuiles) et les plinthes ; dehors, l'eau ; partout, l'emprise
  * au sol des objets solides. Les objets qui dépendent du moment (when) ou posés sur un autre (on) n'y sont pas :
- * le jeu les teste à part. Les sorties restent ouvertes.
+ * le jeu les teste à part. Les portes restent des murs : on les passe en butant contre elles (entersExit).
  */
 function buildMask(map: GameMap) {
   const { file, shape } = map;
@@ -155,8 +162,6 @@ function buildMask(map: GameMap) {
       if (x >= 0 && y >= 0 && x < map.w && y < map.h) map.mask[y * map.w + x] = 1;
     }
   }
-  // on peut marcher dans l'embrasure d'une porte ; une fenêtre, elle, se prend depuis le sol
-  for (const e of map.exits) if (!actionExit(map, e)) fillMask(map, e.px, 0);
 }
 
 /** Les pieds d'un personnage : 10 × 4 px, posés sur (x, y). */
@@ -168,7 +173,7 @@ export const overlap = (a: Rect, b: Rect) => a.x < b.x + b.w && b.x < a.x + a.w 
 /** Les pieds d'un personnage touchent-ils un obstacle ou le bord de la carte ? Au pixel près. */
 export function blocked(map: GameMap, x: number, y: number) {
   const f = footAt(x, y);
-  if (f.x < 0 || f.y < 0 || f.x + f.w > map.w || f.y + f.h > map.h) return true;
+  if (f.x < 0 || f.y < 0 || f.x + f.w >= map.w || f.y + f.h >= map.h) return true;
   const x0 = Math.floor(f.x), x1 = Math.ceil(f.x + f.w), y0 = Math.floor(f.y), y1 = Math.ceil(f.y + f.h);
   for (let py = y0; py < y1; py++) for (let px = x0; px < x1; px++) if (map.mask[py * map.w + px]) return true;
   return map.solids.some((r) => overlap(f, r));
@@ -212,21 +217,38 @@ export function sortThings(map: GameMap, objects: PlacedObject[]) {
     });
 }
 
-/** Une porte se passe à 5 px au plus devant les pieds, en la recouvrant d'au moins 4 px. */
-const DOOR_REACH = 5, DOOR_OVERLAP = 4;
+/** Il faut recouvrir la porte d'au moins 4 px pour la passer. */
+const DOOR_OVERLAP = 4;
 
 /**
- * Le héros passe une sortie quand il avance vers elle et qu'elle est juste devant ses pieds (pas besoin d'être collé
- * au pixel), en face d'elle (pas en train de la longer).
+ * Une porte, c'est un bout de mur qui mène ailleurs : le héros la passe quand il bute contre le mur (ou le bord)
+ * juste à l'endroit de la porte, en avançant vers elle. blocked dit si le pas suivant est bloqué. On ne change
+ * donc jamais de pièce sans le vouloir : ni en passant à côté, ni en la longeant.
  */
-export function entersExit(x: number, y: number, dx: number, dy: number, r: Rect): boolean {
-  if (dx && dy) return entersExit(x, y, dx, 0, r) || entersExit(x, y, 0, dy, r);
-  const f = footAt(x, y), k = DOOR_REACH;
-  const reach =
-    dy < 0 ? { ...f, y: f.y - k, h: f.h + k } : dy > 0 ? { ...f, h: f.h + k } : dx < 0 ? { ...f, x: f.x - k, w: f.w + k } : { ...f, w: f.w + k };
-  if (!overlap(reach, r)) return false;
+export function entersExit(x: number, y: number, dx: number, dy: number, r: Rect, blocked: (x: number, y: number) => boolean): boolean {
+  if (dx && dy) return entersExit(x, y, dx, 0, r, blocked) || entersExit(x, y, 0, dy, r, blocked);
+  if (!blocked(x + dx, y + dy)) return false;
+  const f = footAt(x, y);
+  // le pixel juste derrière le bord des pieds, dans le sens de la marche
+  const touch = dy < 0 ? { ...f, y: f.y - 1, h: 1 } : dy > 0 ? { ...f, y: f.y + f.h, h: 1 } : dx < 0 ? { ...f, x: f.x - 1, w: 1 } : { ...f, x: f.x + f.w, w: 1 };
+  // (un pixel de marge : une sortie au bord de la carte touche le bord sans le dépasser)
+  if (!overlap(touch, { x: r.x - 1, y: r.y - 1, w: r.w + 2, h: r.h + 2 })) return false;
   const span = dy ? Math.min(f.x + f.w, r.x + r.w) - Math.max(f.x, r.x) : Math.min(f.y + f.h, r.y + r.h) - Math.max(f.y, r.y);
   return span >= Math.min(DOOR_OVERLAP, dy ? r.w : r.h);
+}
+
+/** La sortie est-elle loin des bords de la carte (pas une route qui sort par le bord) ? */
+function inside(r: Rect, map: GameMap) {
+  return r.x > 0 && r.y > 0 && r.x + r.w < map.w && r.y + r.h < map.h;
+}
+
+/** Le héros prend-il cette sortie en faisant ce pas ? Porte : en butant contre elle. Escalier : les pieds dessus. */
+export function takesExit(e: GameMap['exits'][number], x: number, y: number, dx: number, dy: number, hit: (x: number, y: number) => boolean) {
+  if (e.floor) {
+    const f = footAt(x, y);
+    return f.x >= e.px.x && f.y >= e.px.y && f.x + f.w <= e.px.x + e.px.w && f.y + f.h <= e.px.y + e.px.h;
+  }
+  return entersExit(x, y, dx, dy, e.px, hit);
 }
 
 /** Une sortie qui se prend avec le bouton d'action (une fenêtre) plutôt qu'en marchant. */
@@ -309,6 +331,7 @@ export function walkable(map: GameMap, from: { x: number; y: number }[], hit = (
  * Renvoie ce qui est hors d'atteinte (vide = tout va bien).
  */
 export function auditMap(map: GameMap, hit?: (x: number, y: number) => boolean) {
+  const wall = hit ?? ((x: number, y: number) => blocked(map, x, y));
   const seen = walkable(map, Object.values(map.spawns), hit);
   const DIR4 = [[0, -1], [0, 1], [-1, 0], [1, 0]];
   const some = (test: (x: number, y: number) => boolean) => {
@@ -317,7 +340,7 @@ export function auditMap(map: GameMap, hit?: (x: number, y: number) => boolean) 
   };
   const probeIn = (r: Rect) => (x: number, y: number) => DIR4.some(([dx, dy]) => inRect(x + dx * 12, y - 4 + dy * 10, r));
   const passes = (e: GameMap['exits'][number]) =>
-    actionExit(map, e) ? probeIn({ x: e.px.x - 4, y: e.px.y - 4, w: e.px.w + 8, h: e.px.h + 8 }) : (x: number, y: number) => DIR4.some(([dx, dy]) => entersExit(x, y, dx, dy, e.px));
+    actionExit(map, e) ? probeIn({ x: e.px.x - 4, y: e.px.y - 4, w: e.px.w + 8, h: e.px.h + 8 }) : (x: number, y: number) => DIR4.some(([dx, dy]) => takesExit(e, x, y, dx, dy, wall));
   const exits = map.exits.filter((e) => !some(passes(e))).map((e) => e.id);
   const near = (o: PlacedObject) => reachOf(map, o);
   const objects = map.objects
