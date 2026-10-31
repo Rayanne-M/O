@@ -1,0 +1,170 @@
+{
+ "id": "moulin_meule",
+ "name": "Le moulin — la salle de la meule",
+ "chapter": "enfance",
+ "kind": "piece",
+ "tile": 16,
+ "w": 12,
+ "h": 9,
+ "floor": "pierre",
+ "wall": "pierre",
+ "objects": [
+  {
+   "id": "engrenage",
+   "type": "engrenage",
+   "x": 8,
+   "y": 0,
+   "w": 2,
+   "h": 2,
+   "solid": false
+  },
+  {
+   "id": "meule",
+   "type": "meule",
+   "x": 4,
+   "y": 3,
+   "w": 4,
+   "h": 3,
+   "solid": true,
+   "interact": {
+    "label": "La meule",
+    "text": "Elle tourne avec la roue. Aubin y passe ses journées, sans parler."
+   }
+  },
+  {
+   "id": "sacs",
+   "type": "sacs",
+   "x": 1,
+   "y": 2,
+   "w": 2,
+   "h": 2,
+   "solid": true
+  },
+  {
+   "id": "sacs2",
+   "type": "sacs",
+   "x": 9,
+   "y": 5,
+   "w": 2,
+   "h": 2,
+   "solid": true
+  },
+  {
+   "id": "echelle",
+   "type": "echelle",
+   "x": 10,
+   "y": 0,
+   "w": 1,
+   "h": 3,
+   "solid": false,
+   "interact": {
+    "label": "L'échelle",
+    "text": "Elle monte à la chambre d'Élio."
+   }
+  },
+  {
+   "id": "etabli",
+   "type": "table",
+   "x": 1,
+   "y": 6,
+   "w": 2,
+   "h": 1,
+   "solid": true
+  },
+  {
+   "id": "couteau",
+   "type": "couteau",
+   "x": 1,
+   "y": 6,
+   "w": 1,
+   "h": 1,
+   "solid": false,
+   "on": "etabli",
+   "interact": {
+    "label": "Le couteau d'Aubin",
+    "text": "Le couteau d'Aubin. Il ne le quitte pas."
+   }
+  },
+  {
+   "id": "porte_cuisine",
+   "type": "porte",
+   "x": 3.4,
+   "y": 0,
+   "w": 1,
+   "h": 2,
+   "solid": false
+  }
+ ],
+ "exits": [
+  {
+   "id": "sortie",
+   "x": 5,
+   "y": 8,
+   "w": 2,
+   "h": 1,
+   "to": "village",
+   "at": "porte_moulin",
+   "label": "Sortir"
+  },
+  {
+   "id": "vers_cuisine",
+   "x": 3.4,
+   "y": 1,
+   "w": 1,
+   "h": 1,
+   "to": "moulin_cuisine",
+   "at": "entree",
+   "label": "La cuisine"
+  },
+  {
+   "id": "vers_chambre",
+   "x": 10,
+   "y": 2,
+   "w": 1,
+   "h": 1,
+   "to": "chambre_elio",
+   "at": "entree",
+   "label": "Monter"
+  }
+ ],
+ "spawns": {
+  "entree": {
+   "x": 6,
+   "y": 7.6,
+   "dir": "N"
+  },
+  "depuis_cuisine": {
+   "x": 3.9,
+   "y": 2.7,
+   "dir": "S"
+  },
+  "depuis_chambre": {
+   "x": 9.6,
+   "y": 3.8,
+   "dir": "W"
+  }
+ },
+ "zones": {},
+ "npcs": [
+  {
+   "id": "aubin",
+   "x": 8.4,
+   "y": 6.2,
+   "when": {
+    "night": false
+   }
+  }
+ ],
+ "scenes": [],
+ "collision": [
+  "111111111111",
+  "111001111111",
+  "011000000000",
+  "011011110000",
+  "000011110000",
+  "000011110110",
+  "011000000110",
+  "000000000000",
+  "000000000000"
+ ]
+}

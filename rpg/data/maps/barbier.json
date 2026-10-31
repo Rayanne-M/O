@@ -1,0 +1,275 @@
+{
+ "id": "barbier",
+ "name": "Salon de Maître Fauvel",
+ "chapter": "enfance",
+ "kind": "piece",
+ "tile": 16,
+ "w": 10,
+ "h": 8,
+ "floor": "damier",
+ "wall": "platre",
+ "objects": [
+  {
+   "h": 2,
+   "id": "miroir",
+   "solid": false,
+   "type": "miroir",
+   "w": 2,
+   "x": 3,
+   "y": 0
+  },
+  {
+   "h": 2,
+   "id": "fauteuil_barbier",
+   "interact": {
+    "label": "Le fauteuil",
+    "scene": "s5_barbier",
+    "text": "Jour 2, matin : « Court. Comme un soldat. » ou « Juste les pointes. » La coupe a lieu dans tous les cas, le sprite change."
+   },
+   "solid": true,
+   "type": "fauteuil_barbier",
+   "w": 2,
+   "x": 3,
+   "y": 2
+  },
+  {
+   "h": 1,
+   "id": "comptoir",
+   "solid": true,
+   "type": "comptoir",
+   "w": 3,
+   "x": 6,
+   "y": 2
+  },
+  {
+   "h": 1,
+   "id": "ciseaux",
+   "interact": {
+    "flag": "a_ciseaux",
+    "label": "Les ciseaux",
+    "text": "Les grands ciseaux, sur l'étagère du fond. Les prendre pendant que Fauvel tourne le dos : voleur +1, trait Doigts légers, objet Ciseaux du barbier. Au puits, ils coupent une mèche par coup (contre 3 avec un bâton)."
+   },
+   "on": "etagere_b",
+   "solid": false,
+   "type": "ciseaux",
+   "w": 1,
+   "x": 7.6,
+   "y": 0.95
+  },
+  {
+   "h": 2,
+   "id": "etagere_b",
+   "solid": false,
+   "type": "etagere",
+   "w": 2,
+   "x": 7,
+   "y": 0
+  },
+  {
+   "h": 1,
+   "id": "banc",
+   "interact": {
+    "label": "Le banc d'attente",
+    "text": "La mère attend ici pendant la coupe."
+   },
+   "solid": true,
+   "type": "banc",
+   "w": 3,
+   "x": 0.3125,
+   "y": 6.8125
+  },
+  {
+   "h": 1,
+   "id": "cheveux_sol",
+   "solid": false,
+   "type": "cheveux_sol",
+   "w": 2,
+   "x": 3,
+   "y": 4
+  },
+  {
+   "id": "portrait",
+   "type": "portrait",
+   "x": 0.4,
+   "y": 0,
+   "w": 2,
+   "h": 2,
+   "solid": false,
+   "interact": {
+    "label": "Le portrait du prince Élu",
+    "text": "Orné de fleurs séchées. « Fauvel l'a coiffé en rêve, dit-il. »"
+   }
+  },
+  {
+   "id": "client",
+   "type": "client",
+   "x": 0.6,
+   "y": 2.4,
+   "w": 2,
+   "h": 2,
+   "solid": true,
+   "interact": {
+    "label": "Le client endormi",
+    "text": "Il dort sous une serviette chaude. Il respire lentement."
+   }
+  },
+  {
+   "id": "rideau",
+   "type": "rideau",
+   "x": 5.4,
+   "y": 0,
+   "w": 1,
+   "h": 2,
+   "solid": false,
+   "interact": {
+    "label": "Le rideau",
+    "text": "Il cache l'arrière-boutique."
+   }
+  },
+  {
+   "id": "balai",
+   "type": "balai",
+   "x": 9,
+   "y": 0,
+   "w": 1,
+   "h": 2,
+   "solid": false,
+   "interact": {
+    "label": "Le balai",
+    "text": "Pousser les mèches coupées en petit tas."
+   }
+  },
+  {
+   "id": "flacons",
+   "type": "flacons",
+   "x": 6.1,
+   "y": 2,
+   "w": 1,
+   "h": 1,
+   "solid": false,
+   "on": "comptoir",
+   "interact": {
+    "label": "Les flacons de lotion",
+    "text": "On peut les sentir. L'un fait éternuer le héros."
+   }
+  },
+  {
+   "id": "rasoirs",
+   "type": "rasoirs",
+   "x": 7.4,
+   "y": 2,
+   "w": 1,
+   "h": 1,
+   "solid": false,
+   "on": "comptoir"
+  },
+  {
+   "id": "canari",
+   "type": "cage_canari",
+   "x": 8.6,
+   "y": 3.4,
+   "w": 1,
+   "h": 2,
+   "solid": true,
+   "interact": {
+    "label": "Le canari",
+    "text": "Il chante quand on approche."
+   }
+  },
+  {
+   "id": "plante_b",
+   "type": "plante",
+   "x": 8.6,
+   "y": 6,
+   "w": 1,
+   "h": 1,
+   "solid": true
+  }
+ ],
+ "exits": [
+  {
+   "id": "sortie",
+   "x": 4,
+   "y": 7,
+   "w": 2,
+   "h": 1,
+   "to": "village",
+   "at": "porte_barbier",
+   "label": "Sortir"
+  },
+  {
+   "id": "vers_arriere",
+   "x": 5.4,
+   "y": 1,
+   "w": 1,
+   "h": 1,
+   "to": "barbier_arriere",
+   "at": "entree",
+   "label": "L'arrière-boutique"
+  }
+ ],
+ "spawns": {
+  "entree": {
+   "x": 5,
+   "y": 7.4,
+   "dir": "N"
+  },
+  "depuis_arriere": {
+   "x": 5.9,
+   "y": 2.7,
+   "dir": "S"
+  }
+ },
+ "zones": {},
+ "npcs": [
+  {
+   "id": "fauvel",
+   "x": 5.6,
+   "y": 3.8,
+   "when": {
+    "night": false
+   }
+  },
+  {
+   "id": "mere",
+   "x": 2.2,
+   "y": 7.4,
+   "when": {
+    "day": 2,
+    "moment": "matin"
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "s6_salon",
+   "when": {
+    "day": 2,
+    "moment": "matin"
+   },
+   "title": "Le salon",
+   "who": "La mère, Fauvel",
+   "line": "« Regarde-toi, on dirait un buisson. On coupe. » « Assieds-toi là, jeune homme. Alors, on fait comment ? »"
+  },
+  {
+   "id": "s7_balade",
+   "when": {
+    "day": 2,
+    "moment": "matin"
+   },
+   "title": "La balade pendant que les grands parlent",
+   "who": "Fauvel, la mère",
+   "line": "« Vous avez vu le meunier ? Il boit depuis que sa femme est partie. » « Tout est mes affaires, je suis barbier. »"
+  }
+ ],
+ "collision": [
+  "1111111111",
+  "1111100111",
+  "0111101110",
+  "0111100001",
+  "0000000001",
+  "0000000000",
+  "0000000001",
+  "1110000000"
+ ]
+}
