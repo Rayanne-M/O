@@ -67,7 +67,12 @@ L'éditeur sauvegarde dans la base de la page, collection `maps` : un document p
 
 ## Planches
 
-- `python3 build.py` produit `rpg/art/direction-artistique.html`.
-- `python3 cartesbuild.py` produit `rpg/art/cartes.html`, avec toutes les cartes de `rpg/data/maps` intégrées.
+`npm run rpg` (à la racine du dépôt) refait toutes les planches : `cartes.html` (avec toutes les cartes de `rpg/data/maps`),
+`direction-artistique.html` et `enfance-assets.html`. `npm run dev` les refait aussi dès qu'un fichier de `rpg/` change.
+La liste des planches et de leurs fichiers est dans `PAGES` de `scripts/rpg/contenu.mjs`.
+
+Le registre `rpg/data/personnages.json` est visible du code de dessin sous le nom `PERSONNAGES` : `drawPerson`
+dessine chaque habitant d'une carte avec le sprite de `chars.js` que le registre lui donne, comme dans le jeu.
+Voir [../../LIENS.md](../../LIENS.md).
 
 Les noms des lieux et des personnages viennent du scénario de l'enfance et restent provisoires.

@@ -1,0 +1,23 @@
+{
+  "_doc": "Registre des personnages : une entrée par personnage, référencée par son id partout (cartes : npcs ; scénario : qui, pnj ; jeu : répliques et allures). nom = nom affiché dans les dialogues. sprite = gabarit de CHARS (rpg/art/src/chars.js), dessiné à l'identique dans le jeu et sur la page des cartes. portrait = entrée de PORTRAITS (portraits.js). palette = couleurs de secours si le sprite manque (clé de NPC_PAL d'exterior.js, ou PAL / CHILD_PAL). variante_de = autre tenue du même personnage. Voir rpg/LIENS.md.",
+  "personnages": {
+    "heros": { "nom": "Toi", "enfant": true, "portrait": "heros", "palette": "CHILD_PAL", "note": "sprite choisi par le jeu selon la coupe : heros_long, heros_pointes, heros_court" },
+    "mere": { "nom": "Mère", "sprite": "mere", "portrait": "mere", "enfant": false, "cheveux": 0.45, "tenue": "mage", "palette": "mere" },
+    "elio": { "nom": "Élio", "sprite": "elio", "portrait": "elio", "enfant": true, "cheveux": 0.9, "palette": "elio" },
+    "elio_rase": { "nom": "Élio", "variante_de": "elio", "sprite": "elio_rase", "portrait": "elio_rase", "enfant": true, "cheveux": 0, "palette": "elio" },
+    "elio_capuche": { "nom": "Élio", "variante_de": "elio", "sprite": "elio_capuche", "portrait": "elio_capuche", "enfant": true, "cheveux": 0, "palette": "elio_capuche" },
+    "margot": { "nom": "Margot", "sprite": "margot", "portrait": "margot", "enfant": true, "cheveux": 0.75, "palette": "margot" },
+    "basile": { "nom": "Basile", "sprite": "basile", "portrait": "basile", "enfant": true, "cheveux": 0.15, "palette": "basile" },
+    "fauvel": { "nom": "Maître Fauvel", "sprite": "fauvel", "portrait": "fauvel", "enfant": false, "cheveux": 0.2, "palette": "fauvel" },
+    "aubin": { "nom": "Aubin", "sprite": "aubin", "portrait": "aubin", "enfant": false, "cheveux": 1, "palette": "aubin" },
+    "ysol": { "nom": "Grand-mère Ysol", "sprite": "ysol", "portrait": "ysol", "enfant": false, "cheveux": 0.3, "palette": "ysol" },
+    "mere_basile": { "nom": "La mère de Basile", "sprite": "mere_basile", "enfant": false, "cheveux": 0.4, "palette": "mere_basile" },
+    "enfant_a": { "nom": "Un enfant", "sprite": "enfant1", "enfant": true, "cheveux": 0.3, "palette": "enfant_a" },
+    "enfant_b": { "nom": "Une enfant", "sprite": "enfant2", "enfant": true, "cheveux": 0.55, "palette": "enfant_b" },
+    "enfant_c": { "nom": "Un petit", "sprite": "enfant3", "enfant": true, "cheveux": 0.3, "palette": "enfant_c" },
+    "villageois1": { "nom": "Un homme", "sprite": "villageois1", "enfant": false, "cheveux": 0.3, "palette": "villageois" },
+    "villageois2": { "nom": "Une femme", "sprite": "villageois2", "enfant": false, "cheveux": 0.3, "palette": "villageois" },
+    "esprit": { "nom": "???", "note": "l'Esprit du puits parle par le visage d'Élio : portrait animé talkPortrait (horror.js)" }
+  },
+  "betes": ["poule", "poule_rousse", "poule_blanche", "chat", "chat_dort"]
+}

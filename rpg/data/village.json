@@ -1,0 +1,443 @@
+{
+ "size": [
+  560,
+  360
+ ],
+ "river": [
+  [
+   432,
+   -12
+  ],
+  [
+   420,
+   50
+  ],
+  [
+   446,
+   120
+  ],
+  [
+   424,
+   196
+  ],
+  [
+   452,
+   270
+  ],
+  [
+   474,
+   372
+  ]
+ ],
+ "paths": [
+  [
+   [
+    146,
+    112
+   ],
+   [
+    160,
+    140
+   ],
+   [
+    212,
+    176
+   ]
+  ],
+  [
+   [
+    90,
+    172
+   ],
+   [
+    146,
+    150
+   ]
+  ],
+  [
+   [
+    282,
+    124
+   ],
+   [
+    270,
+    164
+   ]
+  ],
+  [
+   [
+    290,
+    206
+   ],
+   [
+    348,
+    222
+   ],
+   [
+    380,
+    250
+   ]
+  ],
+  [
+   [
+    290,
+    196
+   ],
+   [
+    380,
+    190
+   ],
+   [
+    470,
+    200
+   ],
+   [
+    560,
+    206
+   ]
+  ],
+  [
+   [
+    250,
+    240
+   ],
+   [
+    244,
+    300
+   ],
+   [
+    236,
+    372
+   ]
+  ],
+  [
+   [
+    360,
+    118
+   ],
+   [
+    330,
+    150
+   ],
+   [
+    290,
+    172
+   ]
+  ],
+  [
+   [
+    210,
+    200
+   ],
+   [
+    120,
+    220
+   ],
+   [
+    40,
+    250
+   ],
+   [
+    -10,
+    262
+   ]
+  ]
+ ],
+ "place": [
+  250,
+  200,
+  42
+ ],
+ "buildings": {
+  "maison": [
+   110,
+   48
+  ],
+  "barbier": [
+   246,
+   60
+  ],
+  "maisonA": [
+   124,
+   252
+  ],
+  "maisonB": [
+   270,
+   262
+  ],
+  "grange": [
+   40,
+   112
+  ],
+  "moulin": [
+   362,
+   64
+  ],
+  "lavoir": [
+   334,
+   250
+  ],
+  "puits": [
+   384,
+   214
+  ]
+ },
+ "doors": {
+  "maison": [
+   146,
+   114
+  ],
+  "grange": [
+   72,
+   176
+  ],
+  "barbier": [
+   282,
+   126
+  ],
+  "moulin": [
+   391,
+   128
+  ]
+ },
+ "places": [
+  {
+   "id": "maison",
+   "name": "Maison du héros",
+   "at": [
+    146,
+    40
+   ],
+   "text": "Là où il est né. La porte de la chambre est fermée à clé la nuit, mais la fenêtre s'ouvre, sans que le jeu le signale.",
+   "scenes": [
+    [
+     1,
+     "veillée",
+     "La comptine",
+     "Ysol, la mère",
+     "« Quand le jour avalera la nuit, naîtra l'enfant des deux lumières… »"
+    ],
+    [
+     2,
+     "soir",
+     "Le bol de lait (optionnel)",
+     "",
+     "Boire le lait, le laisser, ou y ajouter son pain."
+    ],
+    [
+     3,
+     "soir",
+     "Le soir de la disparition",
+     "La mère",
+     "« Les hommes le chercheront demain à la lanterne. Toi, tu dors. »"
+    ]
+   ],
+   "nights": [
+    [
+     1,
+     "Le chat entre par la fenêtre, fait le tour du lit et ressort."
+    ]
+   ]
+  },
+  {
+   "id": "grange",
+   "name": "La grange",
+   "at": [
+    72,
+    104
+   ],
+   "text": "La grange familiale, avec le poulailler. Une grosse araignée vit dans la poutre.",
+   "scenes": [
+    [
+     1,
+     "matin",
+     "Les œufs et l'araignée",
+     "La mère",
+     "« Six œufs, pas cinq. » L'araignée descend sur le panier."
+    ]
+   ]
+  },
+  {
+   "id": "place",
+   "name": "La place",
+   "at": [
+    250,
+    168
+   ],
+   "text": "Le cœur du village, sous le grand tilleul. C'est là que les enfants jouent.",
+   "scenes": [
+    [
+     1,
+     "midi",
+     "Le jeu des brigands",
+     "Margot, Élio, Basile",
+     "« Moi je suis la reine des brigands, c'est décidé. Toi, tu prends quoi ? »"
+    ],
+    [
+     3,
+     "matin",
+     "La tête tondue",
+     "Élio, Margot",
+     "« Il l'a fait à l'aube. Avec son couteau. »"
+    ]
+   ]
+  },
+  {
+   "id": "barbier",
+   "name": "Chez Fauvel, le barbier",
+   "at": [
+    282,
+    52
+   ],
+   "text": "La boutique du barbier, avec son poteau rayé. Les ciseaux sont posés sur le comptoir.",
+   "scenes": [
+    [
+     2,
+     "matin",
+     "La coupe",
+     "La mère, Fauvel",
+     "« Regarde-toi, on dirait un buisson. On coupe. »"
+    ],
+    [
+     2,
+     "fin de matinée",
+     "Les tresses d'Élio",
+     "Aubin, Élio",
+     "« Je ne veux plus voir ces tresses sous mon toit. »"
+    ]
+   ]
+  },
+  {
+   "id": "moulin",
+   "name": "Le moulin d'Aubin",
+   "at": [
+    392,
+    56
+   ],
+   "text": "Élio y vit avec son père, Aubin, le meunier. Sa fenêtre donne sur la roue.",
+   "scenes": [
+    [
+     3,
+     "après-midi",
+     "Indice : le ruban",
+     "",
+     "Un ruban dans la cendre, devant le moulin."
+    ]
+   ],
+   "nights": [
+    [
+     1,
+     "Aubin parle seul : « Tu lui as laissé tes tresses pour que je te voie tous les jours, c'est ça ? »"
+    ],
+    [
+     2,
+     "À la fenêtre d'Élio : « Des fois, la nuit, j'entends quelqu'un chanter, vers le lavoir. »"
+    ]
+   ]
+  },
+  {
+   "id": "lavoir",
+   "name": "Le lavoir",
+   "at": [
+    360,
+    242
+   ],
+   "text": "Un bassin couvert où on lave le linge. Une haie le sépare du vieux puits.",
+   "scenes": [
+    [
+     3,
+     "après-midi",
+     "Indices : cheveux et traces",
+     "",
+     "Des cheveux noirs dans la haie, des traces dans la boue du lavoir."
+    ],
+    [
+     3,
+     "soir",
+     "Cinématique",
+     "",
+     "Élio pleure sous l'auvent. Des cheveux sortent de la haie et le traînent jusqu'au puits."
+    ]
+   ]
+  },
+  {
+   "id": "puits",
+   "name": "Le vieux puits",
+   "at": [
+    402,
+    206
+   ],
+   "text": "Derrière le lavoir. La légende de la Rancunière dit que ses cheveux repoussent au fond.",
+   "scenes": [
+    [
+     1,
+     "soir",
+     "La légende",
+     "Basile, Margot, Élio",
+     "« Quand un enfant garde une rancune trop longtemps… elle remonte la boire. »"
+    ]
+   ],
+   "nights": [
+    [
+     2,
+     "Un chant faible, sans paroles."
+    ],
+    [
+     3,
+     "La rencontre : l'Esprit parle par la bouche d'Élio."
+    ]
+   ]
+  },
+  {
+   "id": "riviere",
+   "name": "La rivière",
+   "at": [
+    506,
+    214
+   ],
+   "text": "La prairie au bord de l'eau, de l'autre côté du pont.",
+   "scenes": [
+    [
+     2,
+     "après-midi",
+     "La fenêtre de Margot",
+     "Basile, Margot",
+     "« Moi je sors souvent par ma fenêtre la nuit. Elle n'en sait rien. »"
+    ]
+   ]
+  },
+  {
+   "id": "foret",
+   "name": "La lisière de la forêt",
+   "at": [
+    34,
+    268
+   ],
+   "text": "Là où le chemin s'enfonce sous les arbres. Les enfants n'y vont pas seuls.",
+   "nights": [
+    [
+     3,
+     "Aubin cherche Élio à la lanterne, dans la mauvaise direction."
+    ]
+   ]
+  },
+  {
+   "id": "village",
+   "name": "Tout le village",
+   "at": [
+    196,
+    300
+   ],
+   "text": "Le jour 3 après-midi, le héros explore librement pour retrouver Élio.",
+   "scenes": [
+    [
+     3,
+     "après-midi",
+     "La disparition",
+     "Aubin, Basile",
+     "« Il a fugué. Comme sa mère. Il reviendra quand il aura faim. »"
+    ]
+   ]
+  }
+ ]
+}

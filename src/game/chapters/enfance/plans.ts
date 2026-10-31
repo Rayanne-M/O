@@ -1,7 +1,7 @@
 // Les gros plans et cinématiques de l'enfance, dessinés en plein écran (384 × 216).
 // Ce sont des versions provisoires : chacune sera remplacée par celle de la planche quand elle existera
 // (catalogue des assets : PLAN-01 à PLAN-12).
-import * as A from '../../art/shared.js';
+import * as A from 'virtual:rpg-art';
 import type { PlanFn } from '../../engine/game';
 import { LOOKS, heroLook } from './cast';
 import { state } from '../../engine/state';

@@ -28,6 +28,9 @@ let mapSprites = null;
 function npcSprites() { return mapSprites || (mapSprites = { child: CHILD(), childBob: bobUpper(CHILD(), 23), adult: ADULT(), adultBob: bobUpper(ADULT(), 27) }); }
 // une personne, les pieds en (fx, fy) px
 function drawPerson(c, n, fx, fy, t) {
+  // le personnage du registre (rpg/data/personnages.json) avec son gabarit de chars.js : le même dessin que dans le jeu
+  const who = typeof PERSONNAGES !== "undefined" && PERSONNAGES[n.look || n.id], ch = who && who.sprite && typeof CHARS !== "undefined" && CHARS[who.sprite];
+  if (ch) return drawChar(c, ch, Math.round(fx) - 12, Math.round(fy) - ch.H, { dir: n.dir || "S", t });
   const S = npcSprites(), key = n.look || n.id, child = CHILD_IDS.has(key) || n.child, bob = (Math.floor(t / 600) + Math.round(fx)) % 2;
   const pal = key === "hero" ? CHILD_PAL : NPC_PAL[key] || NPC_PAL.villageois, x = Math.round(fx) - 12, y = Math.round(fy) - (child ? 27 : 34);
   c.globalAlpha = .22; c.fillStyle = "#1a3a2a"; c.fillRect(x + 3 + (child ? 0 : 1), Math.round(fy) - 2, child ? 16 : 18, 3); c.globalAlpha = 1;

@@ -6,7 +6,7 @@ import { actionExit, active, blocked, footAt, overlap, takesExit, blockedBy, inR
 import { drawActor, dirOf, makeActor, vec, type Actor, type Look } from './actors';
 import { applyEffects, has, state, type Effects } from './state';
 import { ui, wait } from './ui';
-import * as A from '../art/shared.js';
+import * as A from 'virtual:rpg-art';
 
 export const VIEW_W = 384;
 export const VIEW_H = 216;

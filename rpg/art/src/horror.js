@@ -1,7 +1,7 @@
 // ---------- Au fond du puits : la vue plongeante (plus détaillée que le jeu) ----------
 const HORROR_W = 160, HORROR_H = 120, BAYER4 = [[0,8,2,10],[12,4,14,6],[3,11,1,9],[15,7,13,5]];
 const horrorImgs = {};
-function buildHorror(variant) {
+function buildHorror(variant, rase = true) {   // rase : la tête d'Élio, rasée par son père le soir du jour 2 (false = les anciens cheveux blonds)
   const cv = document.createElement("canvas"); cv.width = HORROR_W; cv.height = HORROR_H; const ctx = cv.getContext("2d");
   const W = HORROR_W, H = HORROR_H, C = [80, 60];
   const P = (x, y, c) => { x |= 0; y |= 0; if (x < 0 || y < 0 || x >= W || y >= H) return; ctx.fillStyle = c; ctx.fillRect(x, y, 1, 1); };
@@ -50,7 +50,8 @@ function buildHorror(variant) {
   const F = [80, 63], frx = 20, fry = 23;
   const inF = (x, y) => ((x - F[0]) / frx) ** 2 + ((y - F[1]) / fry) ** 2 <= 1;
   for (let y = -30; y <= 10; y++) for (let x = -25; x <= 25; x++) { const d = (x / 24) ** 2 + ((y + 3) / 28) ** 2; if (d > 1 || (x / frx) ** 2 + (y / fry) ** 2 < .95) continue;
-    P(F[0] + x, F[1] + y, ramp(GOLD, .6 + .4 * Math.sin(x * 1.4 + y * .2) - d * .4, x, y)); }   // cheveux blonds mouillés
+    if (rase) { P(F[0] + x, F[1] + y, ramp(SKIN, .55 - d * .45 + x / 120, x, y)); if (((x * 7 + y * 13) & 7) === 0 || BAYER4[y & 3][x & 3] > 13) P(F[0] + x, F[1] + y, d > .8 ? HAIR[2] : GOLD[1]); }   // crâne rasé, un duvet de poils
+    else P(F[0] + x, F[1] + y, ramp(GOLD, .6 + .4 * Math.sin(x * 1.4 + y * .2) - d * .4, x, y)); }   // cheveux blonds mouillés
   for (let y = -fry; y <= fry; y++) for (let x = -frx; x <= frx; x++) {
     const d = (x / frx) ** 2 + (y / fry) ** 2; if (d > 1) continue;
     const nx = x / frx, ny = y / fry, nz = Math.sqrt(Math.max(0, 1 - d));
@@ -60,8 +61,8 @@ function buildHorror(variant) {
     P(F[0] + x, F[1] + y, ramp(SKIN, v, x + 80, y + 64));
   }
   [[-9, 4], [-7, 6], [-11, 6], [9, 5], [7, 3], [11, 7], [-2, 2], [2, 3], [-5, 5]].forEach(([x, y]) => P(F[0] + x, F[1] + y, SKIN[2]));   // taches de rousseur
-  for (let x = -frx + 2; x <= frx - 2; x += 2) strand(F[0] + x, F[1] - fry - 3, 1.57 + x * .015, 4 + Math.abs(Math.sin(x * 3)) * 7, 1, .2, 0, 3);   // mèches blondes collées au front
-  for (let x = -frx + 3; x <= frx - 3; x += 3) { const l = 3 + Math.abs(Math.sin(x * 2)) * 6; for (let k = 0; k < l; k++) P(F[0] + x + Math.sin(k * .5) * .6, F[1] - fry + k, GOLD[k % 3 ? 3 : 2]); }
+  if (!rase) for (let x = -frx + 2; x <= frx - 2; x += 2) strand(F[0] + x, F[1] - fry - 3, 1.57 + x * .015, 4 + Math.abs(Math.sin(x * 3)) * 7, 1, .2, 0, 3);   // mèches blondes collées au front
+  if (!rase) for (let x = -frx + 3; x <= frx - 3; x += 3) { const l = 3 + Math.abs(Math.sin(x * 2)) * 6; for (let k = 0; k < l; k++) P(F[0] + x + Math.sin(k * .5) * .6, F[1] - fry + k, GOLD[k % 3 ? 3 : 2]); }
   // sourcils froncés de terreur
   [[-1, F[0] - 9], [1, F[0] + 9]].forEach(([sd, bx]) => { for (let k = -4; k <= 4; k++) { const y = F[1] - 10 - Math.round((k * sd + 4) / 4); P(bx + k, y, GOLD[1]); if (Math.abs(k) < 3) P(bx + k, y - 1, GOLD[2]); } });
   // l'oreille gauche : un faisceau de cheveux s'y enfonce
@@ -136,13 +137,17 @@ function buildHorror(variant) {
   return { data, th };
 }
 // p : de 0 (noir complet) à 1 (les yeux se sont habitués)
-function renderHorror(ctx, p, variant = 1) {
-  if (!horrorImgs[variant]) horrorImgs[variant] = buildHorror(variant);
-  const { data, th } = horrorImgs[variant], out = ctx.createImageData(HORROR_W, HORROR_H);
+// o.rase (true par défaut) : tête rasée, comme dans le scénario réécrit ; o.doux : version atténuée (PLAN-06b), assombrie et le rouge éteint
+function renderHorror(ctx, p, variant = 1, o = {}) {
+  const rase = o.rase !== false, key = variant + (rase ? "" : "b");
+  if (!horrorImgs[key]) horrorImgs[key] = buildHorror(variant, rase);
+  const { data, th } = horrorImgs[key], out = ctx.createImageData(HORROR_W, HORROR_H), dim = o.doux ? .45 : 1;
   for (let i = 0; i < th.length; i++) {
     const f = Math.max(0, Math.min(1, (p - th[i]) / .22)), x = i % HORROR_W, y = (i / HORROR_W) | 0;
     const k = f >= 1 ? 1 : (BAYER4[y & 3][x & 3] / 16 < f ? (f > .5 ? .7 : .35) : 0);
-    out.data[i * 4] = data.data[i * 4] * k; out.data[i * 4 + 1] = data.data[i * 4 + 1] * k; out.data[i * 4 + 2] = data.data[i * 4 + 2] * k; out.data[i * 4 + 3] = 255;
+    let r = data.data[i * 4], g = data.data[i * 4 + 1], b = data.data[i * 4 + 2];
+    if (o.doux) { const m = (r + g + b) / 3; r = m + (r - m) * .25; g = m + (g - m) * .25; b = m + (b - m) * .25 + 4; }
+    out.data[i * 4] = r * k * dim; out.data[i * 4 + 1] = g * k * dim; out.data[i * 4 + 2] = b * k * dim; out.data[i * 4 + 3] = 255;
   }
   ctx.putImageData(out, 0, 0);
 }
